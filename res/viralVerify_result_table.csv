@@ -1,0 +1,364 @@
+Contig name,Prediction,Length,Circular,Score,Pfam hits
+1_LNODE_1_length_13274,Plasmid,13274,-,22.02,AAA_19 AAA_30 MT-A70 RPA Endonuc-BglII HTH_36 Resolvase TrwC TrwB_AAD_bind CbiA
+2_LNODE_1_length_1173,Uncertain - too short,1173,-,-
+3_LNODE_1_length_5082,Uncertain - viral or bacterial,5082,-,-2.37,Rep_3
+4_LNODE_1_length_5419,Uncertain - plasmid or chromosomal,5419,-,-0.66,DAO_C FGGY_C FGGY_N Malt_amylase_C DUF3459 DAO Alpha-amylase
+4_LNODE_2_length_9400,Uncertain - plasmid or chromosomal,9400,-,-5.69,HTH_5 Gp_dh_C PBP_like_2 DAO_C FGGY_C Gp_dh_N MFS_1 FGGY_N Malt_amylase_C DUF3459 DAO Alpha-amylase
+5_LNODE_1_length_1188,Uncertain - too short,1188,-,-
+6_LNODE_1_length_1029,Uncertain - too short,1029,-,-
+7_LNODE_1_length_2167,Uncertain - too short,2167,-,-
+8_LNODE_1_length_32340,Virus,32340,-,15.19,PDDEXK_1 Terminase_6N Toprim_2 Peptidase_S74 Terminase_6C AAA_25 TMP_3 HTH_3 PDDEXK_5
+9_LNODE_1_length_1900,Uncertain - too short,1900,-,-2.78,DDE_Tnp_1
+10_LNODE_1_length_2435,Uncertain - too short,2435,-,-2.78,DDE_Tnp_1
+300_RNODE_8_length_16706,Chromosome,16706,-,-8.10,Acyl_transf_3 GDP_Man_Dehyd Lipase_GDSL_2 DDE_Tnp_1 Reprolysin_5 Bac_transf CoA_binding_3 Epimerase RibD_C
+276_RNODE_3_length_1853,Uncertain - too short,1853,-,-2.78,DDE_Tnp_1
+13_LNODE_1_length_32043,Virus,32043,-,19.07,AAA_18 DUF5681 Sigma70_r4 DUF5824 ParBc Terminase_6N Acetyltransf_10 Metallophos Peptidase_S74 PG_binding_3 Glyco_hydro_108 Phage_Mu_F GATase_6 NinG Dam GTA_holin_3TM aGPT-Pplase2 Tet_JBP
+13_LNODE_2_length_32135,Virus,32136,-,19.07,DUF5824 Sigma70_r4 AAA_18 DUF5681 ParBc Terminase_6N Acetyltransf_10 Metallophos Peptidase_S74 PG_binding_3 Phage_Mu_F Glyco_hydro_108 GATase_6 NinG Dam GTA_holin_3TM aGPT-Pplase2 Tet_JBP
+293_RNODE_8_length_1263,Uncertain - too short,1263,-,-
+15_LNODE_1_length_37843,Virus,37843,-,40.56,ParBc Gp13-like Peptidase_S74 HTH_17 DNA_methylase DUF6322 Prok-JAB Terminase_6C Methyltransf_21 PhageMin_Tail Phage_tail_L NLPC_P60 Phage_Mu_F DUF4055 RusA Phage_min_tail DUF6450 Phage-tail_3 DUF3799 HTH_36 DnaT_2
+16_LNODE_1_length_35721,Virus,35721,-,10.52,SNase PG_binding_3 Glyco_hydro_108 PhageMin_Tail Helicase_RecD Rad52_Rad22
+16_LNODE_2_length_35229,Virus,35230,-,10.52,SNase PG_binding_3 Glyco_hydro_108 PhageMin_Tail Helicase_RecD Rad52_Rad22
+17_LNODE_1_length_32477,Virus,32477,-,13.46,Phage_integrase Vut_1 HlyC Terminase_3 Peptidase_S74 HTH_31 PAPS_reduct DUF5309 HTH_36 Phage_int_SAM_5 Peptidase_S24 DUF6378 YqaJ YdaS_antitoxin
+17_LNODE_2_length_32687,Virus,32687,-,13.46,Phage_integrase HlyC Terminase_3 Peptidase_S74 PAPS_reduct YqaJ HTH_31 DUF5309 HTH_36 YdaS_antitoxin Phage_int_SAM_5 Vut_1 DUF6378 Peptidase_S24
+19_LNODE_1_length_2274,Uncertain - too short,2274,-,-
+20_LNODE_1_length_1048,Uncertain - too short,1048,-,-6.34,GIIM RVT_1
+21_LNODE_1_length_1048,Uncertain - too short,1048,-,-0.61,NMT1_3
+22_LNODE_1_length_1125,Uncertain - too short,1125,-,-
+22_LNODE_2_length_1029,Uncertain - too short,1046,-,-
+23_LNODE_1_length_2250,Uncertain - too short,2250,-,-
+23_LNODE_2_length_2227,Uncertain - too short,2227,-,-
+259_RNODE_10_length_2234,Uncertain - too short,2234,-,-
+25_LNODE_1_length_2329,Uncertain - too short,2329,-,-
+26_LNODE_1_length_1485,Uncertain - too short,1485,-,-
+27_LNODE_1_length_57223,Virus,57223,-,21.55,DUF1064 Cpn10 MPTase-PolyVal DnaB DUF3799 ArdcN HNH Peptidase_M15_3 ERF Laminin_G_3 ART-PolyVal DnaB_C
+27_LNODE_2_length_56570,Virus,56570,-,19.19,DUF1064 Cpn10 DnaB DUF3799 ART-PolyVal ArdcN HNH ERF Peptidase_M15_3 MPTase-PolyVal DnaB_C
+28_LNODE_1_length_1692,Uncertain - too short,1692,-,-
+29_LNODE_1_length_5884,Uncertain - viral or bacterial,5884,-,-2.16,Rep_1 DUF2523 Zot
+30_LNODE_1_length_11671,Plasmid,11671,-,8.59,PLDc_2 HsdM_N N6_Mtase SWI2_SNF2 HSDR_N Methylase_S Resolvase
+31_LNODE_1_length_1807,Uncertain - plasmid or chromosomal,1807,-,1.03,Ni_hydr_CYTB HTH_Tnp_IS630 DDE_3
+32_LNODE_1_length_57547,Virus,57547,-,21.55,Cpn10 DUF6321 UvrD_C_2 DNA_pol_A AAA_19 Peptidase_S74 Terminase_6C UvrD_C DNA_pol_A_exo1 SNF2-rel_dom Helicase_C Collar Phage_lysozyme DUF6378
+287_RNODE_26_length_57980,Virus,57980,-,21.55,Cpn10 DUF6321 UvrD_C_2 DNA_pol_A AAA_19 Peptidase_S74 Terminase_6C UvrD_C DNA_pol_A_exo1 SNF2-rel_dom Helicase_C Collar Phage_lysozyme DUF6378
+291_RNODE_32_length_57835,Virus,57835,-,21.55,Cpn10 DUF6321 UvrD_C_2 DNA_pol_A AAA_19 Peptidase_S74 Terminase_6C UvrD_C DNA_pol_A_exo1 SNF2-rel_dom Helicase_C Collar Phage_lysozyme DUF6378
+33_LNODE_1_length_2415,Uncertain - too short,2415,-,-
+35_LNODE_1_length_6254,Uncertain - viral or bacterial,6254,-,5.38,Rep_trans DUF2523 Zot
+35_LNODE_2_length_6072,Uncertain - viral or bacterial,6072,-,5.38,Rep_trans DUF2523 Zot
+283_RNODE_12_length_6080,Uncertain - viral or bacterial,6080,-,5.38,Rep_trans DUF2523 Zot
+280_RNODE_1_length_1020,Uncertain - too short,1020,-,-
+281_RNODE_4_length_1434,Uncertain - too short,1434,-,-
+38_LNODE_1_length_35568,Virus,35568,-,22.13,Peptidase_G2 Terminase_6N DUF3310 SLT GP88 Metallophos DUF5309 2OG-FeII_Oxy_5
+39_LNODE_1_length_3597,Plasmid,3597,-,9.40,MobC RPA HTH_17
+40_LNODE_1_length_2942,Uncertain - plasmid or chromosomal,2942,-,-4.02,Epimerase DUF1731 DUF1295
+41_LNODE_1_length_32534,Uncertain - viral or bacterial,32534,-,0.04,DUF5824 Phage_integrase Terminase_6N HlyC DUF6362 ERF HTH_23 GTA_holin_3TM HTH_26
+42_LNODE_1_length_1959,Uncertain - too short,1959,-,-0.77,GDP_Man_Dehyd
+43_LNODE_1_length_1041,Uncertain - too short,1041,-,-
+44_LNODE_1_length_1871,Uncertain - too short,1871,-,-
+45_LNODE_1_length_1824,Uncertain - too short,1824,-,-
+280_RNODE_4_length_24641,Virus,24641,-,10.61,DUF5824 Terminase_6N Phage-tail_3 Terminase_6C Phage_prot_Gp6
+46_LNODE_1_length_24705,Virus,24705,-,10.61,DUF5824 Terminase_6N Phage-tail_3 Terminase_6C Phage_prot_Gp6
+47_LNODE_1_length_31767,Virus,31767,-,21.20,ParBc Terminase_6N Phage-tail_3 VRR_NUC Phage_capsid N6_N4_Mtase DUF1376 HNH GTA_holin_3TM Phage_lysozyme HTH_39
+285_RNODE_6_length_30387,Virus,30387,-,25.64,DUF5824 Terminase_6N Phage-tail_3 VRR_NUC Terminase_6C DUF1376 Phage_capsid HNH C1q Tape_meas_lam_C GTA_holin_3TM Phage_lysozyme HTH_39
+286_RNODE_8_length_30695,Virus,30695,-,20.87,DUF5824 Terminase_6N Phage-tail_3 VRR_NUC Terminase_6C DUF1376 Phage_capsid HNH C1q Tape_meas_lam_C HTH_39
+51_LNODE_1_length_2268,Uncertain - too short,2268,-,-
+52_LNODE_1_length_2177,Uncertain - too short,2177,-,-
+281_RNODE_8_length_2091,Uncertain - too short,2091,-,-6.34,GIIM RVT_1
+53_LNODE_1_length_2088,Uncertain - too short,2088,-,-6.34,GIIM RVT_1
+262_RNODE_1_length_1050,Uncertain - too short,1050,-,-
+56_LNODE_1_length_1008,Uncertain - plasmid or chromosomal,1008,-,-0.55,DrsE
+57_LNODE_1_length_24068,Chromosome,24068,-,-15.64,MFS_1 Sod_Cu FA_hydroxylase Phage_BR0599 HSP33 Phage_capsid BLH_phosphatase OTCace Phage_TAC_6 OTCace_N QueC CSD DUF3168 GMC_oxred_N DUF2460 Phage_TAC_11 TerC DUF2793 OmpA GMC_oxred_C Phage-tail_3 OMP_b-brl Phage_tail_2 DUF2163 Aminotran_3
+58_LNODE_1_length_3761,Chromosome,3761,-,-9.01,Gp_dh_C Gp_dh_N PK PK_C PGK
+59_LNODE_1_length_3096,Uncertain - viral or bacterial,3096,-,-
+60_LNODE_1_length_3264,Uncertain - viral or bacterial,3264,-,-
+61_LNODE_1_length_6147,Uncertain - plasmid or chromosomal,6147,-,0.19,Glycos_transf_4 Fic HicB Amidase
+62_LNODE_1_length_2287,Uncertain - plasmid or chromosomal,2287,-,-0.05,Autotransporter
+291_RNODE_14_length_32436,Virus,32436,-,36.16,ResIII ParBc Terminase_6N DUF4128 SPRY Peptidase_M15_4 Terminase_6C N6_N4_Mtase Phage_tube_2 ERF YqaJ DUF5824 Phage_Mu_F NinG DUF4055 P22_CoatProtein Phage-tail_3 Helicase_C DnaT_2
+63_LNODE_1_length_32436,Virus,32436,-,36.16,ResIII ParBc Terminase_6N DUF4128 SPRY Peptidase_M15_4 Terminase_6C N6_N4_Mtase Phage_tube_2 ERF YqaJ DUF5824 Phage_Mu_F NinG DUF4055 P22_CoatProtein Phage-tail_3 Helicase_C DnaT_2
+64_LNODE_1_length_1259,Uncertain - plasmid or chromosomal,1259,-,-0.50,TonB_C
+289_RNODE_18_length_28953,Virus,28953,-,50.30,HK97-gp10_like VRR_NUC Peptidase_M15_3 Laminin_G_3 Phage_portal Phage_capsid AAA_25 ERF GTA_holin_3TM Terminase_3 Peptidase_S78 Phage_Mu_F Phage_H_T_join Bac_DnaA_C DUF3799 Toprim_4 Phage_tail_2 Terminase_3C Phage_connect_1 PDDEXK_5
+65_LNODE_1_length_29249,Virus,29249,-,50.30,HK97-gp10_like VRR_NUC Peptidase_M15_3 Laminin_G_3 Phage_portal Phage_capsid AAA_25 ERF GTA_holin_3TM Terminase_3 Peptidase_S78 Phage_Mu_F Phage_H_T_join Bac_DnaA_C DUF3799 Toprim_4 Phage_tail_2 Terminase_3C Phage_connect_1 PDDEXK_5
+293_RNODE_15_length_4864,Uncertain - viral or bacterial,4864,-,1.48,Peptidase_M15_3
+66_LNODE_1_length_4864,Uncertain - viral or bacterial,4864,-,1.48,Peptidase_M15_3
+286_RNODE_7_length_1047,Uncertain - too short,1047,-,-
+68_LNODE_1_length_1014,Uncertain - too short,1014,-,-
+277_RNODE_1_length_2097,Uncertain - too short,2097,-,-
+69_LNODE_1_length_2057,Uncertain - too short,2057,-,-
+291_RNODE_15_length_1542,Uncertain - too short,1542,-,-
+70_LNODE_1_length_1023,Uncertain - too short,1023,-,-
+287_RNODE_29_length_28576,Virus,28576,-,25.06,DUF6712 Phage_portal ParBc Terminase_3 Metallophos VRR_NUC N6_N4_Mtase Thioredoxin HNH Terminase_3C DNA_methylase Peptidase_S78_2 HTH_39
+71_LNODE_1_length_28924,Virus,28924,-,24.39,DUF6712 Phage_portal ParBc Terminase_3 Metallophos VRR_NUC Thioredoxin N6_N4_Mtase HNH Terminase_3C Dam Peptidase_S78_2
+291_NODE_6_length_1542,Uncertain - too short,1567,-,-
+72_LNODE_1_length_1623,Uncertain - too short,1623,-,-
+73_LNODE_1_length_2355,Uncertain - too short,2355,-,-
+74_LNODE_1_length_26987,Virus,26987,-,14.90,DUF5824 DUF5681 SEC-C Terminase_3 Peptidase_S74 Terminase_6C RNase_H_2 NinG DNA_methylase
+75_LNODE_1_length_32642,Uncertain - viral or bacterial,32642,-,4.72,Terminase_6N DUF6447 Toprim_4 HTH_36 HTH_Tnp_1_2 DnaB_C
+269_RNODE_3_length_1011,Uncertain - too short,1011,-,-
+76_LNODE_1_length_1011,Uncertain - too short,1011,-,-
+78_LNODE_1_length_31349,Virus,31871,-,20.06,DUF5824 ParBc DUF3310 Phage-tail_3 Metallophos MT-A70 Phage_capsid RecA_dep_nuc Peptidase_M15_3 Laminin_G_3 HTH_3
+291_RNODE_3_length_66459,Virus,66459,-,34.31,Ribonuc_red_lgC Ribonuc_red_sm DUF1064 Cpn10 DUF6321 DNA_ligase_OB_2 Peptidase_S74 DNA_ligase_A_M DUF3799 Toprim_4 Thioredoxin ERF Peptidase_M15_3 MazG Cpn60_TCP1 Sigma70_r2 Ribonuc_red_lgN Thymidylat_synt
+81_LNODE_1_length_2439,Uncertain - too short,2439,-,-
+82_LNODE_1_length_31963,Virus,31963,-,7.94,DUF5824 DUF5681 GTP_cyclohydroI PTPS QueC QueF DUF2786 NinG Phage_capsid_2 HTH_39
+85_LNODE_1_length_29623,Virus,29623,-,23.26,DUF6712 ParBc Terminase_3 Metallophos VRR_NUC Thioredoxin HNH Terminase_3C DNA_methylase Peptidase_M15_3 Peptidase_S78_2 HTH_26 HTH_39
+88_LNODE_1_length_1233,Uncertain - too short,1233,-,-
+264_RNODE_7_length_2619,Uncertain - too short,2619,-,-
+270_RNODE_4_length_1065,Uncertain - too short,1065,-,-
+291_RNODE_22_length_56982,Virus,56982,-,30.63,DUF932 DUF6321 Cpn10 UvrD_C_2 SLT DNA_pol_A AAA_19 Peptidase_S74 UvrD_C Peptidase_M15_4 Terminase_6C HNH DNA_pol_A_exo1 Mu-like_gpT Helicase_C GTA_holin_3TM DUF6378 2OG-FeII_Oxy_5
+297_RNODE_2_length_56859,Virus,56859,-,30.63,Cpn10 DUF6321 AAA_19 Peptidase_S74 SNF2-rel_dom DUF932 SLT Peptidase_M15_4 Terminase_6C Mu-like_gpT GTA_holin_3TM DUF6378 UvrD_C_2 DNA_pol_A UvrD_C DNA_pol_A_exo1 2OG-FeII_Oxy_5 HNH Helicase_C
+94_LNODE_1_length_975,Uncertain - too short,991,-,-
+291_NODE_1_length_29302,Virus,29790,-,19.44,Terminase_3 N6_N4_Mtase Thioredoxin DUF3799 Peptidase_M15_3 NinG Terminase_3C DUF3127
+293_RNODE_2_length_28966,Virus,28966,-,23.29,DUF5824 Terminase_3 DUF3721 Thioredoxin N6_N4_Mtase DUF3799 Peptidase_M15_3 NinG Terminase_3C Peptidase_S78_2 DUF3127
+96_LNODE_1_length_1260,Uncertain - too short,1260,-,-
+97_LNODE_1_length_1426,Uncertain - too short,1426,-,-1.63,Methyltransf_11
+98_LNODE_1_length_1733,Uncertain - too short,1733,-,-4.80,B12-binding Radical_SAM
+99_LNODE_1_length_2476,Uncertain - too short,2476,-,-4.28,DUF5122
+100_LNODE_1_length_6193,Uncertain - plasmid or chromosomal,6193,-,-2.57,Thiamine_BP Aldo_ket_red TPR_8 DUF1244 Guanylate_cyc
+101_LNODE_1_length_35176,Virus,35176,-,20.11,DUF2800 CsgF DUF3310 SNase Peptidase_S74 DUF5309 CsgG FecR AAA_25 DUF5872 CHASE2 Phage_lysozyme AAA_24 Guanylate_cyc
+291_RNODE_11_length_104062,Chromosome,104062,-,-113.66,Wzy_C PAPS_reduct Abhydrolase_1 PDZ_2 Acyl-CoA_dh_N Cu-oxidase_4 Peptidase_M1 B5 Na_H_Exchanger HTH_18 bPH_2 Inositol_P Flavokinase Ligase_CoA tRNA_synthFbeta TonB_C tRNA_Me_trans Cytochrom_C1 MotA_ExbB SLBB FBPase_glpX PurK_C GTP_EFTU PGM_PMM_II Acetyltransf_CG ETF tRNA_Me_trans_M Putative_PNPOx His_Phos_1 Ammonium_transp GDP_Man_Dehyd Cation_efflux Rieske Acyl-CoA_dh_M DUF445 DUF3458 Beta_elim_lyase Ribosomal_L35p DsbB tRNA-synt_2d PGM_PMM_III APS_kinase TrkA_N MipZ Gly-zipper_Omp tRNA-synt_1g Pantoate_ligase Cytochrome_B Virul_fac_BrkB CbiA FAD_syn OmpA Peptidase_S41 Ribosomal_L20 tRNA-synt_1 Rick_17kDa_Anti DUF1153 FDX-ACB DHFR_1 DUF3035 DEAD AIRC Exo_endo_phos Pribosyl_synth Epimerase_2 NTP_transferase GNVR ParA DUF2059 Transgly_assoc CorC_HlyC ZT_dimer CNNM Peptidase_M23 Peptidase_M1_N adh_short_C2 tRNA_bind EFG_III EamA PGM_PMM_IV PGM_PMM_I COQ7 ACT PNP_phzG_C UCR_Fe-S_N UDPG_MGDP_dh_N Beta-lactamase ETF_alpha Pribosyltran UDPG_MGDP_dh_C SPOUT_MTase ATP-grasp DEAD_assoc DnaJ_C AAA_31 ACR_tran Anticodon_1 Cytochrom_B_C 4HBT PhzC-PhzF Acyl-CoA_dh_1 adh_short Poly_export Polysacc_synt_2 Wzz Pribosyltran_N Phe_tRNA-synt_N Homoserine_dh UDPG_MGDP_dh B3_4 Lhr_WH DnaJ CoA_binding_3 tRNA_Me_trans_C DUF3458_C Peptidase_A8 NAD_binding_3 ATP-grasp_2 RF3_C ExbD Bac_rhodopsin PDZ HlyD_D23 P-II PDZ_6 Helicase_C
+297_RNODE_18_length_68502,Chromosome,68502,-,-89.86,Wzy_C PAPS_reduct Abhydrolase_1 Acyl-CoA_dh_N Cu-oxidase_4 Peptidase_M1 B5 Na_H_Exchanger HTH_18 bPH_2 Inositol_P Flavokinase tRNA_synthFbeta TonB_C MotA_ExbB Cytochrom_C1 SLBB FBPase_glpX PurK_C GTP_EFTU PGM_PMM_II Acetyltransf_CG His_Phos_1 Ammonium_transp Rieske Acyl-CoA_dh_M DUF3458 Beta_elim_lyase Ribosomal_L35p tRNA-synt_2d PGM_PMM_III APS_kinase TrkA_N MipZ tRNA-synt_1g Pantoate_ligase Cytochrome_B CbiA FAD_syn OmpA Ribosomal_L20 tRNA-synt_1 FDX-ACB DHFR_1 DUF3035 DEAD Exo_endo_phos AIRC Pribosyl_synth NTP_transferase DUF2059 GNVR ParA Peptidase_M1_N adh_short_C2 tRNA_bind EFG_III EamA PGM_PMM_IV PGM_PMM_I ACT UCR_Fe-S_N Pribosyltran ATP-grasp DEAD_assoc AAA_31 Anticodon_1 4HBT Cytochrom_B_C Acyl-CoA_dh_1 adh_short Poly_export Wzz Pribosyltran_N Phe_tRNA-synt_N Homoserine_dh B3_4 Lhr_WH DnaJ DUF3458_C Peptidase_A8 NAD_binding_3 RF3_C ExbD Bac_rhodopsin P-II Helicase_C
+103_LNODE_1_length_6894,Uncertain - viral or bacterial,6894,-,6.97,Phage_X DUF2523 Zot Phage_CRI
+104_LNODE_1_length_59675,Virus,59675,-,12.56,DUF5824 VirE_N DUF1064 DUF3799 ERF
+105_LNODE_1_length_1212,Uncertain - too short,1212,-,-
+106_LNODE_1_length_5651,Plasmid,5651,-,12.52,MobA_MobL MAPEG TetR_N RepL
+107_LNODE_1_length_3792,Uncertain - viral or bacterial,3792,-,-
+108_LNODE_1_length_1838,Uncertain - too short,1838,-,-
+109_LNODE_1_length_1955,Uncertain - too short,1955,-,-
+110_LNODE_1_length_1134,Uncertain - too short,1134,-,-
+111_LNODE_1_length_1734,Uncertain - too short,1734,-,-
+112_LNODE_1_length_2248,Uncertain - too short,2248,-,1.49,PC4
+113_LNODE_1_length_37794,Virus,37794,-,61.17,5_3_exonuc_N RPOL_N Toprim_2 Phage_T7_Capsid DUF2815 Toprim_4 DUF1599 Head-tail_con RusA Tube Phage_T7_tail RNA_pol DnaB_C
+114_LNODE_1_length_2142,Uncertain - too short,2142,-,-
+115_LNODE_1_length_4936,Uncertain - viral or bacterial,4936,-,6.21,Phage_tail_APC DNA_methylase
+116_LNODE_1_length_1178,Uncertain - too short,1178,-,-
+117_LNODE_1_length_3003,Uncertain - plasmid or chromosomal,3003,-,0.85,Amidohydro_2 Cupin_2
+118_LNODE_1_length_2334,Uncertain - too short,2334,-,-
+119_LNODE_1_length_2373,Uncertain - too short,2373,-,-
+120_LNODE_1_length_1659,Uncertain - too short,1659,-,-
+121_LNODE_1_length_2332,Uncertain - too short,2332,-,1.07,VanY
+122_LNODE_1_length_1493,Uncertain - plasmid or chromosomal,1493,-,-0.24,Flagellin_N Flagellin_C
+123_LNODE_1_length_2118,Uncertain - too short,2118,-,-5.70,Glyco_transf_41
+124_LNODE_1_length_1128,Uncertain - too short,1128,-,-1.82,FGE-sulfatase
+125_LNODE_1_length_2038,Uncertain - plasmid or chromosomal,2038,-,-2.26,Ammonium_transp
+126_LNODE_1_length_2177,Uncertain - too short,2177,-,-3.29,Hydrolase_3
+267_RNODE_9_length_1244,Uncertain - too short,1244,-,-
+287_RNODE_14_length_32330,Virus,32330,-,30.52,DUF6321 Phage_T7_Capsid Peptidase_M15_4 Peptidase_S74 Head-tail_con Terminase_2 Phage_capsid_2 HTH_39
+288_RNODE_10_length_52816,Virus,52816,-,22.24,CBM_4_9 ThiF Terminase_6C HNH DUF5309 P22_portal AAA_24 Laminin_G_3 HTH_39 DnaB_C
+294_RNODE_12_length_52915,Virus,52915,-,22.24,CBM_4_9 ThiF Terminase_6C HNH DUF5309 P22_portal AAA_24 Laminin_G_3 HTH_39 DnaB_C
+278_RNODE_7_length_5041,Uncertain - viral or bacterial,5041,-,0.64,RepL
+283_RNODE_7_length_4948,Uncertain - viral or bacterial,4948,-,2.20,HTH_36
+290_RNODE_9_length_1023,Uncertain - too short,1023,-,-
+296_RNODE_18_length_1243,Uncertain - too short,1243,-,-
+263_RNODE_2_length_3087,Uncertain - plasmid or chromosomal,3087,-,0.43,RRM_1 Glyco_transf_20
+294_RNODE_9_length_3656,Uncertain - viral or bacterial,3656,-,-1.55,RRM_1 DUF3764 PDZ_6 DUF3721
+291_RNODE_21_length_1068,Uncertain - plasmid or chromosomal,1068,-,-0.35,Aldo_ket_red
+293_RNODE_7_length_1071,Uncertain - plasmid or chromosomal,1071,-,-0.35,Aldo_ket_red
+296_NODE_1_length_1101,Uncertain - too short,1119,-,-
+297_RNODE_8_length_1173,Uncertain - too short,1173,-,-
+292_NODE_5_length_1293,Uncertain - too short,1314,-,-
+288_RNODE_1_length_2493,Uncertain - too short,2493,-,-
+288_RNODE_23_length_2303,Uncertain - too short,2303,-,-
+277_RNODE_5_length_3912,Uncertain - viral or bacterial,3912,-,-5.15,UnbV_ASPIC FG-GAP_3
+302_RNODE_18_length_1999,Uncertain - too short,1999,-,-5.15,UnbV_ASPIC
+272_RNODE_2_length_1179,Uncertain - too short,1179,-,-
+288_RNODE_20_length_31311,Virus,31311,-,15.61,DUF5681 TMP_2 Terminase_6N Metallophos Peptidase_S74 N6_N4_Mtase PG_binding_3 Glyco_hydro_108 DUF5872 GTA_holin_3TM
+266_RNODE_18_length_4493,Uncertain - plasmid or chromosomal,4493,-,0.38,DUF6265 Fer2 Fer2_2 MoCoBD_1 MoCoBD_2
+271_RNODE_7_length_2491,Uncertain - too short,2491,-,-1.54,Exo_endo_phos DUF6265
+287_RNODE_10_length_7154,Uncertain - viral or bacterial,7154,-,2.34,AAA_25
+287_RNODE_32_length_6572,Uncertain - viral or bacterial,6572,-,2.34,AAA_25
+287_RNODE_28_length_31095,Virus,31095,-,13.42,Peptidase_G2 Terminase_6N DUF3310 Amidase_2 Phage-tail_3 Terminase_6C HTH_Tnp_1
+285_RNODE_1_length_12329,Uncertain - plasmid or chromosomal,12329,-,5.97,ECH_1 rve HTH_21 ABC_tran TniQ Metallophos Y_phosphatase3 TniB BPD_transp_1 Mu-transpos_C TetR_N TOBE_2 SBP_bac_8 HTH_Tnp_1
+297_RNODE_13_length_755597,Chromosome,755597,-,-414.99,AIRS Ald_Xan_dh_C Mur_ligase PP_kinase_N EFP_N GST_N LytTR Peptidase_M24_C PDZ_2 DUF1489 HbpS-like IalB DUF2927 Ppx-GppA Bac_DnaA DbpA BCCT ATP-synt_ab PP_kinase Lactamase_B_2 DUF3168 DUF4259 YceD TPR_12 GTP1_OBG Complex1_51K TPR_8 Fe-S_biosyn Acetyltransf_7 AAA_5 S4 GDP_Man_Dehyd LON_substr_bdg NUDIX ABC_tran_CTD TM1586_NiRdase Amidohydro_1 Acyl-CoA_dh_M Trypsin_2 PP_kinase_C_1 ketoacyl-synt DUF2484 FumaraseC_C AAA_26 DUF2125 DUF1638 EFP Orn_Arg_deC_N 3HCDH SufE FliMN_C Thiolase_N GTA_holin_3TM PhageMin_Tail SH3_2 PGM_PMM_III GTP_EFTU_D2 Biotin_lipoyl TrkA_N HATPase_c LigA tRNA-synt_1g HflX_C DUF1476 ATP-synt_ab_C FAD_syn Hydantoinase_B Rrf2 ClpB_D2-small PLDc ADH_N HTH_Crp_2 CMD DctQ ALAD NAD_binding_8 NTP_transf_9 Mem_trans PmbA_TldD_C MerR_1 DUF3772 PNTB_4TM Tubulin Molybdopterin PAS AMP-binding_C Metallophos_2 HRDC dCache_1 Toprim_C_rpt Glyco_tranf_2_3 Peptidase_M23 FAD_binding_3 Asp_Glu_race Pyr_redox_dim Ribosomal_L32p PAS_4 PNP_UDP_1 ADH_zinc_N Carboxyl_trans DNA_pol_A_exo1 CcmF_C DUF4394 Methyltransf_23 DoxX ECH_1 DUF1353 gag-asp_proteas Bac_DNA_binding Acetyltransf_10 Usp tRNA-synt_2 H_lectin TerB Radical_SAM Ribonuc_red_lgC PhzC-PhzF Glyoxalase adh_short Virulence_fact Wzz Glyco_transf_4 MFS_1 Pribosyltran_N TGT CoA_trans MreB_Mbl OSCP Phage_capsid TrkH CMAS COX2_TM FtsZ_C Thr_synth_N GAF Glycos_trans_3N HlyIII Enolase_N Glyco_transf_28 Hydrolase_6 Cupin_7 Hydant_A_N FMN_red CxxCxxCC Peptidase_M17 AAA NtrY_N Aminotran_1_2 SPOR LysR_substrate SMC_N SecD_SecF IU_nuc_hydro Enolase_C PEMT CcmE MraY_sig1 CobT Methyltransf_5 Wzy_C Abhydrolase_2 AbrB Abhydrolase_1 Terminase_4 Sulfotransfer_3 ATP-synt AAA_18 Topoisom_bac NAD_binding_1 PaaX_C N6_N4_Mtase BCA_ABC_TP_C ABC_trans_aux GST_C_3 TPP_enzyme_C GTP-bdg_N Acyltransf_2 Fer2 HupE_UreJ YkuD PaaX Rhamno_transf RMMBL Ring_hydroxyl_A Sulfatase Lyase_1 FAD_binding_4 PaaB SoxY Asparaginase Peptidase_M16_C DctM Peptidase_M50 PgpA DCD DUF3458 DUF1097 Molybdop_Fe4S4 GAF_2 DctP Toprim Phage_portal DUF2239 PurS Oxidored_q6 PNTB SLT BPL_LplA_LipB OEP DUF533 MMR_HSR1 DegT_DnrJ_EryC1 Fer4_7 5_nucleotid_C TauE HemolysinCabind ATP-synt_ab_N PrpF SBP_bac_8 HerA_C Amidohydro_2 Dus AMP-binding NIR_SIR Thymidylate_kin TfoX_C Ribosomal_L21p OmpA Rieske_2 BPD_transp_1_N Trans_reg_C Sec_GG Polysacc_deac_2 AsnC_trans_reg ATP-synt_DE_N BLACT_WH Transpeptidase MarR_2 Flavin_Reduct ACP_syn_III_C YajC DNA_processg_A Pyr_redox_2 DEAD Exo_endo_phos ACP_syn_III Amidase DUF2312 UvrB_inter PEP-utilisers_N PseudoU_synth_2 COX1 HTH_8 ParA Acetyltransf_1 PG_binding_3 CNNM Peptidase_C26 Semialdhyde_dh LprI RyR UvrD-helicase GAF_3 UvrD_C Fer4_9 SoxZ Rhodanese DUF6691 DAO DUF2235 PGM_PMM_I Oxidored_q4 TfoX_N Peptidase_M16 NAD_binding_11 UDPG_MGDP_dh_N Ribosomal_L33 Amino_oxidase COX3 UbiA NAD_binding_9 IlvN Polysacc_deac_1 Cytochrome_CBB3 4HBT TPP_enzyme_M Band_7 Na_H_antiport_1 Asparaginase_C EAL RskA SBP_bac_5 HisKA_2 Oxidored_molyb DNA_photolyase AAA_16 DUF2219 2Fe-2S_thioredx Cys_Met_Meta_PP Glycos_transf_2 Hint_2 UDPG_MGDP_dh Ketoacyl-synt_C DnaJ HAGH_C FAD_binding_6 Creatinase_N_2 AAA_15 FtsJ SURF1 TPR_14 Response_reg TPM_phosphatase AIPR SH3_3 MarC PUA CPSase_L_D2 MS_channel PCMT YbjQ_1 Hydantoinase_A Proton_antipo_N PqiA GatB_Yqey FdhD-NarQ SurA_N YfiO NIR_SIR_ferr Cupin_5 BPD_transp_1 CobT_C DinB RrnaAD Gln-synt_C FA_synthesis T2SSE_N Peptidase_M1 PP_kinase_C Lactamase_B HTH_18 Inositol_P Flavokinase Bac_transf HTH_20 NMT1_3 Chromate_transp Acetyltransf_3 DprA_WH Sulf_transp tRNA-synt_2b Biotin_carb_N PGM_PMM_II MoCoBD_2 HTH_3 MraZ BTP Glyco_hydro_108 DNA_alkylation FtsA Glycos_transf_1 Bac_luciferase TIM Ribonuc_red_lgN Ammonium_transp ResIII AcetylCoA_hydro Rieske Oxidored_q2 Glutaredoxin FAA_hydrolase_N IspD PDH_C GatB_N Beta_elim_lyase PALP YjdM_Zn_Ribbon 4HBT_2 Lipocalin_2 AnmK AI-2E_transport MurB_C Extensin-like_C Seryl_tRNA_N MaoC_dehydratas Polysacc_synt_3 PP-binding HTH_5 HTH_21 Fasciclin GGACT GTP-bdg_M HMGL-like GATase Phage_H_T_join DUF924 Fer2_2 MoCoBD_1 FAD_binding_7 Cytochrom_C_asm CbiA AAA_lid_9 PdxA TPR_19 p450 Mur_ligase_C DSBA Darcynin DUF2161 GATase_7 Peptidase_M20 Peptidase_S11 Peptidase_S49 IlvC Hydrolase_2 PaaA_PaaC PLDc_2 FeoB_N GST_C Pribosyl_synth NTP_transferase AcetylCoA_hyd_C ChaC Bax1-I Pyridoxal_deC Phage_TTP_12 DUF3553 Methyltransf_11 ZnuA Cupin_2 Glu-tRNAGln GATase_6 DUF6280 DUF4180 DHHA2 DUF2783 MarR DsbD HAMP EamA Acyltransferase HTH_AsnC-type Sigma70_r2 Thiolase_C Hydrolase_3 ACT_7 Ribosomal_S4 HisKA Amidase_2 ABC_tran TRCF DUF5337 Pribosyltran Complex1_49kDa zf-C4_Topoisom Scaffold Aminotran_3 Peptidase_M24 CinA TatD_DNase Cpn10 LPG_synthase_C SAICAR_synt Acyl-CoA_dh_1 TrkA_C DUF1365 DUF2244 PEP-utilizers_C DNA_pol3_delta2 ABC-3 Metallophos DUF1036 Mur_ligase_M RsgA_GTPase CBS MlaD AMP-binding_C_2 BPL_C PDH_N DUF4260 CSD Pterin_4a DUF1127 Oxidored_FMN S-methyl_trans Lactamase_B_3 Fer2_BFD HTH_1 AlaDh_PNT_C SNARE_assoc TerL_ATPase Lon_C SelO Helicase_C Meth_synt_2 Anticodon_3 Pan_kinase FdsD DUF4336 AA_kinase TetR_C_24 NADHdh DUF1028 NAD_binding_2 HAD_2 NTP_transf_3 Sulfotransfer_1 Peripla_BP_6 Acyl-CoA_dh_N oligo_HPY Na_H_Exchanger NADH-G_4Fe-4S_3 Sigma54_activ_2 TOBE_2 Complex1_30kDa SLBB MCPsignal DLH Penicil_amidase Aminotran_5 AAA_21 Ysc84 CarD_CdnL_TRCF Beta_helix TPP_enzyme_N GTP_EFTU CitMHS AHSA1 DUF815 Acetyltransf_CG DHH DUF1194 Aldo_ket_red Clp_N SelR OpuAC Ion_trans_2 Glycos_transf_3 TetR_N Ribosomal_L27 Glyco_trans_4_4 Abhydrolase_6 Formyl_trans_N TPR_16 PG_binding_1 ABC_tran_Xtn FAD-oxidase_C RNase_J_C HK97-gp10_like Cyclase Peptidase_M15_2 SmpA_OmlA Acetyltransf_5 B12-binding Biotin_carb_C Transp_cyt_pur 3HCDH_N AAA_2 AIRS_C GntR HHH_5 Mo-co_dimer AlaDh_PNT_N Fer4 DUF4287 BLH_phosphatase Aldedh zf-dskA_traR CobS_N NADH_dhqG_C Dala_Dala_lig_N Glyco_tran_28_C Sigma70_r4 DUF1697 tRNA-synt_1b DUF2306 GATase_5 Pirin_C DNA_pol3_chi Elong-fact-P_C FeS_assembly_P Cytochrom_C Glycos_transf_4 Rubredoxin_C Malate_synthase LigB Sulfate_transp DUF1178 GATase_3 tRNA-synt_1 Dala_Dala_lig_C CPSase_sm_chain FAA_hydrolase CcmH OsmC Pirin DUF3422 FCD FtsQ_DivIB_C PBP5_C CorC_HlyC Pterin_bind YjdM NADH_4Fe-4S Hfq Creatinase_N FAA_hydro_N_2 Peptidase_M1_N adh_short_C2 Thioredoxin_2 Val_tRNA-synt_C FCSD-flav_bind FTSW_RODA_SPOVE CtaG_Cox11 COX2 TatA_B_E BolA STAS ACT TerL_nuclease Sigma54_activat PBP_dimer Orn_DAP_Arg_deC HTH_24 Beta-lactamase Glyoxalase_3 NDK Sugar_tr Anticodon_1 HI0933_like CCP_MauG Poly_export Sulfotransfer_2 SHS2_FTSA YqeY B12-binding_2 Hydrolase_like TPR_2 TatC DUF302 Voltage_CLC GFA Sigma70_r4_2 PEP-utilizers PmbA_TldD_M DUF3458_C SIS YgbB PmbA_TldD Cpn60_TCP1 RF3_C Flot DUF305 SspB Ceramidase Semialdhyde_dhC Oxidored_q3 PDZ BPD_transp_2 Proton_antipo_M PDZ_6 HPTransfase Fer2_4 Molydop_binding
+259_NODE_2_length_1126,Uncertain - too short,1144,-,-
+275_RNODE_1_length_1427,Uncertain - too short,1427,-,-
+287_RNODE_16_length_3575,Uncertain - viral or bacterial,3575,-,-
+288_RNODE_6_length_3653,Uncertain - viral or bacterial,3653,-,-
+267_RNODE_4_length_1668,Uncertain - too short,1668,-,-
+273_RNODE_7_length_2397,Uncertain - too short,2397,-,-
+287_RNODE_22_length_3248,Uncertain - viral or bacterial,3248,-,6.03,Peptidase_S74 2OG-FeII_Oxy_3
+287_RNODE_6_length_1955,Uncertain - too short,1955,-,4.37,Peptidase_S74
+278_RNODE_4_length_3289,Uncertain - viral or bacterial,3289,-,-
+285_RNODE_16_length_58333,Virus,58333,-,15.41,DUF932 Cpn10 UvrD-helicase UvrD_C_2 DNA_pol_A Peptidase_S74 DNA_pol_A_exo1 Mu-like_gpT SNF2-rel_dom Helicase_C DUF6378
+287_RNODE_20_length_31728,Virus,31728,-,9.47,DUF5824 DUF5681 Amidoligase_2 Terminase_6N Peptidase_S74 GGACT GATase_6 PhageMin_Tail
+271_RNODE_12_length_3112,Uncertain - plasmid or chromosomal,3112,-,-1.65,Inos-1-P_synth CDP-OH_P_transf NTP_transf_3
+284_RNODE_13_length_5187,Uncertain - plasmid or chromosomal,5187,-,-3.76,Acylphosphatase PCMT Hydrolase_6 DUF2784 TANGO2 Hydrolase_like
+265_RNODE_3_length_1035,Uncertain - too short,1035,-,-
+299_RNODE_1_length_2391,Uncertain - too short,2391,-,-
+260_RNODE_1_length_62428,Uncertain - viral or bacterial,62428,-,2.29,Sigma70_r4 VirE_N DUF5824 Bac_DnaA_C DUF5675 DUF3799 Thioredoxin Sigma70_r3 Sigma70_r2 LPD38 DnaB_C
+289_RNODE_2_length_28648,Virus,28648,-,23.59,ParBc Terminase_3 Acetyltransf_10 Metallophos VRR_NUC HNH Peptidase_M15_3 Terminase_3C DUF4373 Peptidase_S78_2 HTH_26 DUF3127
+297_RNODE_14_length_50699,Chromosome,50699,-,-51.73,Methyltr_RsmB-F Ribonuc_L-PSP DUF6768 Band_7_1 Tyr_Deacylase Biotin_carb_C BPD_transp_1 zf-RRN7 AAA_2 Peripla_BP_6 CLP_protease MTHFR AMP-binding_C PseudoU_synth_2 ScfRs TPR_1 Nitroreductase HTH_31 Inositol_P Aldedh PfkB dCMP_cyt_deam_1 MlaD zf-C4_ClpX TOBE_2 SBP_bac_8 DUF2927 Sigma70_r4_2 NDUFA12 adh_short_C2 DUF2155 Biotin_lipoyl Halogen_Hydrol Ni_hydr_CYTB Rhomboid PRC DMSP_lyase Biotin_carb_N DMT_6 Sigma70_r2 TAT_signal HTH_3 GYF_2 CPSase_L_D2 TetR_C_3 ClpB_D2-small ABC_tran BPD_transp_2 LysR_substrate HTH_1 DUF389 Leu_Phe_trans Peptidase_M20 TetR_N PepSY_2 GerE TelA S4
+291_RNODE_30_length_59530,Virus,59530,-,24.90,DUF6321 Cpn10 Terminase_6N AAA_19 SNF2-rel_dom Peptidase_M15_3 Terminase_6C N6_N4_Mtase ArdcN GTA_holin_3TM MPTase-PolyVal UvrD_C_2 DUF3310 2OG-FeII_Oxy_3 DUF6065 Methyltransf_24 DNA_pol_A UvrD_C DNA_pol_A_exo1 HTH_3 2OG-FeII_Oxy_5 Glycos_transf_1 Helicase_C Radical_SAM
+301_RNODE_4_length_1233,Uncertain - too short,1233,-,-
+301_RNODE_3_length_32690,Virus,32690,-,28.85,Amidase_2 Terminase_3 Peptidase_S74 DUF3721 N6_N4_Mtase DUF3799 Terminase_3C NinG Peptidase_S78_2 DUF3127
+301_RNODE_1_length_2311,Uncertain - too short,2311,-,-
+300_RNODE_9_length_1218,Uncertain - too short,1218,-,-
+300_RNODE_3_length_2337,Uncertain - too short,2337,-,-
+300_RNODE_1_length_1435,Uncertain - too short,1435,-,-
+300_RNODE_18_length_2358,Uncertain - viral or bacterial,2358,-,-4.34,TetR_C_33 TetR_N ABA4-like
+300_RNODE_15_length_1109,Uncertain - too short,1109,-,-
+300_RNODE_11_length_1310,Uncertain - too short,1310,-,-
+300_RNODE_12_length_1452,Uncertain - too short,1452,-,-
+297_RNODE_15_length_6231,Plasmid,6231,-,7.70,DUF736 ParBc Acetyltransf_1 DUF1778
+297_NODE_1_length_26932,Chromosome,27380,-,-75.57,RNA_pol_Rpb2_7 Ribosom_S12_S23 KOW Ribosomal_L1 Pyr_redox_2 DUF1801 Ribosomal_L11_N Glyco_tranf_2_4 Ribosomal_L10 EFG_C RNA_pol_Rpb2_45 RNA_pol_Rpb2_3 GTP_EFTU_D2 Ribosomal_S7 EFG_III OmdA RNA_pol_Rpb1_1 RNA_pol_Rpb1_2 MAPEG Ribosomal_L11 RNA_pol_Rpb2_2 GTP_EFTU SecE Glyoxalase_6 Rrf2 RNA_pol_Rpb2_1 Ribosomal_L12_N RNA_pol_Rpb1_3 EFG_IV NusG Ribosomal_L12 RNA_pol_Rpb1_4 RNA_pol_Rpb2_6 GTP_EFTU_D3 RNA_pol_Rpb1_5 CorA
+296_RNODE_8_length_1214,Uncertain - too short,1214,-,-1.69,Abhydrolase_1
+296_RNODE_6_length_2321,Uncertain - too short,2321,-,-1.87,FA_hydroxylase
+296_RNODE_5_length_4520,Uncertain - viral or bacterial,4520,-,-
+296_RNODE_2_length_3625,Uncertain - viral or bacterial,3625,-,-4.55,Peptidase_M60 M60-like_N
+296_RNODE_19_length_48402,Virus,48402,-,18.72,ResIII SASA Mu-like_Pro Phage_integrase CsrA SSB Metallophos Terminase_6C RecU HTH_17 Helicase_C DNA_methylase ERF DUF927
+296_RNODE_13_length_1528,Uncertain - too short,1528,-,-
+296_RNODE_14_length_1050,Uncertain - too short,1050,-,-
+300_RNODE_10_length_2545,Uncertain - too short,2545,-,-
+299_RNODE_12_length_2028,Uncertain - too short,2028,-,-
+299_NODE_4_length_4062,Uncertain - plasmid or chromosomal,4129,-,0.92,Peptidase_S8 WXG100
+299_NODE_3_length_19959,Uncertain - plasmid or chromosomal,20291,-,-6.32,KR KAsynt_C_assoc ADH_zinc_N_2 ADH_zinc_N adh_short ADH_N Ketoacyl-synt_C Thiolase_N Acyl_transf_1 ketoacyl-synt PS-DH PP-binding
+299_NODE_2_length_29105,Chromosome,29668,-,-57.64,STAS_2 tRNA_anti-codon YajC DUF349 tRNA-synt_His GAF_2 HHH_5 Glyco_trans_2_3 OpgC_C rve RelA_SpoT RuvB_C Glycos_transf_2 Lactamase_B RuvA_C AAA_lid_4 HD_4 HATPase_c_2 GAF GAF_3 AAA_assoc_2 PhoD_N TGS MgsA_C RuvB_N HGTP_anticodon AAA SpoIIE ACT PhoD DUF695 tRNA-synt_2 Sec_GG RelA_AH_RIS Pribosyltran SecD_SecF RuvC ACT_4 RuvA_N AAA_5
+298_RNODE_5_length_6614,Plasmid,6614,-,18.87,PSK_trans_fac DDE_Tnp_Tn3 Resolvase DUF4158 PIN HTH_7
+298_RNODE_9_length_1202,Uncertain - too short,1202,-,4.37,Peptidase_S74
+259_RNODE_8_length_1824,Uncertain - too short,1824,-,-
+259_RNODE_7_length_3008,Uncertain - viral or bacterial,3008,-,0.97,Phage_integrase
+259_RNODE_6_length_2874,Uncertain - plasmid or chromosomal,2874,-,-2.27,ECH_1 AMP-binding_C AMP-binding
+259_RNODE_5_length_2353,Uncertain - too short,2353,-,-
+259_RNODE_4_length_3243,Uncertain - viral or bacterial,3243,-,-
+259_RNODE_2_length_1739,Uncertain - too short,1739,-,-0.07,Bactofilin
+258_RNODE_2_length_3153,Uncertain - viral or bacterial,3153,-,-
+258_RNODE_3_length_2301,Uncertain - too short,2301,-,0.00,DUF6267
+302_RNODE_4_length_1290,Uncertain - too short,1290,-,-
+302_RNODE_3_length_1669,Uncertain - viral or bacterial,1669,-,-6.80,MOSC_N DIOX_N 2OG-FeII_Oxy
+302_RNODE_14_length_3748,Uncertain - viral or bacterial,3748,-,-
+302_RNODE_13_length_4068,Uncertain - viral or bacterial,4068,-,-2.09,SET GBBH-like_N Acetyltransf_3
+301_RNODE_7_length_2310,Uncertain - too short,2310,-,-
+301_RNODE_5_length_1089,Uncertain - too short,1089,-,-
+301_RNODE_6_length_3728,Uncertain - viral or bacterial,3728,-,3.10,Recombinase Resolvase HTH_3
+296_RNODE_11_length_1472,Uncertain - too short,1472,-,-1.22,Glycos_transf_1
+295_RNODE_9_length_1479,Uncertain - too short,1479,-,-5.74,Ala_racemase_N Acetyltransf_1
+295_RNODE_8_length_1165,Uncertain - plasmid or chromosomal,1165,-,0.39,HTH_29 DDE_3 HTH_28 HTH_23 HTH_32
+295_RNODE_7_length_1959,Uncertain - too short,1959,-,-
+295_RNODE_5_length_2264,Uncertain - too short,2264,-,-
+295_RNODE_3_length_1004,Uncertain - too short,1004,-,-
+295_RNODE_2_length_1555,Uncertain - too short,1555,-,-
+295_RNODE_13_length_1731,Uncertain - too short,1731,-,-
+295_RNODE_1_length_1699,Uncertain - too short,1699,-,-
+295_RNODE_12_length_3525,Uncertain - viral or bacterial,3525,-,-
+294_RNODE_2_length_3739,Uncertain - viral or bacterial,3739,-,3.31,Arm-DNA-bind_3 Phage_integrase Phage_AlpA Phage_int_SAM_3
+294_RNODE_13_length_6372,Uncertain - plasmid or chromosomal,6372,-,-0.23,dTDP_sugar_isom NTP_transferase SPASM Methyltransf_24
+293_RNODE_9_length_30846,Virus,30846,-,13.69,QueC SSB N6_N4_Mtase HTH_3 ERF VirE RusA Sipho_Gp157 HTH_Tnp_1
+293_RNODE_5_length_1384,Uncertain - too short,1384,-,-6.62,OprB
+293_RNODE_20_length_37280,Virus,37280,-,16.90,5_3_exonuc_N DUF6321 GP88 DnaB DUF5309 DNA_methylase Phage_lysozyme2 DnaB_C
+293_RNODE_14_length_1157,Uncertain - plasmid or chromosomal,1157,-,0.08,DLH
+292_RNODE_28_length_3817,Uncertain - plasmid or chromosomal,3817,-,1.76,2OG-FeII_Oxy_5 DUF2306 Alginate_lyase GYD
+292_RNODE_25_length_2800,Uncertain - plasmid or chromosomal,2800,-,0.72,Autotransporter Big_5
+292_RNODE_22_length_5159,Uncertain - plasmid or chromosomal,5159,-,-0.82,Malate_synthase IDO DUF1330 FAD_binding_3
+292_RNODE_1_length_6878,Uncertain - viral or bacterial,6878,-,3.46,Phage_capsid
+292_RNODE_15_length_1017,Uncertain - too short,1017,-,-
+292_RNODE_16_length_1482,Uncertain - plasmid or chromosomal,1482,-,-0.24,Flagellin_N Flagellin_C
+292_NODE_6_length_1253,Uncertain - too short,1273,-,-
+291_RNODE_8_length_33199,Virus,33199,-,37.93,DUF5824 DUF6321 DUF3310 Amidase_2 Phage_T7_Capsid Metallophos Dockerin_1 GTA_holin_3TM Recombinase LexA_DNA_bind Resolvase ERF Head-tail_con Terminase_2 Phage_capsid_2 HTH_39
+291_RNODE_6_length_1329,Uncertain - too short,1329,-,-
+291_RNODE_28_length_55192,Virus,55192,-,33.63,Toprim_3 Cpn10 DUF3310 2OG-FeII_Oxy_3 Phage_lysozyme PBECR5 SNase N6_N4_Mtase PAPS_reduct DUF3799 Terminase_6C SPRY Resolvase DNA_methylase VirE DUF5872 Terminase_2 2OG-FeII_Oxy_5
+291_RNODE_26_length_4392,Uncertain - viral or bacterial,4392,-,0.97,Phage_integrase
+291_RNODE_25_length_6569,Uncertain - viral or bacterial,6569,-,-4.17,Cadherin
+291_RNODE_23_length_1383,Uncertain - too short,1383,-,-
+291_RNODE_17_length_1401,Uncertain - too short,1401,-,-
+291_RNODE_12_length_1279,Uncertain - plasmid or chromosomal,1279,-,-0.35,CoA_transf_3
+291_RNODE_16_length_3006,Uncertain - viral or bacterial,3006,-,-
+290_RNODE_7_length_2220,Uncertain - plasmid or chromosomal,2220,-,-2.58,TSP_3 Por_Secre_tail Fe-S_biosyn
+290_RNODE_6_length_65206,Virus,65206,-,30.32,Gp138_N NinB DUF2312 Peptidase_S24 KPP10_Orf10 DUF3383 SpoU_methylase Bro-N ERF dCMP_cyt_deam_1 DUF2612 GIY-YIG DDE_Tnp_ISL3 dATP-dGTP_PPHyd DUF3307 DUF1073 Phage_integrase DUF2184 Bac_DnaA_C NusG HNH DUF4054 P63C Baseplate_J
+290_RNODE_2_length_5070,Uncertain - viral or bacterial,5070,-,3.07,RNA_ligase Formyl_trans_N N6_N4_Mtase
+290_RNODE_10_length_2172,Uncertain - plasmid or chromosomal,2172,-,-1.41,PhoD PhoD_N
+289_RNODE_7_length_1575,Uncertain - too short,1575,-,-
+289_RNODE_8_length_1217,Uncertain - too short,1217,-,-
+289_RNODE_5_length_1234,Uncertain - too short,1234,-,-
+289_RNODE_4_length_1152,Uncertain - too short,1152,-,-
+289_RNODE_3_length_1752,Uncertain - too short,1752,-,-
+289_RNODE_13_length_1789,Uncertain - too short,1789,-,-
+289_RNODE_12_length_1407,Uncertain - too short,1407,-,-
+289_RNODE_10_length_1050,Uncertain - too short,1050,-,-
+289_NODE_3_length_4444,Uncertain - viral or bacterial,4518,-,4.76,DNA_methylase Dam
+288_RNODE_8_length_1065,Uncertain - too short,1065,-,-2.35,TauD
+288_RNODE_19_length_1113,Uncertain - too short,1113,-,-
+288_RNODE_5_length_2023,Uncertain - too short,2023,-,-
+288_RNODE_17_length_1209,Uncertain - too short,1209,-,-
+288_RNODE_14_length_3217,Uncertain - viral or bacterial,3217,-,1.97,DNA_methylase RHH_1
+288_RNODE_13_length_1671,Uncertain - too short,1671,-,-
+287_RNODE_4_length_4324,Uncertain - viral or bacterial,4324,-,-1.38,Methyltransf_23
+287_RNODE_30_length_28063,Virus,28063,-,22.19,Mtd_N Terminase_6N DUF5675 Metallophos Peptidase_S74 Terminase_6C ERF NinG GTA_holin_3TM Phage_prot_Gp6 YdaS_antitoxin
+287_RNODE_24_length_42733,Virus,42733,-,11.24,DUF932 DUF5309 PDDEXK_1 Peptidase_S74
+287_RNODE_18_length_145069,Virus,145069,-,277.78,Hydrolase_2 ResIII Ribonuc_red_sm Ribonuc_red_lgC Terminase_6N DUF6492 CbbQ_C Gp5_OB T4_neck-protein DNA_pol_B T4-gp15_tss gp32 DNA_methylase Rotamase_3 PRA-PH Phage_sheath_1 RecA Phage_clamp_A DnaB_C PDDEXK_1 Phage_gp53 Metallophos Portal_Gp20 Terminase_6C gp45-slide_C Glyco_transf_11 HSP20 Methyltransf_21 Phage_sheath_1C DNA_Packaging dCMP_cyt_deam_1 Translat_reg RNaseH_C Glyco_transf_25 Thymidylat_synt DUF5824 5_3_exonuc_N Phage_T4_gp19 Phage-Gp8 AAA_23 Peptidase_S77 2OG-FeII_Oxy_3 dGTP_diPhyd_N Gp23 SegE_GIY-YIG UvsY GPW_gp25 DUF6267 Epimerase DNA_pol_B_exo1 Trans_coact AAA CTP_transf_like Tn7_TnsA-like_N DUF6433 T4_baseplate SNase Helicase_C DUF4815 T4_Gp59_N AAA_5
+287_RNODE_19_length_8486,Uncertain - viral or bacterial,8486,-,3.31,Phage_integrase AAA_25
+287_RNODE_17_length_1007,Uncertain - too short,1007,-,-
+286_RNODE_6_length_1109,Uncertain - too short,1109,-,-1.13,PhdYeFM_antitox
+286_RNODE_15_length_57935,Virus,57935,-,33.70,Cpn10 Terminase_6N Peptidase_S74 HTH_17 SNF2-rel_dom DUF927 PDDEXK_1 Terminase_6C Mu-like_gpT GTA_holin_3TM LPD39 DNA_pol_A DNA_pol_A_exo1 DUF2201 2OG-FeII_Oxy_5 DUF2201_N DpnD-PcfM Helicase_C AAA_5
+286_RNODE_11_length_1169,Uncertain - too short,1169,-,-
+285_RNODE_14_length_2634,Uncertain - too short,2634,-,-
+285_RNODE_10_length_6949,Uncertain - plasmid or chromosomal,6949,-,-0.10,FAD-oxidase_C TctA Na_H_Exchanger cNMP_binding Sulfatase
+284_RNODE_6_length_2582,Uncertain - too short,2582,-,-0.77,GDP_Man_Dehyd
+284_RNODE_15_length_1183,Uncertain - too short,1183,-,-
+284_RNODE_14_length_1034,Uncertain - too short,1034,-,-
+284_RNODE_12_length_1001,Uncertain - plasmid or chromosomal,1001,-,0.22,ABM
+284_RNODE_11_length_1277,Uncertain - plasmid or chromosomal,1277,-,-6.90,NHL DUF5128
+283_RNODE_9_length_2029,Uncertain - too short,2029,-,-6.77,IAT_beta
+283_RNODE_8_length_1449,Uncertain - too short,1449,-,-
+283_RNODE_6_length_1329,Uncertain - too short,1329,-,-
+283_RNODE_3_length_1131,Uncertain - too short,1131,-,-4.34,TetR_N
+283_RNODE_5_length_1224,Uncertain - too short,1224,-,-
+282_RNODE_3_length_1161,Uncertain - too short,1161,-,-
+282_RNODE_1_length_1563,Uncertain - plasmid or chromosomal,1563,-,0.58,Ring_hydroxyl_A
+281_RNODE_5_length_4786,Uncertain - viral or bacterial,4786,-,3.15,Dam
+281_RNODE_3_length_2264,Uncertain - too short,2264,-,-
+281_RNODE_2_length_2408,Uncertain - too short,2408,-,-
+281_RNODE_1_length_1001,Uncertain - plasmid or chromosomal,1001,-,0.10,oligo_HPY
+281_RNODE_10_length_143244,Virus,143244,-,220.38,Ribonuc_red_sm CbbQ_C gp32 CsgF PRA-PH Phage_clamp_A Collagen HSP20 DNA_Packaging Phage_T4_gp19 T4_Gp59_C Gp23 GPW_gp25 DNA_pol_B_exo1 Tn7_TnsA-like_N Glycos_transf_1 Fe-S_biosyn Formyl_trans_N Ribonuc_red_lgN S4 AAA_5 Glyco_transf_8 ResIII GDP_Man_Dehyd DNA_pol_B CsgG Glutaredoxin Na_Pi_cotrans RecA PDDEXK_1 Terminase_6C DegT_DnrJ_EryC1 ArdcN RNaseH_C Phage_sheath_1C Translat_reg 5_3_exonuc_N Peptidase_S77 Epimerase FeS_assembly_P JmjC_2 DUF6433 HNH CHASE2 PsiE Guanylate_cyc Hydrolase_2 PaaA_PaaC Terminase_6N Pep_deformylase Thy1 Portal_Gp20 gp45-slide_C Cupin_2 Capsule_synth PhoH DUF5824 AAA_23 DUF6267 2OG-FeII_Oxy_5 DUF1353 SNase FecR DUF4815 T4_Gp59_N DnaB_C Ribonuc_red_lgC T4_tail_cap 4HBT Gp5_OB T4_neck-protein T4-gp15_tss Phage_sheath_1 DUF6356 Phage_gp53 Metallophos OTCace OTCace_N DUF6065 2OG-FeII_Oxy_3 SegE_GIY-YIG UvsY Trans_coact AAA Aminotran_1_2 CTP_transf_like T4_baseplate Helicase_C MannoseP_isomer WYL_2 Usg HTH_39
+279_RNODE_4_length_1070,Uncertain - too short,1070,-,-
+279_RNODE_3_length_1837,Virus,1837,-,16.44,Baculo_E66 Phage_tail_APC
+278_RNODE_6_length_1701,Uncertain - too short,1701,-,-
+278_RNODE_2_length_1484,Uncertain - too short,1484,-,-6.86,OmpW
+278_RNODE_1_length_1540,Uncertain - plasmid or chromosomal,1540,-,1.71,DDE_Tnp_1_4
+278_RNODE_14_length_3322,Uncertain - viral or bacterial,3322,-,-0.70,CarboxypepD_reg
+278_RNODE_12_length_14603,Chromosome,14603,-,-35.53,UPF0020 ResIII Cation_efflux Methyltrans_SAM Peptidase_M18 Cons_hypoth95 UvrB_inter RLAN Acetyltransf_1 ZT_dimer DHO_dh THUMP Acetyltransf_9 RimK Aminotran_1_2 UVR RMF UvrB Acetyltransf_10 OMP_b-brl DUF3335 FR47 Helicase_C Acetyltransf_7 Dala_Dala_lig_C ATP-grasp_3
+278_RNODE_13_length_6693,Uncertain - plasmid or chromosomal,6693,-,4.02,FMO-like rve rve_2 Beta-lactamase HTH_18 HTH_Tnp_1
+278_RNODE_11_length_1011,Uncertain - too short,1011,-,-
+277_RNODE_3_length_2102,Uncertain - too short,2102,-,-
+277_RNODE_2_length_1842,Uncertain - too short,1842,-,-
+277_RNODE_10_length_1689,Uncertain - too short,1689,-,-
+276_RNODE_2_length_2476,Uncertain - plasmid or chromosomal,2476,-,-3.16,Glycos_transf_4 MraY_sig1
+275_RNODE_2_length_1151,Uncertain - too short,1151,-,-3.47,FMN_dh
+273_RNODE_4_length_1919,Uncertain - too short,1919,-,-
+274_RNODE_5_length_1150,Uncertain - too short,1150,-,0.00,C1q
+273_RNODE_3_length_1080,Uncertain - too short,1080,-,-
+273_RNODE_1_length_1377,Uncertain - too short,1377,-,-
+272_RNODE_6_length_1722,Uncertain - too short,1722,-,-
+272_RNODE_4_length_3393,Uncertain - viral or bacterial,3393,-,-
+272_RNODE_12_length_1017,Uncertain - too short,1017,-,-
+272_RNODE_10_length_52560,Virus,52560,-,30.14,LexA_DNA_bind InPase Dam DUF6475 Peptidase_S24 RecT DUF6682 N6_N4_Mtase LPD1 Phage_gp49_66 YqaJ LPD38 Terminase_3 LPD5 NinG Terminase_2 HTH_3 Phage_integrase DUF1983 P22_Cro HNH HTH_36 GerE Arm-DNA-bind_3
+271_RNODE_8_length_1686,Uncertain - too short,1686,-,-
+271_RNODE_10_length_1521,Uncertain - too short,1521,-,-5.21,DUF2461
+271_RNODE_4_length_1158,Uncertain - too short,1158,-,-
+271_NODE_1_length_1064,Uncertain - too short,1081,-,0.00,DUF6659
+270_RNODE_6_length_1348,Uncertain - plasmid or chromosomal,1348,-,2.00,DUF4372 DDE_Tnp_1
+270_RNODE_5_length_1212,Uncertain - too short,1212,-,-
+270_RNODE_1_length_2691,Uncertain - too short,2691,-,-4.00,Amidohydro_1
+269_RNODE_2_length_1029,Uncertain - too short,1029,-,-
+269_RNODE_1_length_1919,Uncertain - too short,1919,-,-6.70,Alk_phosphatase
+267_RNODE_8_length_1944,Uncertain - too short,1944,-,-
+267_RNODE_3_length_6305,Uncertain - viral or bacterial,6305,-,4.37,Peptidase_S74
+267_RNODE_6_length_2796,Uncertain - plasmid or chromosomal,2796,-,-1.11,MOSC SBBP
+267_RNODE_1_length_1074,Uncertain - too short,1074,-,-
+267_RNODE_11_length_54952,Virus,54952,-,15.17,DUF5824 VirE_N ParBc Por_Secre_tail DUF3799 AAA_25 Peptidase_M15_3 ERF DnaB_C
+267_RNODE_10_length_1981,Uncertain - plasmid or chromosomal,1981,-,-0.59,Cytochrome_CBB3 Hydrolase_like
+267_NODE_1_length_1158,Uncertain - plasmid or chromosomal,1177,-,0.07,Flagellin_C
+266_RNODE_9_length_1083,Uncertain - too short,1083,-,-
+266_RNODE_8_length_2636,Uncertain - too short,2636,-,-3.22,TPR_8
+266_RNODE_4_length_11633,Uncertain - plasmid or chromosomal,11633,-,0.24,AAA_14 PilZ AbiEii GIY-YIG HTH_24 DUF4143 RNase_E_G IMP_cyclohyd PemK_toxin
+266_RNODE_5_length_1020,Uncertain - too short,1020,-,-0.69,HNH_2
+265_RNODE_1_length_1099,Uncertain - too short,1099,-,-0.77,GDP_Man_Dehyd
+264_RNODE_5_length_1468,Uncertain - plasmid or chromosomal,1468,-,0.35,FMN_red
+264_RNODE_3_length_4316,Uncertain - viral or bacterial,4316,-,-
+264_RNODE_2_length_1467,Uncertain - too short,1467,-,-1.37,p450
+264_NODE_2_length_1149,Uncertain - too short,1168,-,-
+263_RNODE_1_length_1090,Uncertain - too short,1090,-,-
+266_RNODE_2_length_1617,Uncertain - plasmid or chromosomal,1617,-,-0.60,SBP_bac_3
+266_RNODE_1_length_3953,Uncertain - viral or bacterial,3953,-,-
+266_RNODE_12_length_12414,Uncertain - plasmid or chromosomal,12414,-,1.12,Peptidase_M24 SIS ADH_zinc_N HTH_6 Rieske Sulfotransfer_5 GCV_T Aldedh DAO GCV_T_C FAO_M ADH_N Ring_hydroxyl_A Creatinase_N Aminotran_3
+266_RNODE_11_length_1392,Uncertain - too short,1392,-,-
+266_RNODE_10_length_4912,Uncertain - viral or bacterial,4912,-,2.26,Recombinase Resolvase
+265_RNODE_5_length_4887,Uncertain - viral or bacterial,4887,-,4.61,Phage_tail_APC
+266_NODE_2_length_3037,Uncertain - plasmid or chromosomal,3087,-,1.30,Glyco_tranf_2_4 SPASM DUF4214 Formyl_trans_C
+288_RNODE_22_length_2297,Uncertain - too short,2297,-,-
+288_RNODE_12_length_2464,Uncertain - too short,2464,-,-
+288_RNODE_7_length_2368,Uncertain - too short,2368,-,-
