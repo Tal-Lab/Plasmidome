@@ -247,9 +247,7 @@ def Plasmid_class():
     print(res_plasmid_put['Plasmid'].nunique())
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
     print(re_plasmid_put_unc['Plasmid'].nunique())
-    #result.to_csv(f'{path}/plasmid_classified3.csv', index=None)
+    #result.to_csv(f'{path}/plasmid_classified.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
-
-
-Plasmid_class()
+#Plasmid_class()

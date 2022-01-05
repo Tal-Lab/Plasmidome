@@ -22,6 +22,8 @@ from pathlib import Path
 import os
 from general_analysis import DF_plasmids_byReads, tables, Station, GetLibSize
 from plasmid_detect import Plasmid_class
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 #from CovBAM2 import out_file as datafile
 
@@ -229,16 +231,16 @@ def Clust_map(vers):
 #Clust_map(1)
 def data_plas(df_pl):
     df_cov = data_file()
-    print(df_pl)
+    #print(df_pl)
     #df_pl = Plasmid_class()[0]
     final_table_columns = df_pl['Plasmid'].unique()
     df_cov = df_cov.drop(columns=[col for col in df_cov if col not in final_table_columns])
-    print(df_cov.shape)
+    #print(df_cov.shape)
     return df_cov
 
-def Clust_map2(vers, df, name, cl):
+def Clust_map2(vers, df, name, cl, pl):
     coverage = data_plas(df)
-    print(coverage.index)
+    #print(coverage.index)
     parameters = Physical(1)
     parameters = parameters.set_index(parameters['St_Depth'])
     # maybe put parameters in loop?
@@ -274,17 +276,35 @@ def Clust_map2(vers, df, name, cl):
                              )
     figure1.ax_col_dendrogram.remove()
     figure1.ax_row_dendrogram.remove()
-    L = figure1.dendrogram_row.linkage
-    clusters = sch.fcluster(L, cl, 'distance')
-    # clusters indicices correspond to incides of original df
+
+    # station clusters indices correspond to indices of original df
+
+    L_st = figure1.dendrogram_row.linkage
+    clusters_st = sch.fcluster(L_st, cl, 'distance')
     rows = []
-    for i, cluster in enumerate(clusters):
+    for i, cluster in enumerate(clusters_st):
         rows.append([coverage.index[i], cluster])
-    cluster_df = pd.DataFrame(rows, columns = ["St_Depth", "Cluster"])
-    cluster_df = cluster_df.set_index(parameters['St_Depth'])
-    stat_cluster = dict(zip(cluster_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_df['Cluster'].nunique())))
-    cluster_st = cluster_df['Cluster'].map(stat_cluster)
-    stations = cluster_df.index.values.tolist()
+    cluster_st_df = pd.DataFrame(rows, columns=["St_Depth", "Cluster"])
+    cluster_st_df = cluster_st_df.set_index(parameters['St_Depth'])
+    stat_cluster = dict(
+        zip(cluster_st_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_st_df['Cluster'].nunique())))
+    cluster_st = cluster_st_df['Cluster'].map(stat_cluster)
+    stations = cluster_st_df.index.values.tolist()
+    
+    # plasmid clusters indices correspond to indices of original df
+
+    L_pl = figure1.dendrogram_col.linkage
+    clusters_pl = sch.fcluster(L_pl, pl, 'distance')
+    cols = []
+    for i, cluster in enumerate(clusters_pl):
+        cols.append([coverage.columns[i], cluster])
+    cluster_pl_df = pd.DataFrame(cols, columns = ["Plasmids", "Cluster"])
+    cluster_pl_df = cluster_pl_df.set_index('Plasmids')
+    plas_cluster = dict(
+        zip(cluster_pl_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_pl_df['Cluster'].nunique())))
+    cluster_pl = cluster_pl_df['Cluster'].map(plas_cluster)
+    plasmids = cluster_pl_df.index.values.tolist()
+
     empty = 0*len(stations)
     for_df = {'St_Depth':stations, 'Empty': empty}
     space_df = pd.DataFrame(for_df)
@@ -297,6 +317,7 @@ def Clust_map2(vers, df, name, cl):
                              metric = "euclidean",
                              method = 'ward',
                              row_colors = row_colors,
+                             col_colors=cluster_pl,
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              linewidths = 0.0,
                              xticklabels = False,
@@ -356,28 +377,35 @@ def Clust_map2(vers, df, name, cl):
     plt.show()  # Push new figure on stack
     station_order = coverage.index.values.tolist()
     station_reorder = figure2.dendrogram_row.reordered_ind
+
+
     # calculate correlation vector
     parameters["Temp."] = parameters['Temp.'].astype(float)
     parameters['Depth'] = parameters['Depth'].astype(int)
     parameters['Latitude'] = parameters['Latitude'].astype(float)
     df_correlation = parameters[['Temp.', 'Depth', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Latitude']].merge(
-        cluster_df, left_index=True, right_index=True)
-    print(df_correlation)
+        cluster_st, left_index=True, right_index=True)
     Cluster_array = df_correlation['Cluster'].to_numpy()
     param_arrays = [df_correlation['Temp.'], df_correlation['Depth'], df_correlation['Salinity'],
                     df_correlation['Oxygen'], df_correlation['Latitude'],
                     df_correlation['Nitrate'], df_correlation['Phosphate'], df_correlation['Silicate']]
-    pearson_dict = {}
+
+    '''
+    #pearson_dict = {}
     for param_col in param_arrays:
         param_array = param_col.to_numpy()
-        pearson_param = stats.pearsonr(Cluster_array, param_array)
-        entry = {'r': pearson_param[0].round(3), 'p-value': pearson_param[1].round(3)}
-        pearson_dict[param_col.name] = entry
-    print(pearson_dict)
-    df_params_pearson = pd.DataFrame(pearson_dict).T
-    df_params_pearson.fillna(0, inplace=True)
-    print(df_params_pearson)
+        model = LinearRegression.fit(Cluster_array, param_array)
+        print(LinearRegression.score(Cluster_array, param_array))
+        #pearson_param = stats.pearsonr(Cluster_array, param_array)
+        #entry = {'r': pearson_param[0].round(3), 'p-value': pearson_param[1].round(3)}
+        #pearson_dict[param_col.name] = entry
+    #print(pearson_dict)
+    #df_params_pearson = pd.DataFrame(pearson_dict).T
+    #df_params_pearson.fillna(0, inplace=True)
+    #print(df_params_pearson)
+    
     # df_correlation = parameters['Depth'].merge(cluster_df,left_index=True, right_index=True)
+
     slope_t, intercept_t, r_value_t, p_value_t, std_err_t = stats.linregress(df_correlation["Cluster"],
                                                                              df_correlation["Temp."])
     print("Clusters:Temperature,C: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" %
@@ -390,10 +418,11 @@ def Clust_map2(vers, df, name, cl):
                                                                              df_correlation["Latitude"])
     print("Clusters:Latitude,C: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" %
           (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
+    '''
     return station_order, station_reorder
 
-Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
-#Clust_map2(2,Plasmid_class()[1],'PlPut_HMannot_', 600)
-#Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200)
+Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400, 500)
+Clust_map2(2,Plasmid_class()[1],'PlPut_HMannot_', 600, 900)
+Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200, 1500)
 
 

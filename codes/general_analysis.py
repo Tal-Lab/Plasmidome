@@ -65,7 +65,7 @@ def PlasmidsbyReads(work_set):
     arr, df = CoverageDF(work_set)
     df_norm = df
     df_norm[:] = np.where(df_norm < 99, 0, 1)
-    print(df_norm)
+    #print(df_norm)
     #df_norm = df_norm.append(df_norm.agg(['sum']))
     return df_norm
 
