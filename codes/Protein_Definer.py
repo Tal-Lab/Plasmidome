@@ -4,6 +4,10 @@ Created on 27/10/2021 9:33
 
 Author: Lucy
 """
+### Description
+# description!!!!
+
+version=11
 
 import pandas as pd
 import numpy as np
@@ -11,54 +15,56 @@ import re
 import os
 import sys
 from Bio import SeqIO
+from pathlib import Path
 import timeit
-import plotly.graph_objects as go
-from sklearn import preprocessing
 from scipy.cluster.hierarchy import linkage, fcluster
-import dash_core_components as dcc
-import dash_bio as dashbio
-import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.patches as mpatches
 from Protein_files_handler import dataset
-from station_phys import Clust_map, Physical, DF_plasmids_byReads, Station, GetLibSize
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-version=11
-
-# description!!!!
-
-#blast results from different databases
-BacMetExp = f'{dataset}/{"BacMetExp.csv"}'
-BacMetPred = f'{dataset}/{"BacMetPred.csv"}'
-AB_res_1 = f'{dataset}/{"protein_fasta_protein_homolog_model.csv"}'
-AB_res_2 = f'{dataset}/{"protein_fasta_protein_knockout_model.csv"}'
-AB_res_3 = f'{dataset}/{"protein_fasta_protein_overexpression_model.csv"}'
-AB_res_4 = f'{dataset}/{"protein_fasta_protein_variant_model.csv"}'
-vir_fact = f'{dataset}/{"VFDB_setB_pro.csv"}'
-colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
-
-#annotations
-BMExp_annot = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Annotations\BacMetExp_annot.txt"
-BMPred_annot = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Annotations\BacMetPred_annot.txt"
-CARD_annot = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Annotations\CARD\aro_index.tsv"
-AB_classes=r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\antibiotics.xlsx"
-VF_annot = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Annotations\VFs.xls"
-
-#stations and reads coverage
-proteins_fasta = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Important\proteins.faa"
-reads_coverage = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_4\Analysis_5\all_cov.csv"
-output_dir = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_4"
-visuals=r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_4\visualizations"
-plasmids_byreads=DF_plasmids_byReads()[1]
-
+from station_phys_clustering import Clust_map, Physical, DF_plasmids_byReads, Station, GetLibSize
 
 station_orderCl, station_reorderCl = Clust_map(version)
+
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+
+# working directories
+output_dir = f"{path}/data_calculations"
+visuals = f"{path}/visualisations"
+Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+# working files
+#### blast results from different databases
+BacMetExp = f'{dataset}/BacMetExp.csv'
+BacMetPred = f'{dataset}/BacMetPred.csv"'
+AB_res_1 = f'{dataset}/protein_fasta_protein_homolog_model.csv'
+AB_res_2 = f'{dataset}/protein_fasta_protein_knockout_model.csv'
+AB_res_3 = f'{dataset}/protein_fasta_protein_overexpression_model.csv'
+AB_res_4 = f'{dataset}/protein_fasta_protein_variant_model.csv'
+vir_fact = f'{dataset}/VFDB_setB_pro.csv'
+#### annotations
+BMExp_annot = r"../res/Annotations/BacMetExp_annot.txt"
+BMPred_annot = r"../res/Annotations/BacMetPred_annot.txt"
+CARD_annot = r"../res/Annotations/aro_index.tsv"
+AB_classes = r"../res/Annotations/antibiotics.xlsx"
+VF_annot = r"../res/Annotations/VFs.xls"
+#### stations and reads coverage
+proteins_fasta = r"../res/Filtered_ORFs.fasta"
+reads_coverage = r"../res/all_cov.csv"
+
+plasmids_byreads=DF_plasmids_byReads()[1]
+
+colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
+
 ####### Getting predicted protein's lengths
 
 # reading parsing and creating dataframe from protein fasta file

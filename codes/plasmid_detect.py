@@ -1,23 +1,39 @@
+# -*- coding: utf-8 -*-
+"""
+Created on 29/12/2021 17:05
+
+Author: Lucy Androsiuk
+"""
+### Description
+# add description
+
 import pandas as pd
 import re, os, sys, math
 import numpy as np
 from functools import reduce
 import multiprocessing as mp
+
 #pd.set_option('display.max_colwidth', None)
 #pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
-# directories and files
+# working directories
 
-aclame_blast = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp3/dataset/ACLAMEproteins.csv"
-aclame_annot = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp2/aclame_family_plasmids_0.4.xls"
-ips_prot = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp3/FilteredORFs5.fasta.tsv"
-egg_nog = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp3/eggnog_FilteredORFs4.csv"
-pVerify = r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp3/plasmidVerify_result_table.csv'
-vVerify = r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/blastp3/viralVerify_result_table.csv'
+# working files
+aclame_blast = r"../res/dataset/ACLAMEproteins.csv"
+aclame_annot = r"../res/Annotations/aclame_family_plasmids_0.4.xls"
+ips_prot = r"../res/FilteredORFs.tsv"
+egg_nog = r"../res/eggnog_FilteredORFs.csv"
+pVerify = r"../res/plasmidVerify_result_table.csv"
+vVerify = r"../res/viralVerify_result_table.csv"
+
 colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
-
 
 def Annot_handler():
     df_annot = pd.read_excel(aclame_annot, header = 1)
@@ -115,7 +131,7 @@ def Function_ORF():
     df_final = df_final[df_final.Plasmid != '94_LNODE_1']
     df_final = df_final.sort_values('ORF_name', ascending=True).reset_index(drop=True)
     #print(df_final['Plasmid'].unique())
-    #df_final.to_csv(r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/plasmid_ORF_functions.csv')
+    #df_final.to_csv(f'{path}/plasmid_ORF_functions.csv')
     return df_final
 
 def splitter(x):
@@ -135,7 +151,7 @@ def Plasmid_byword_plasmid():
     df['Parameters'] = df['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
     df.loc[df['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Plasmid'
     plasmid = df[df['Class']== 'Plasmid']
-    plasmid.to_csv(r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/plasmid_Shay.csv', index=None)
+    plasmid.to_csv(f'{path}/plasmid_Shay.csv', index=None)
     #print(plasmid)
 
 #Plasmid_byword_plasmid()
@@ -231,9 +247,9 @@ def Plasmid_class():
     print(res_plasmid_put['Plasmid'].nunique())
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
     print(re_plasmid_put_unc['Plasmid'].nunique())
-    #result.to_csv(r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/plasmid_classified3.csv', index=None)
+    #result.to_csv(f'{path}/plasmid_classified3.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
 
 
-#Plasmid_class()
+Plasmid_class()

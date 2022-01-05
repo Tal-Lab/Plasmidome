@@ -4,6 +4,11 @@ Created on 29/08/2021 11:05
 
 Author: Lucy Androsiuk
 """
+### Description
+# add description
+
+version=1
+
 import numpy as np
 import pandas as pd
 import os, re
@@ -13,21 +18,27 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import seaborn as sns
 from scipy import stats
-from plasmid_detect_v3 import Plasmid_class
+from plasmid_detect import Plasmid_class
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-version=1
 
-#directories
-tables=r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/data_calculations"
-visuals=r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/visualisations"
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+
+# working directories
+tables = f"{path}/data_calculations"
+visuals = f"{path}/visualisations"
 Path(tables).mkdir(parents=True, exist_ok=True)
-# paths to files
-reads_coverage=r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/all_cov.csv"
-proteins = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/Filtered_ORFs4.fasta"
-library = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/LibrarySize.csv"
-stations = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/stations.txt"
+
+# working files
+reads_coverage = r"../res/all_cov.csv"
+proteins = r"../res/Filtered_ORFs.fasta"
+library = r"../res/LibrarySize.csv"
+stations = r"../res/stations.txt"
 
 plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
 putative_plasmids = Plasmid_class()[1]['Plasmid'].unique().tolist()
@@ -58,7 +69,7 @@ def PlasmidsbyReads(work_set):
     #df_norm = df_norm.append(df_norm.agg(['sum']))
     return df_norm
 
-def DF_plasmids_byReads(work_set):
+def DF_plasmids_byReads(work_set, file_name):
     ' this function generates dataframe with plasmids present in stations and writes it to file '
     df = PlasmidsbyReads(work_set)
     df = df.stack().to_frame()
@@ -66,13 +77,14 @@ def DF_plasmids_byReads(work_set):
     df.columns = ['NewName', 'station_name', 'value']
     df=df[df['value'] > 0]
     #print(df[['NewName', 'station_name']])
-    out_file = f'{tables}/{"AllPlasmids_perStat.csv"}'
+    out_file = f'{tables}/{file_name}'
     #print(out_file)
     if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
         df[['NewName', 'station_name']].to_csv(out_file, index = False)
     return df[['NewName', 'station_name']], out_file
 
-#DF_plasmids_byReads()
+DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
+
 def Coverage_stat(work_set):
     ' plasmid presence statistics '
     arr, df = CoverageDF(work_set)

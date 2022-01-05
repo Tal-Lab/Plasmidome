@@ -4,16 +4,24 @@ Created on 29/08/2021 11:57
 
 Author: Lucy Androsiuk
 """
-
+### Description
+# don't forget description!
 import os, glob
 import pandas as pd
 from pathlib import Path
 
-# don't forget description!
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
-full_path = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_4\plasProteinsBlast"
-dataset=r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_4\plasProteinsBlast\dataset"
+# working directories
+full_path = f'{path}/blastp3'
+dataset = r'../res/dataset'
 Path(dataset).mkdir(parents=True, exist_ok=True)
+
+# working files
 
 def Blast_file_parser():
     for path in os.listdir(full_path):

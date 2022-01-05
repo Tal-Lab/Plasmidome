@@ -15,15 +15,28 @@ import scipy.cluster.hierarchy as sch
 from collections import defaultdict
 import matplotlib.patches as mpatches
 
-combined_output = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Important\unique_plasmids2.fasta"
-proteins = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Important\proteins.faa"
-cog_categories = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Important\cog_cats.csv"
-eggnog = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_3\eggnog_annotations.csv"
-groups = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_2\old_to_new_plasmid.csv"
-stations = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\PlasmidomeBGU\Output\Analysis\stations.txt"
-reads_coverage = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_3\cov_by_station\all_cov.csv"
-plasmids_byreads = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\Plasmidome_3\AllPlasmids_perStat.csv"
-physical = r"C:\Users\Lucy\Documents\OneDrive - Israel Oceanograpic & Limnological Research\plasmids\station_physical.xlsx"
+### Description
+# add description
+
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+
+# working directories
+out_dir = f"{path}/data_calculations"
+
+# working files
+combined_output = r"../res/unique_plasmids.fasta"
+proteins = r"../res/Filtered_ORFs.fasta"
+cog_categories = r"../res/cog_cats.csv"
+eggnog = r"../res/eggnog_FilteredORFs.csv"
+groups = r"../res/old_to_new_plasmid.csv"
+stations = r"../res/stations.txt"
+reads_coverage = r"../res/all_cov.csv"
+plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
+physical = r"../res/station_physical.xlsx"
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)

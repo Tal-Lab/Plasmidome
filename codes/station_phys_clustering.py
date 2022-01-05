@@ -20,16 +20,24 @@ import matplotlib.patches as mpatches
 from scipy import stats
 from pathlib import Path
 import os
-from general_analysis_v6 import DF_plasmids_byReads, tables, Station, GetLibSize
-from plasmid_detect_v3 import Plasmid_class
+from general_analysis import DF_plasmids_byReads, tables, Station, GetLibSize
+from plasmid_detect import Plasmid_class
 
 #from CovBAM2 import out_file as datafile
 
-# Directories and files
-datafile = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/all_cov.csv"
-physical = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/station_physical.xlsx"
-visuals=r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/visualisations"
+# uncomment relevant path to OS
+# Windows
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+# macOS
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+
+# working directories
+visuals = f"{path}/visualisations"
 Path(visuals).mkdir(parents=True, exist_ok=True)
+
+# working files
+datafile = r"../res/all_cov.csv"
+physical = r"../res/station_physical.xlsx"
 
 def data_file():
     ' this function reads coverage file as a dataframe '
@@ -384,7 +392,7 @@ def Clust_map2(vers, df, name, cl):
           (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
     return station_order, station_reorder
 
-#Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
+Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
 #Clust_map2(2,Plasmid_class()[1],'PlPut_HMannot_', 600)
 #Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200)
 
