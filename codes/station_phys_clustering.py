@@ -392,7 +392,7 @@ def Clust_map2(vers, df, name, cl):
           (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
     return station_order, station_reorder
 
-Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
+#Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
 #Clust_map2(2,Plasmid_class()[1],'PlPut_HMannot_', 600)
 #Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200)
 

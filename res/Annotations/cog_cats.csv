@@ -1,0 +1,27 @@
+COG cat,Functional categories
+A,RNA processing and modification
+B,Chromatin Structure and dynamics
+C,Energy production and conversion
+D,"Cell cycle control, Cell division, Chromosome Partitioning"
+E,Amino Acid transport and metabolism
+F,Nucleotide metabolism and transport
+G,Carbohydrate metabolism and transport
+H,Coenzyme metabolism and transport
+I,Lipid metabolism and transport
+J,"Tranlsation, Ribosomal structure and Biogenesis"
+K,Transcription
+L,"Replication, recombination and repair"
+M,Cell wall/membrane/envelop biogenesis
+N,Cell motility
+O,"Post-translational modification, protein turnover, chaperones"
+P,Inorganic ion transport and metabolism
+Q,"Secondary metabolites biosynthesis, transport and catabolism"
+T,Signal Transduction
+U,"Intracellular trafficing, secretion and vesicular transport"
+Y,Nuclear structure
+Z,Cytoskeleton
+R,General Functional Prediction only
+S,Function Unknown
+V,Defence mechanisms
+W,Extracellular structures
+X,Mobilome: Prophages. Transposons
