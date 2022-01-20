@@ -39,6 +39,7 @@ plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
 physical = r"../res/station_physical.xlsx"
 
 station_orderCl, station_reorderCl = Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200)
+station_order37, station_reorder37 = Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)
@@ -133,7 +134,7 @@ def Station_Order(order):
     #print(final_order)
     return final_order
 
-def BarChart(freq, unknown, y_name):
+def BarChart(freq, unknown):
     df = FreqFuncStat(freq, unknown)
     order_Stat = Station_Order(True)
     true_sort1 = [s for s in order_Stat if s in df.St_Depth.unique()]
@@ -151,7 +152,7 @@ def BarChart(freq, unknown, y_name):
                        # Shrink the bars a bit so they don't touch.
                        shrink=0.8
                        )
-    fig.set(xlabel='Sampling points', ylabel=y_name)
+    fig.set(xlabel='Sampling points', ylabel='Function frequency')
     # Put the legend out of the figure
     sns.move_legend(fig, "upper left", bbox_to_anchor=(1.1, 1), ncol=1, title_fontsize=16)
     fig.tick_params(axis='x', rotation=90, labelsize=8)
@@ -163,6 +164,28 @@ def BarChart(freq, unknown, y_name):
     plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
     plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
+
+def BarChart37(unknown):
+    df = MapToFunc()
+    df['Plasmid'] = df['Query'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
+    df37 = Plasmid_class()[0]
+    plasmid_list = df37['Plasmid'].unique()
+    df_trunc = df.loc[df['Plasmid'].apply(lambda x: x in plasmid_list)]
+    df_trunc = df_trunc[['COG cat', 'Functional categories']].drop_duplicates().fillna('missing')
+    if unknown != 'with':
+        indexNames = df_trunc[(df_trunc['COG cat'] == 'S') | (df_trunc['COG cat'] == '-')].index
+        df_trunc.drop(indexNames, inplace=True)
+    df_trunc['Functional categories'] = df_trunc[['COG cat', 'Functional categories']].apply(tuple, axis=1)
+    df_trunc['Functional categories'] = df_trunc['Functional categories'].apply(lambda x: ' - '.join(x))
+    df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
+    df_grouped = df_grouped.reset_index()
+    print(df_grouped)
+    '''
+    df_grouped['Functional categories'] = df_grouped['COG cat'].map(df.set_index('COG cat')['Functional categories'])
+    df_grouped['Functional categories'] = df_grouped[['COG cat', 'Functional categories']].apply(tuple, axis=1)
+    df_grouped['Functional categories'] = df_grouped['Functional categories'].apply(lambda x: ' - '.join(x))
+    print(df_grouped)'''
+BarChart37('with')
 
 def ProteinsFastaAn():
     records = []
@@ -255,5 +278,5 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()
 #eggNOGStats()
-#BarChart(True, 'with', 'Function frequency')
-#BarChart(True, 'without', 'Function frequency')
+#BarChart(True, 'with')
+#BarChart(True, 'without')
