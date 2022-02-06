@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="Corrected EggNOG Barplots and statistics calculations">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/general_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/general_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/plasmid_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/plasmid_detect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/station_phys_clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/station_phys_clustering.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,6 +194,7 @@
       <workItem from="1641547419772" duration="10777000" />
       <workItem from="1642584781032" duration="7543000" />
       <workItem from="1644142068783" duration="19000" />
+      <workItem from="1644154805091" duration="15000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
