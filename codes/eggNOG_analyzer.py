@@ -1,3 +1,4 @@
+# %%
 import pandas as pd
 import re
 from Bio import SeqIO
@@ -17,12 +18,12 @@ import matplotlib.patches as mpatches
 from station_phys_clustering import Clust_map2, Plasmid_class
 ### Description
 # add description
-#test comment
+
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 out_dir = f"{path}/data_calculations"
@@ -164,14 +165,14 @@ def BarChart(freq, unknown):
     plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
     plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
-
+# %%
 def BarChart37(unknown):
     df = MapToFunc()
     df['Plasmid'] = df['Query'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     df37 = Plasmid_class()[0]
     plasmid_list = df37['Plasmid'].unique()
     df_trunc = df.loc[df['Plasmid'].apply(lambda x: x in plasmid_list)]
-    df_trunc = df_trunc[['COG cat', 'Functional categories']].drop_duplicates().fillna('missing')
+    df_trunc = df_trunc[['Query', 'Plasmid','COG cat', 'Functional categories']].fillna('missing')
     if unknown != 'with':
         indexNames = df_trunc[(df_trunc['COG cat'] == 'S') | (df_trunc['COG cat'] == '-')].index
         df_trunc.drop(indexNames, inplace=True)
@@ -180,11 +181,23 @@ def BarChart37(unknown):
     df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
     df_grouped = df_grouped.reset_index()
     print(df_grouped)
-    '''
-    df_grouped['Functional categories'] = df_grouped['COG cat'].map(df.set_index('COG cat')['Functional categories'])
-    df_grouped['Functional categories'] = df_grouped[['COG cat', 'Functional categories']].apply(tuple, axis=1)
-    df_grouped['Functional categories'] = df_grouped['Functional categories'].apply(lambda x: ' - '.join(x))
-    print(df_grouped)'''
+    fig = sns.histplot(df_grouped,
+                       x='Plasmid',
+                       weights='Function count',
+                       hue='Functional categories',
+                       multiple='stack',
+                       palette="bright",
+                       # Add white borders to the bars.
+                       edgecolor='white',
+                       # Shrink the bars a bit so they don't touch.
+                       shrink=0.8
+                       )
+    fig.set(xlabel='Plasmid', ylabel='Function frequency')
+    # Put the legend out of the figure
+    sns.move_legend(fig, "upper left", bbox_to_anchor=(1.1, 1), ncol=1, title_fontsize=16)
+    fig.tick_params(axis='x', rotation=90, labelsize=8)
+    plt.show()
+
 BarChart37('with')
 
 def ProteinsFastaAn():
