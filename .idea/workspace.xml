@@ -78,7 +78,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/.conda/envs/codes/bin/pythonM1/bin/python" />
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -191,6 +191,7 @@
       <workItem from="1644142068783" duration="19000" />
       <workItem from="1644154805091" duration="15000" />
       <workItem from="1644225775226" duration="115000" />
+      <workItem from="1644225892228" duration="215000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
@@ -220,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642590053754</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Corrected EggNOG Barplots and statistics calculations">
+      <created>1644225938876</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1644225938876</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
