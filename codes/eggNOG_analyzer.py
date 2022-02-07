@@ -1,4 +1,3 @@
-# %%
 import pandas as pd
 import re
 from Bio import SeqIO
@@ -10,6 +9,7 @@ from scipy.cluster.hierarchy import linkage, fcluster
 #import dash_core_components as dcc
 #import dash_bio as dashbio
 import seaborn as sns
+import colorcet as cc
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
 import scipy.cluster.hierarchy as sch
@@ -165,7 +165,7 @@ def BarChart(freq, unknown):
     plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
     plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
-# %%
+
 def BarChart37(unknown):
     df = MapToFunc()
     df['Plasmid'] = df['Query'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
@@ -181,12 +181,17 @@ def BarChart37(unknown):
     df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
     df_grouped = df_grouped.reset_index()
     print(df_grouped)
+    ncolors = df_grouped['Functional categories'].nunique()
+    colors = sns.color_palette(cc.glasbey, n_colors=ncolors)
+    labels = df_grouped['Functional categories'].unique()
     fig = sns.histplot(df_grouped,
                        x='Plasmid',
                        weights='Function count',
                        hue='Functional categories',
+                       hue_order = labels[::-1],
                        multiple='stack',
-                       palette="bright",
+                       #palette= {'bright',ncolors},
+                       palette = colors,
                        # Add white borders to the bars.
                        edgecolor='white',
                        # Shrink the bars a bit so they don't touch.
@@ -194,11 +199,18 @@ def BarChart37(unknown):
                        )
     fig.set(xlabel='Plasmid', ylabel='Function frequency')
     # Put the legend out of the figure
-    sns.move_legend(fig, "upper left", bbox_to_anchor=(1.1, 1), ncol=1, title_fontsize=16)
+    fig.legend(labels, title='Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16, loc = 2, borderaxespad = 0.)
     fig.tick_params(axis='x', rotation=90, labelsize=8)
+    svg_name = 'barplot_COG_37pl' + unknown + str(1) + '.svg'
+    svg_file = f'{visuals}/{svg_name}'
+    png_name = 'barplot_COG_37pl' + unknown + str(1) + '.png'
+    png_file = f'{visuals}/{png_name}'
+    plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 BarChart37('with')
+BarChart37('without')
 
 def ProteinsFastaAn():
     records = []

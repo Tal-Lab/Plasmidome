@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="Corrected EggNOG Barplots and statistics calculations" />
+    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="Corrected EggNOG Barplots and statistics calculations">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,12 +57,12 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings sdk-home="$USER_HOME$/.conda/envs/codes/bin/pythonM1/bin/python">
-        <option name="mySdkHome" value="$USER_HOME$/.conda/envs/codes/bin/pythonM1/bin/python" />
+      <console-settings is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
       </console-settings>
     </option>
   </component>
@@ -95,17 +98,17 @@
       <method v="2" />
     </configuration>
     <configuration name="general_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Plasmidome" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/codes/general_analysis.py" />
       <option name="PARAMETERS" value="" />
@@ -117,17 +120,17 @@
       <method v="2" />
     </configuration>
     <configuration name="plasmid_detect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Plasmidome" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/codes/plasmid_detect.py" />
       <option name="PARAMETERS" value="" />
@@ -139,17 +142,17 @@
       <method v="2" />
     </configuration>
     <configuration name="station_phys_clustering" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Plasmidome" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/codes/station_phys_clustering.py" />
       <option name="PARAMETERS" value="" />
@@ -169,8 +172,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.eggNOG_analyzer" />
-        <item itemvalue="Python.station_phys_clustering" />
         <item itemvalue="Python.plasmid_detect" />
+        <item itemvalue="Python.station_phys_clustering" />
         <item itemvalue="Python.general_analysis" />
         <item itemvalue="Python.station_phys_clustering" />
       </list>
@@ -191,7 +194,8 @@
       <workItem from="1644142068783" duration="19000" />
       <workItem from="1644154805091" duration="15000" />
       <workItem from="1644225775226" duration="115000" />
-      <workItem from="1644225892228" duration="215000" />
+      <workItem from="1644225892228" duration="1587000" />
+      <workItem from="1644227525091" duration="11777000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
@@ -228,7 +232,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644225938876</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Corrected EggNOG Barplots and statistics calculations">
+      <created>1644226269094</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1644226269094</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,10 +275,24 @@
     <MESSAGE value="Corrected EggNOG Barplots and statistics calculations" />
     <option name="LAST_COMMIT_MESSAGE" value="Corrected EggNOG Barplots and statistics calculations" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641399753438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1641547131100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1642588975830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1641398879932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1644227333655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644244352839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644227342655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
   </component>
 </project>
