@@ -19,9 +19,9 @@ pd.set_option('display.max_columns', None)
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 
@@ -141,6 +141,8 @@ def splitter(x):
         return x
 
 def Plasmid_byword_plasmid():
+    'the candidate is classified as plasmid, if any of the candidate’s \
+    ORFs functions predictions includes the word plasmid'
     df = Function_ORF()
     df['PV_HMMs'] = df['PV_HMMs'].apply(splitter)
     df['VV_Pfam'] = df['VV_Pfam'].apply(splitter)
@@ -151,13 +153,15 @@ def Plasmid_byword_plasmid():
     df['Parameters'] = df['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
     df.loc[df['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Plasmid'
     plasmid = df[df['Class']== 'Plasmid']
-    plasmid.to_csv(f'{path}/plasmid_Shay.csv', index=None)
+    #plasmid.to_csv(f'{path}/plasmid_Shay.csv', index=None)
     #print(plasmid)
 
 #Plasmid_byword_plasmid()
 
 def Plasmid_class():
+    'Candidates classification in plasmids, putative plasmids and uncertain'
     df = Function_ORF()
+    # If viralVerify predicted the candidate as ‘Plasmid’, the candidate is classified as plasmid
     df.loc[(df['PV_Prediction'] == 'Plasmid') & (df['VV_Prediction'] == 'Plasmid'), 'Class'] = 'Plasmid'
     df['PV_HMMs'] = df['PV_HMMs'].apply(splitter)
     df['VV_Pfam'] = df['VV_Pfam'].apply(splitter)
@@ -211,6 +215,10 @@ def Plasmid_class():
     rows_todec = df_ndef_plasmids['Parameters'].apply(lambda x: all([ele not in plasm_params_new for ele in (x.split(','))]))
     #print(df_ndef_plasmids['Parameters'].apply(lambda x: any([el in plasm_params_mod for el in (x.split(','))])))
     df_ndef_plasmids.loc[(df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & df_ndef_plasmids['Parameters'].apply(lambda x: any([el in plasm_params_new for el in (x.split(','))])), 'Class'] = 'Plasmid'
+    df_ndef_plasmids.loc[
+        (df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
+            'ACLAME_function'].apply(
+            lambda x: all([ele != 'missing' for ele in (x.split(','))])), 'Class'] = 'Plasmid'
     res_plasmid = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Plasmid']
     plasmid_list = res_plasmid['Plasmid'].unique()
     #print(len(plasmid_list))
@@ -220,15 +228,11 @@ def Plasmid_class():
     df_ndef_plasmids.loc[(df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids['Parameters'].apply(
         lambda x: all([ele not in plasm_params_new for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
     df_ndef_plasmids.loc[
-        (df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
+        (df_ndef_plasmids['PV_Prediction'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
             'ACLAME_function'].apply(
             lambda x: all([ele != 'missing' for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
-    pl_string = 'Plasmid'
-    df_ndef_plasmids.loc[
-        (df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
-            'Parameters'].apply(
-            lambda x: any([pl_string.casefold() in ele for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
     res_put = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Putative_plasmid']
+    print(res_put)
     put_plasm_list = res_put['Plasmid'].unique()
     df_ndef_plasmids.loc[df_ndef_plasmids['Plasmid'].isin(put_plasm_list), "Class"] = "Putative_plasmid"
     df_ndef_plasmids.loc[(df_ndef_plasmids['Class'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Putative_plasmid'), 'Class'] = 'Uncertain'
@@ -247,7 +251,7 @@ def Plasmid_class():
     print(res_plasmid_put['Plasmid'].nunique())
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
     print(re_plasmid_put_unc['Plasmid'].nunique())
-    #result.to_csv(f'{path}/plasmid_classified.csv', index=None)
+    result.to_csv(f'{path}/plasmid_classified4.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
 #Plasmid_class()
