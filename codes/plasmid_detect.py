@@ -16,6 +16,7 @@ import multiprocessing as mp
 #pd.set_option('display.max_colwidth', None)
 #pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
+pd.options.mode.chained_assignment = None
 
 # uncomment relevant path to OS
 # Windows
@@ -151,9 +152,9 @@ def Plasmid_byword_plasmid():
     df['Parameters'] = df[cols].agg(','.join, axis=1)
     df['Parameters'] = df['Parameters'].apply(lambda x: re.sub(r"\B\s+|\s+\B", "", x))
     df['Parameters'] = df['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
-    df.loc[df['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Plasmid'
-    plasmid = df[df['Class']== 'Plasmid']
-    #plasmid.to_csv(f'{path}/plasmid_Shay.csv', index=None)
+    df.loc[df['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Putative_plasmid'
+    plasmid = df[df['Class'] == 'Putative_plasmid']
+    plasmid.to_csv(f'{path}/plasmid_Shay_put.csv', index=None)
     #print(plasmid)
 
 #Plasmid_byword_plasmid()
@@ -161,11 +162,15 @@ def Plasmid_byword_plasmid():
 def Plasmid_class():
     'Candidates classification in plasmids, putative plasmids and uncertain'
     df = Function_ORF()
-    # If viralVerify predicted the candidate as ‘Plasmid’, the candidate is classified as plasmid
-    df.loc[(df['PV_Prediction'] == 'Plasmid') & (df['VV_Prediction'] == 'Plasmid'), 'Class'] = 'Plasmid'
+    df = df.fillna('missing')
+
+    ### If viralVerify predicted the candidate as ‘Plasmid’, the candidate is classified as plasmid
+    df.loc[(df['VV_Prediction'] == 'Plasmid'), 'Class'] = 'Plasmid'
     df['PV_HMMs'] = df['PV_HMMs'].apply(splitter)
     df['VV_Pfam'] = df['VV_Pfam'].apply(splitter)
     df_def_plasmid = df.loc[df['Class'] == 'Plasmid']
+
+    ### the list of all ORFs functions predictions is collected
     cols = ['ACLAME_function', 'CDD_IPS', 'Gene3D_IPS',
        'Hamap_IPS', 'MobiDBLite_IPS', 'PANTHER_IPS', 'PIRSF_IPS', 'PRINTS_IPS',
        'ProSitePatterns_IPS', 'ProSiteProfiles_IPS', 'SFLD_IPS', 'SMART_IPS',
@@ -181,22 +186,30 @@ def Plasmid_class():
                 pass
     params = [item for sublist in params for item in sublist]
     params = list(dict.fromkeys(params))
+    # print(params)
+
+    ### to detect the list of plasmid-associated ORFs functions predictions the all ORFs list was manually curated
     plasm_params = ['relaxase activity', 'phage DNA replication', 'plasmid function unknown', 'post-segregational killing', 'regulation of cell division', 'plasmid vegetative DNA replication', 'type IV secretion system coupling protein', 'intercellular transfer by conjugation', 'site-specific DNA excision', 'transpositional DNA recombination', 'site-specific DNA recombination', 'DNA restriction-modification system', 'DNA-methyltransferase activity', 'plasmid mobilization', 'MobA/MobL family', 'MobA/MobL protein', 'Tetracyclin repressor-like', 'Tetracycline Repressor', 'tetR family', 'TetR-type', 'Firmicute plasmid replication protein (RepL)', 'Plasmid replication protein', 'RepL', 'MAPEG family', 'eicosanoid/glutathione metabolism (MAPEG) protein', 'Membrane associated eicosanoid/glutathione metabolism-like domain superfamily', 'MAPEG domain-like', 'PemK-like', 'MazF-like toxin of type II toxin-antitoxin system', 'mRNA interferase PemK-like', 'Plasmid maintenance toxin/Cell growth inhibitor', 'Cell growth inhibitor/plasmid maintenance toxic component', 'Iron dependent repressor', 'DTXR-type HTH domain', 'CobQ/CobB/MinD/ParA nucleotide binding domain', 'ParAB_family', 'Replication initiator protein A', 'Restriction endonuclease-like', 'Restriction endonuclease  type II-like', 'Restriction endonuclease BglII', 'Type-2 restriction enzyme BglII', 'Restriction endonuclease', 'BamHI/BglIII/BstY', 'Type IV secretion-system coupling protein DNA-binding domain', 'Type IV secretion system coupling protein TraD', 'CONJUGATIVE TRANSFER: DNA TRANSPORT', 'TrwC relaxase', 'Origin of replication-binding domain', 'RBD-like', 'SF1_C_RecD', 'DNA2/NAM7 HELICASE FAMILY MEMBER', 'RECBCD ENZYME SUBUNIT RECD', 'relax_trwC: conjugative relaxase domain', 'Conjugative relaxase', 'Resolvase-like', 'DNA-INVERTASE FROM LAMBDOID PROPHAGE', 'Resolvase', 'SR_ResInv', 'resolvase_6', 'Resolvase/invertase-type recombinase catalytic domain profile.', 'SERINE RECOMBINASE PINE-RELATED', 'MT-A70', 'MT-A70-like', 'S-adenosyl-L-methionine-dependent methyltransferases', 'S-adenosyl-L-methionine-dependent methyltransferase', 'MT-A70-like family profile.', 'Vaccinia Virus protein VP39', 'N6-ADENOSINE-METHYLTRANSFERASE', 'COPG FAMILY HELIX-TURN-HELIX PROTEIN-RELATED-RELATED', 'Vibrio phage ICP1', 'Orf50', 'COPG FAMILY HELIX-TURN-HELIX PROTEIN-RELATED', 'Acetyltransferase (GNAT) family', 'GNAT domain', 'GCN5-RELATED N-ACETYLTRANSFERASE', 'L-AMINO ACID N-ACETYLTRANSFERASE', 'Acyl-CoA N-acyltransferases (Nat)', 'Acyl-CoA N-acyltransferase', 'ParB_7', 'ParB/Sulfiredoxin', 'KorB DNA-binding domain-like', 'ParB-like nuclease domain', 'ParB/Sulfiredoxin superfamily', 'ParB_N_like', 'CHROMOSOME 2-PARTITIONING PROTEIN PARB-RELATED', 'CHROMOSOME-PARTITIONING PROTEIN PARB-RELATED', 'Site-specific recombinases signature 2.', 'Recombinase', 'Helix-turn-helix domain of resolvase', 'Site-specific recombinases active site.', 'PIN domain', 'PIN_MtVapC28-VapC30-like', 'PIN domain-like', 'PIN-like domain superfamily', 'Rv0623-like transcription factor', 'Antitoxin VapB-like', 'Tn3 transposase DDE domain', 'PLD-like domain', 'Phospholipase D-like domain', 'Phospholipase D/nuclease', 'Endonuclease Chain A', 'Phospholipase D phosphodiesterase active site profile.', 'Phospholipase D/Transphosphatidylase', 'HsdM N-terminal domain', 'N6 adenine-specific DNA methyltransferase', 'N-6 Adenine-specific DNA methylases signature.', 'DNA methylase', 'N-6 adenine-specific', 'SLR6095 PROTEIN', 'N-6 DNA Methylase', 'adenine-specific', 'N12 class N6 adenine-specific DNA methyltransferase signature', 'TYPE-1 RESTRICTION ENZYME ECOKI SPECIFICITY PROTEIN', 'DNA methylase specificity domains', 'Type I restriction modification DNA specificity domain', 'HsdS', 'DNA methylase specificity domain', 'Bipartite methylase S protein', 'HELICASE SUPERFAMILY 1 AND 2 DOMAIN-CONTAINING PROTEIN', 'Type I restriction enzyme R protein N terminus (HSDR_N)', 'HsdR', 'Superfamilies 1 and 2 helicase ATP-binding type-1 domain profile.', 'Helicase superfamily 1/2', 'ultradead3', 'SWI2/SNF2 ATPase', 'DNA breaking-rejoining enzymes', 'DNA breaking-rejoining enzyme', 'Intergrase catalytic core', 'Integrase-like', 'Tyrosine recombinase domain profile.', 'Integrase', 'DNA_BRE_C', 'Prokaryotic membrane lipoprotein lipid attachment site profile.', 'Bacterial mobilisation protein (MobC)', 'Bacterial mobilisation', 'VirC1 protein', 'TraM recognition site of TraD and TraG', 'TrwC protein', 'Site-specific recombinases DNA invertase Pin homologs', 'ParB domain protein nuclease', 'Transposase', 'Belongs to the N(4) N(6)-methyltransferase family', 'recombinase activity', 'Type I restriction enzyme R Protein', 'MobA_MobL', 'Relaxase', 'Viral_helicase1', 'TetR_C_13', 'TetR_N', 'MAPEG', 'PemK_toxin', 'RPA', 'Endonuc-BglII', 'TrwB_AAD_bind', 'TrwC', 'Acetyltransf_1', 'Acetyltransf_10', 'Acetyltransf_7', 'ParBc', 'PIN', 'PSK_trans_fac', 'DDE_Tnp_Tn3', 'N6_N4_Mtase', 'HsdM_N', 'N6_Mtase', 'Methylase_S', 'HSDR_N', 'ResIII', 'CbiA', 'SWI2_SNF2', 'PLDc_2', 'MobC']
-    plasmid_by_word_list = ['104_LNODE_1', '106_LNODE_1', '1_LNODE_1', '260_RNODE_1', '267_RNODE_11', '278_RNODE_7',
-                            '283_RNODE_12', '283_RNODE_7', '286_RNODE_15', '289_RNODE_2', '291_RNODE_28', '293_RNODE_9',
-                            '301_RNODE_6', '35_LNODE_1', '35_LNODE_2', '39_LNODE_1', '71_LNODE_1', '85_LNODE_1']
-    df.loc[df['Plasmid'].apply(lambda x: x in plasmid_by_word_list), 'Class'] = 'Plasmid'
-    df_def_plasmid = df.loc[df['Class'] == 'Plasmid']
-    #print(df_def_plasmid['Plasmid'].nunique())
-    #print("Printing number of manually curated parameters %d" % len(plasm_params))
+
+    ### dataframe with candidates, which were not classified yet
+    df_ndef_plasmids = df.loc[(df['VV_Prediction'] != 'Plasmid')]
+    df_ndef_plasmids['Parameters'] = df_ndef_plasmids[cols].agg(','.join, axis=1)
+    df_ndef_plasmids['Parameters'] = df_ndef_plasmids['Parameters'].apply(lambda x: re.sub(r"\B\s+|\s+\B", "", x))
+    df_ndef_plasmids['Parameters'] = df_ndef_plasmids['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
+
+    ### the candidate is classified as putative plasmid, if any of the candidate’s ORFs functions predictions includes the word plasmid
+    df_ndef_plasmids.loc[df_ndef_plasmids['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Putative_plasmid'
+    df_plasmid = df[df['Class'] == 'Plasmid'].append(df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Putative_plasmid'])
+    # print(df_plasmid['Parameters'].unique())
+
+    ### the list of plasmid-associated ORFs functions predictions from the candidates classified as putative by word plasmid in the function prediction
     new_params = ['VirE_N', 'Thioredoxin', 'PemK_toxin', 'Plasmid maintenance toxin/Cell growth inhibitor',
                   'MazF-like toxin of type II toxin-antitoxin system', 'PemK-like,mRNA interferase PemK-like',
                   'Cell growth inhibitor/plasmid maintenance toxic component', 'ParBc', 'Plasmid replication protein',
                   'RepL', 'Firmicute plasmid replication protein(RepL)', 'Rep_trans', 'Replication initiation factor',
-                  'plasmid function unknown', 'relaxase activity', 'Virulence-associated protein E', 'Resolvase', 'plasmid vegetative DNA replication']
-    #print("Printing number parameters to add %d" % len(new_params))
+                  'plasmid function unknown', 'relaxase activity', 'Virulence-associated protein E', 'Resolvase',
+                  'plasmid vegetative DNA replication']
     plasm_params = plasm_params + new_params
-    #print("Printing number of manually added parameters %d" % len(plasm_params))
     plasm_params_new = []
     marker2 = set()
     for l in plasm_params:
@@ -204,44 +217,43 @@ def Plasmid_class():
         if ll not in marker2:  # test presence
             marker2.add(ll)
             plasm_params_new.append(l)  # preserve order
-    #print("Printing number of parameters after removing duplicates %d" % len(plasm_params_new))
-    #print(plasm_params_new)
-    uncertain_params = ['transcription factor activity', 'missing', 'transcriptional repressor activity', 'ATPase activity', 'transferase activity', 'DNA binding', 'Coil', '-', 'consensus disorder prediction', 'C-terminal domain', 'C-terminal domain superfamily', 'Homeodomain-like', 'Homeobox-like domain superfamily', 'TRANSCRIPTIONAL REGULATORY PROTEIN', 'Bacterial regulatory proteins', 'DNA-binding HTH domain', 'Membrane-associated', 'INNER MEMBRANE PROTEIN', 'winged helix"" repressor DNA binding domain', 'Winged helix-like DNA-binding domain superfamily', 'Winged helix DNA-binding domain', 'Winged helix DNA-binding domain superfamily', 'N-terminal DNA binding domain', 'Ribbon-helix-helix', 'Arc-type ribbon-helix-helix', 'P-LOOP CONTAINING NUCLEOSIDE TRIPHOSPHATE HYDROLASE', 'Nuc_binding_HP_1000', 'P-loop containing nucleoside triphosphate hydrolases', 'P-loop containing nucleoside triphosphate hydrolase', 'type II', 'DNA-binding domain', 'AAA domain', 'N-terminal', 'N-terminal catalytic domain superfamily', 'N terminal domain', 'N-terminal catalytic domain', 'HTH_Hin_like', 'Protein of unknown function (DUF1778)', 'Single helix bin', 'Protein of unknown function (DUF736)', 'Protein of unknown function DUF736', 'conserved site', 'HTH domain', 'Domain of unknown function (DUF4158)', 'Domain of unknown function DUF4158', 'N-terminal domain', 'type I', 'ATP-binding domain', 'catalytic core', 'Core-binding (CB) domain profile.', 'Core-binding (CB) domain', 'catalytic domain superfamily', 'catalytic domain', 'Helix-turn-helix domain', 'group 17', 'Membrane', 'AAA_30', 'HTH_36', 'AAA_31', 'HTH_7', 'DUF1778', 'DUF736', 'DUF4158', 'HTH_23', 'AAA_19', 'HTH_17']
-    df_ndef_plasmids = df.loc[(df['VV_Prediction'] != 'Plasmid')]
-    df_ndef_plasmids = df_ndef_plasmids.fillna('missing')
-    df_ndef_plasmids['Parameters'] = df_ndef_plasmids[cols].agg(','.join, axis=1)
-    df_ndef_plasmids['Parameters'] = df_ndef_plasmids['Parameters'].apply(lambda x: re.sub(r"\B\s+|\s+\B", "", x))
-    df_ndef_plasmids['Parameters'] = df_ndef_plasmids['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
-    rows_todec = df_ndef_plasmids['Parameters'].apply(lambda x: all([ele not in plasm_params_new for ele in (x.split(','))]))
-    #print(df_ndef_plasmids['Parameters'].apply(lambda x: any([el in plasm_params_mod for el in (x.split(','))])))
-    df_ndef_plasmids.loc[(df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & df_ndef_plasmids['Parameters'].apply(lambda x: any([el in plasm_params_new for el in (x.split(','))])), 'Class'] = 'Plasmid'
-    df_ndef_plasmids.loc[
-        (df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
-            'ACLAME_function'].apply(
-            lambda x: all([ele != 'missing' for ele in (x.split(','))])), 'Class'] = 'Plasmid'
-    res_plasmid = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Plasmid']
-    plasmid_list = res_plasmid['Plasmid'].unique()
-    #print(len(plasmid_list))
-    df_ndef_plasmids.loc[df_ndef_plasmids['Plasmid'].isin(plasmid_list), "Class"] = "Plasmid"
-    df_ndef_plasmids.loc[(df_ndef_plasmids['PV_Prediction'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids['Parameters'].apply(
-        lambda x: any([ele in plasm_params_new for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
-    df_ndef_plasmids.loc[(df_ndef_plasmids['PV_Prediction'] == 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids['Parameters'].apply(
-        lambda x: all([ele not in plasm_params_new for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
+
+    ### the candidate is classified as putative plasmid if plasmidVerify predicted the candidate as ‘Plasmid’
+    df_ndef_plasmids.loc[df_ndef_plasmids['PV_Prediction'] == 'Plasmid', 'Class'] = 'Putative_plasmid'
+
+    ### the candidate is classified as putative plasmid if plasmidVerify did not classify the candidate as ‘Plasmid’, and any of its ORFs was assigned an ACLAME function
     df_ndef_plasmids.loc[
         (df_ndef_plasmids['PV_Prediction'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
             'ACLAME_function'].apply(
             lambda x: all([ele != 'missing' for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
+
+    ### the candidate is classified as putative plasmid if plasmidVerify did not classify the candidate as ‘Plasmid’, and any of its ORFs function predictions is plasmid-associated function
+    df_ndef_plasmids.loc[
+        (df_ndef_plasmids['PV_Prediction'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Plasmid') & df_ndef_plasmids[
+            'Parameters'].apply(
+            lambda x: any([ele in plasm_params_new for ele in (x.split(','))])), 'Class'] = 'Putative_plasmid'
+
     res_put = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Putative_plasmid']
-    print(res_put)
+    #print(res_put)
+
+    ### list of putative plasmids
     put_plasm_list = res_put['Plasmid'].unique()
     df_ndef_plasmids.loc[df_ndef_plasmids['Plasmid'].isin(put_plasm_list), "Class"] = "Putative_plasmid"
-    df_ndef_plasmids.loc[(df_ndef_plasmids['Class'] != 'Plasmid') & (df_ndef_plasmids['Class'] != 'Putative_plasmid'), 'Class'] = 'Uncertain'
+
+    ### if candidate is not classified as plasmid or putative plasmid, it is classified as uncertain
+    df_ndef_plasmids.loc[df_ndef_plasmids['Class'] != 'Putative_plasmid', 'Class'] = 'Uncertain'
     res_unc = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Uncertain']
     uncert_list = res_unc['Plasmid'].unique()
     df_ndef_plasmids.loc[df_ndef_plasmids['Plasmid'].isin(uncert_list), "Class"] = "Uncertain"
     df_ndef_plasmids = df_ndef_plasmids.drop('Parameters', axis=1)
     result = pd.concat([df_def_plasmid, df_ndef_plasmids])
+    # print(result)
+
+    ### manual curation reveals more plasmids for classification
+    result.loc[(result['Plasmid'].str.startswith('3_')) & result['Class'] == 'Putative_plasmid', 'Class'] == 'Plasmid'
+    print(result[result['Class']=='Plasmid'])
     res_plasmid = result[result['Class'] == 'Plasmid']
+    print(res_plasmid['Plasmid'].unique())
     print(res_plasmid['Plasmid'].nunique())
     res_put = result[result['Class'] == 'Putative_plasmid']
     print(res_put['Plasmid'].nunique())
@@ -251,7 +263,7 @@ def Plasmid_class():
     print(res_plasmid_put['Plasmid'].nunique())
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
     print(re_plasmid_put_unc['Plasmid'].nunique())
-    result.to_csv(f'{path}/plasmid_classified4.csv', index=None)
+    #result.to_csv(f'{path}/plasmid_classified5.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
-#Plasmid_class()
+Plasmid_class()
