@@ -261,4 +261,4 @@ def Plasmid_class():
     #result.to_csv(f'{path}/plasmid_classified5.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
-Plasmid_class()
+#Plasmid_class()
