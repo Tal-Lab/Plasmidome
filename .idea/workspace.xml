@@ -233,7 +233,8 @@
       <workItem from="1644853456839" duration="184000" />
       <workItem from="1644920019946" duration="5772000" />
       <workItem from="1645363913895" duration="4568000" />
-      <workItem from="1646732225267" duration="7907000" />
+      <workItem from="1646732225267" duration="8210000" />
+      <workItem from="1646820557653" duration="3210000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
@@ -284,7 +285,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644938562443</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Corrected plasmid classification">
+      <created>1646753303608</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1646753303608</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -333,7 +341,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641399753438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
-    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1646744259033" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1646826239898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1641547131100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1641398879932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644227342655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />

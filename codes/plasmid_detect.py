@@ -141,24 +141,6 @@ def splitter(x):
     else:
         return x
 
-def Plasmid_byword_plasmid():
-    'the candidate is classified as plasmid, if any of the candidate’s \
-    ORFs functions predictions includes the word plasmid'
-    df = Function_ORF()
-    df['PV_HMMs'] = df['PV_HMMs'].apply(splitter)
-    df['VV_Pfam'] = df['VV_Pfam'].apply(splitter)
-    df = df.fillna('missing')
-    cols = ['ACLAME_function', 'IPS_function', 'EggNOG_function', 'PFAMs', 'PV_HMMs', 'VV_Pfam']
-    df['Parameters'] = df[cols].agg(','.join, axis=1)
-    df['Parameters'] = df['Parameters'].apply(lambda x: re.sub(r"\B\s+|\s+\B", "", x))
-    df['Parameters'] = df['Parameters'].apply(lambda x: ','.join(set(x.split(','))))
-    df.loc[df['Parameters'].str.contains('Plasmid', case = False), 'Class'] = 'Putative_plasmid'
-    plasmid = df[df['Class'] == 'Putative_plasmid']
-    plasmid.to_csv(f'{path}/plasmid_Shay_put.csv', index=None)
-    #print(plasmid)
-
-#Plasmid_byword_plasmid()
-
 def Plasmid_class():
     'Candidates classification in plasmids, putative plasmids and uncertain'
     df = Function_ORF()
@@ -245,24 +227,37 @@ def Plasmid_class():
     res_unc = df_ndef_plasmids[df_ndef_plasmids['Class'] == 'Uncertain']
     uncert_list = res_unc['Plasmid'].unique()
     df_ndef_plasmids.loc[df_ndef_plasmids['Plasmid'].isin(uncert_list), "Class"] = "Uncertain"
+    #df_ndef_plasmids.loc[(df_ndef_plasmids['ORF_name'].str.startswith('3_')) & (df_ndef_plasmids['Class'] == 'Putative_plasmid'), 'Class'] == 'Plasmid'
+
+    ### printing candidates, orf functions and classifications for manual check and reclassification, when appropriate
+    #df_ndef_plasmids.to_csv(f'{path}/plasmid_ndef.csv', index = None)
     df_ndef_plasmids = df_ndef_plasmids.drop('Parameters', axis=1)
     result = pd.concat([df_def_plasmid, df_ndef_plasmids])
     # print(result)
 
-    ### manual curation reveals more plasmids for classification
-    result.loc[(result['Plasmid'].str.startswith('3_')) & result['Class'] == 'Putative_plasmid', 'Class'] == 'Plasmid'
-    print(result[result['Class']=='Plasmid'])
+    ### if manual curation revealed falsely classified candidates, the true classification is added manually
+    result['Class'].mask(result['Plasmid'] == "3_LNODE_1", 'Plasmid', inplace = True)
+    #print(result[result['Class']=='Plasmid'])
+
+    ### dataframe with candidates classified as plasmids and their number
     res_plasmid = result[result['Class'] == 'Plasmid']
-    print(res_plasmid['Plasmid'].unique())
-    print(res_plasmid['Plasmid'].nunique())
+    print("#### Number of plasmids candidates classified as plasmids: %d" %res_plasmid['Plasmid'].nunique())
+
+    ### dataframe with candidates classified as putative plasmids and their number
     res_put = result[result['Class'] == 'Putative_plasmid']
-    print(res_put['Plasmid'].nunique())
+    print("#### Number of plasmids candidates classified as putative plasmids: %d" %res_put['Plasmid'].nunique())
+
+    ### dataframe with candidates classified as uncertain and their number
     res_unc = result[result['Class'] == 'Uncertain']
-    print(res_unc['Plasmid'].nunique())
+    print("#### Number of plasmids candidates classified as uncertain: %d" %res_unc['Plasmid'].nunique())
+
+    ### dataframe with candidates classified as plasmids and putative plasmids and their number
     res_plasmid_put = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid')]
-    print(res_plasmid_put['Plasmid'].nunique())
+    print("#### Number of plasmids candidates classified as plasmids and putative plasmids: %d" % res_plasmid_put['Plasmid'].nunique())
+
+    ### dataframe with all candidates classifications and their number
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
-    print(re_plasmid_put_unc['Plasmid'].nunique())
+    print("#### Number of plasmids candidates: %d" % re_plasmid_put_unc['Plasmid'].nunique())
     #result.to_csv(f'{path}/plasmid_classified5.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
