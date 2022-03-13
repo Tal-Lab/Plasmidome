@@ -298,7 +298,7 @@ def Clust_map2(vers, df, name, cl, pl):
     '''
     return station_order, station_reorder
 
-#Clust_map2(3,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+#Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 #Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
 #Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
 
