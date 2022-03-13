@@ -7,7 +7,7 @@ Author: Lucy Androsiuk
 ### Description
 # add description
 
-version=1
+version=3
 
 import numpy as np
 import pandas as pd
@@ -25,9 +25,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
@@ -40,6 +40,7 @@ proteins = r"../res/Filtered_ORFs.fasta"
 library = r"../res/LibrarySize.csv"
 stations = r"../res/stations.txt"
 
+df_class = Plasmid_class()[2]
 plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
 putative_plasmids = Plasmid_class()[1]['Plasmid'].unique().tolist()
 all_candidates = Plasmid_class()[2]['Plasmid'].unique().tolist()
@@ -182,6 +183,7 @@ def ORF_byPlasmid_stats():
     print("******************** Number of ORFs in plasmids ranges %s - %s *****************" % (str(min), str(max)))
     print("******************* The mean number of ORFs in plasmid is %s *************" % str(mean))
     df_grouped['Plasmid Length']= df_grouped['Plasmids'].apply(Clean_length)
+    df_grouped['Plasmids'] = df_grouped['Plasmids'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     #print(df_grouped)
     pearson_ORF = stats.pearsonr(df_grouped["Number of Proteins"].to_numpy(), df_grouped["Plasmid Length"].to_numpy())
     print((pearson_ORF))
@@ -196,19 +198,25 @@ def ORF_byPlasmid_stats():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-    num_hist= sns.histplot(df_grouped, x = "Number of Proteins", bins = 30)
-    plt.axvline(x = df_grouped['Number of Proteins'].median(),
+    out = (df_grouped.merge(df_class, left_on = 'Plasmids', right_on = 'Plasmid')
+           .reindex(columns = ['Plasmid', 'Number of Proteins', 'Class']))
+    out.drop_duplicates(subset=None, keep='first', inplace=True)
+    out.reset_index(inplace = True,drop=True)
+    print(out)
+    sns.histplot(out, x = "Number of Proteins", bins = 15, hue = 'Class', multiple = 'stack')
+    #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
+    plt.axvline(x = out['Number of Proteins'].median(),
                 color = 'blue',
                 ls = '--',
                 lw = 1.0)
     min_ylim, max_ylim = plt.ylim()
-    plt.text(df_grouped['Number of Proteins'].median() * 1.1, max_ylim * 0.9,
-             'Median: {:.2f}'.format(df_grouped['Number of Proteins'].median()))
-    plt.axvline(x = df_grouped['Number of Proteins'].mean(),
+    plt.text(out['Number of Proteins'].median() * 1.1, max_ylim * 0.9,
+             'Median: {:.2f}'.format(out['Number of Proteins'].median()))
+    plt.axvline(x = out['Number of Proteins'].mean(),
                 color = 'red',
                 lw = 1.0)
-    plt.text(df_grouped['Number of Proteins'].mean() * 1.1, max_ylim * 0.8,
-             'Mean: {:.2f}'.format(df_grouped['Number of Proteins'].mean()))
+    plt.text(out['Number of Proteins'].mean() * 1.1, max_ylim * 0.8,
+             'Mean: {:.2f}'.format(out['Number of Proteins'].mean()))
     svg_name = "ProteinsHisto" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "ProteinsHisto" + str(version) + '.png'
@@ -217,8 +225,8 @@ def ORF_byPlasmid_stats():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-    df_min=df_grouped.loc[df_grouped["Number of Proteins"]<100]
-    num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 30)
+    df_min=out.loc[out["Number of Proteins"]<100]
+    num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 25, hue = 'Class', multiple = 'stack')
     plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
                 ls = '--',
@@ -239,6 +247,7 @@ def ORF_byPlasmid_stats():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return df_grouped
+#ORF_byPlasmid_stats()
 
 def Station():
     ' getting station parameters from station matrix '
