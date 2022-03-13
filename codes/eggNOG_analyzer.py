@@ -14,15 +14,15 @@ from matplotlib.pyplot import *
 import scipy.cluster.hierarchy as sch
 from collections import defaultdict
 import matplotlib.patches as mpatches
-
+from station_phys_clustering import order_pl, order_plput, order_all
 ### Description
 # add description
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 out_dir = f"{path}/data_calculations"
