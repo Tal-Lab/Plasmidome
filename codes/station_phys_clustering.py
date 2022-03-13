@@ -106,129 +106,6 @@ def Cov_plasmids():
     print(perc_more)
 #Cov_plasmids()
 
-def Clust_map(vers):
-    coverage = data_file()
-    print(coverage.index)
-    parameters = Physical(1)
-    parameters = parameters.set_index(parameters['St_Depth'])
-    # maybe put parameters in loop?
-    parameters["Temperature"] = parameters['Temp.'].astype(float).round().astype(int)
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(), sns.color_palette("Reds", parameters['Temperature'].nunique())))
-    temperature = parameters["Temperature"].map(stat_temp)
-    stat_depth = dict(zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
-    depth = parameters['Depth'].map(stat_depth)
-    parameters["Salinity"] = parameters['Salinity'].astype(float).round().astype(int)
-    stat_salt = dict(zip(parameters['Salinity'].sort_values().unique(), sns.color_palette("Greens", parameters['Salinity'].nunique())))
-    salt = parameters['Salinity'].map(stat_salt)
-    parameters["Oxygen"] = parameters['Oxygen'].astype(float).round().astype(int)
-    stat_O2 = dict(zip(parameters['Oxygen'].sort_values().unique(), sns.color_palette("ocean_r", parameters['Oxygen'].nunique())))
-    O2 = parameters['Oxygen'].map(stat_O2)
-    parameters["Nitrate"] = parameters['Nitrate'].astype(float).round().astype(int)
-    stat_NO3 = dict(zip(parameters['Nitrate'].sort_values().unique(), sns.color_palette("YlGn", parameters['Nitrate'].nunique())))
-    NO3 = parameters['Nitrate'].map(stat_NO3)
-    parameters["Phosphate"] = parameters['Phosphate'].astype(float).round(1)
-    stat_PO4 = dict(zip(parameters['Phosphate'].sort_values().unique(), sns.color_palette("Purples", parameters['Phosphate'].nunique())))
-    PO4 = parameters['Phosphate'].map(stat_PO4)
-    parameters["Silicate"] = parameters['Silicate'].astype(float).round().astype(int)
-    stat_Si = dict(zip(parameters['Silicate'].sort_values().unique(),sns.color_palette("Oranges", parameters['Silicate'].nunique())))
-    Si = parameters['Silicate'].map(stat_Si)
-    figure1 = sns.clustermap(data = coverage,
-                             metric = "euclidean",
-                             method = 'ward',
-                             row_colors = [temperature, depth, salt, O2, NO3, PO4, Si],
-                             cmap = "viridis",
-                             xticklabels = False,
-                             yticklabels = True,
-                             cbar_kws = {'label': 'AP', "orientation": "horizontal"},
-                             cbar_pos = (.2, .88, .71, .03)
-                             )
-    figure1.ax_col_dendrogram.remove()
-    figure1.ax_row_dendrogram.remove()
-    L = figure1.dendrogram_row.linkage
-    clusters = sch.fcluster(L, 1500, 'distance')
-    # clusters indicices correspond to incides of original df
-    rows = []
-    for i, cluster in enumerate(clusters):
-        rows.append([coverage.index[i], cluster])
-    cluster_df = pd.DataFrame(rows, columns = ["St_Depth", "Cluster"])
-    cluster_df = cluster_df.set_index(parameters['St_Depth'])
-    stat_cluster = dict(zip(cluster_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_df['Cluster'].nunique())))
-    cluster_st = cluster_df['Cluster'].map(stat_cluster)
-    stations = cluster_df.index.values.tolist()
-    empty = 0*len(stations)
-    for_df = {'St_Depth':stations, 'Empty': empty}
-    space_df = pd.DataFrame(for_df)
-    space_df=space_df.set_index(parameters['St_Depth'])
-    space_df.columns = ['St_Depth', ' ']
-    stat_space = dict(zip(space_df[' '].unique(), "white"))
-    space_st = space_df[' '].map(stat_space)
-    row_colors = pd.concat([cluster_st, salt, temperature, depth, space_st], axis = 1)
-    figure2 = sns.clustermap(data = coverage,
-                             metric = "euclidean",
-                             method = 'ward',
-                             row_colors = row_colors,
-                             cmap = sns.color_palette("Blues", as_cmap = True),
-                             linewidths = 0.0,
-                             xticklabels = False,
-                             yticklabels = True,
-                             rasterized = True,
-                             cbar_kws = {"ticks": [0, 100]}
-                             )
-    # g.set_axis_labels(["Plasmid candidates", "Sampling stations"])
-    figure2.fig.subplots_adjust(left = -.01, right = 0.8)
-    figure2.cax.set_title("AP")
-    figure2.ax_cbar.set_position((0.92, .16, .03, .6))
-    figure2.ax_col_dendrogram.remove()
-    figure2.ax_row_dendrogram.remove()
-
-    # GAIW sample labels
-    for tick_label in figure2.ax_heatmap.axes.get_yticklabels():
-        tick_text = tick_label.get_text()
-        if tick_text == "12_47":
-            tick_label.set_color('red')
-        elif tick_text == "34_50":
-            tick_label.set_color('red')
-        elif tick_text == "34_100":
-            tick_label.set_color('red')
-
-    # temperature legend
-    tem_legend = []
-    for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
-        tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-25, 1.13), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
-    # depth legend
-    # loop?
-    dep_legend = []
-    for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
-        dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-25, 0.45), loc = "right",
-                    borderaxespad = 2.0)
-    salt_legend = []
-    for label in parameters['Salinity'].sort_values().unique():
-        salt_patch = mpatches.Patch(color = stat_salt[label], label = label)
-        salt_legend.append(salt_patch)
-    l3 = plt.legend(title = 'Salinity', handles = salt_legend, bbox_to_anchor = (-25, -.11), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l2)
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 14)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 14)
-    svg_name='heatmap_annotated_' +str(vers)+'.svg'
-    svg_file=f'{visuals}/{svg_name}'
-    png_name='heatmap_annotated_' +str(vers)+'.png'
-    png_file=f'{visuals}/{png_name}'
-    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
-        plt.savefig(svg_file, format = 'svg',dpi=gcf().dpi, bbox_inches='tight')
-        plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()  # Push new figure on stack
-    station_order = coverage.index.values.tolist()
-    station_reorder = figure2.dendrogram_row.reordered_ind
-    return station_order, station_reorder
-
-#Clust_map(1)
 def data_plas(df_pl):
     df_cov = data_file()
     #print(df_pl)
@@ -301,7 +178,7 @@ def Clust_map2(vers, df, name, cl, pl):
     cluster_pl_df = pd.DataFrame(cols, columns = ["Plasmids", "Cluster"])
     cluster_pl_df = cluster_pl_df.set_index('Plasmids')
     plas_cluster = dict(
-        zip(cluster_pl_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_pl_df['Cluster'].nunique())))
+        zip(cluster_pl_df['Cluster'].unique(), sns.color_palette("Greys", cluster_pl_df['Cluster'].nunique())))
     cluster_pl = cluster_pl_df['Cluster'].map(plas_cluster)
     plasmids = cluster_pl_df.index.values.tolist()
 
@@ -421,8 +298,8 @@ def Clust_map2(vers, df, name, cl, pl):
     '''
     return station_order, station_reorder
 
-Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400, 500)
-Clust_map2(2,Plasmid_class()[1],'PlPut_HMannot_', 600, 900)
-Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200, 1500)
+#Clust_map2(3,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+#Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
+#Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
 
 
