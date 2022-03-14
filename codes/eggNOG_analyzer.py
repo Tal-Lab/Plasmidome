@@ -39,8 +39,9 @@ reads_coverage = r"../res/all_cov.csv"
 plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
 physical = r"../res/station_physical.xlsx"
 
-station_orderCl, station_reorderCl = Clust_map2(2,Plasmid_class()[2],'PlPutUnc_HMannot_', 1200)
-station_order37, station_reorder37 = Clust_map2(2,Plasmid_class()[0],'Pl_HMannot_', 400)
+station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
+station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
+station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)
@@ -142,6 +143,29 @@ def BarChart(freq, unknown):
     print(true_sort1)
     df = df.set_index('St_Depth').loc[true_sort1].reset_index()
     station = df['St_Depth'].to_list()
+    labels = df['Functional categories'].unique()
+    f, (ax_hist, ax_bar) = plt.subplots(2, sharex = True, gridspec_kw = {"height_ratios": (.92, .08)})
+
+    # assigning a graph to each ax
+    sns.histplot(df,
+                 x=station,
+                 weights='Function count',
+                 hue='Functional categories',
+                 multiple='stack',
+                 palette="bright",
+                 # Add white borders to the bars.
+                 edgecolor='white',
+                 # Shrink the bars a bit so they don't touch.
+                 shrink=0.8,
+                 ax = ax_hist)
+    #cluster_st_df.reset_index()
+    print(cluster_st_df)
+    sns.barplot(cluster_st_df['St_Depth'], hue = cluster_st_df['Cluster'],  palette='Pastel1', ax = ax_bar, orient='h')
+
+    # Remove x axis name for the boxplot
+    ax_hist.set(xlabel = '')
+
+    '''
     fig = sns.histplot(df,
                        x=station,
                        weights='Function count',
@@ -153,17 +177,20 @@ def BarChart(freq, unknown):
                        # Shrink the bars a bit so they don't touch.
                        shrink=0.8
                        )
-    fig.set(xlabel='Sampling points', ylabel='Function frequency')
+    '''
+
+    f.set(xlabel='Sampling points', ylabel='Function frequency')
     # Put the legend out of the figure
-    sns.move_legend(fig, "upper left", bbox_to_anchor=(1.1, 1), ncol=1, title_fontsize=16)
-    fig.tick_params(axis='x', rotation=90, labelsize=8)
+    f.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16,
+               loc = 2, borderaxespad = 0.)
+    f.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     #save graph in PNG and vector format
     svg_name = 'barplot_COG_' + unknown + str(1) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
     png_name = 'barplot_COG_' + unknown + str(1) + '.png'
     png_file = f'{visuals}/{png_name}'
-    plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
-    plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
+    #plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+    #plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
 
 def BarChart37(unknown):
@@ -180,7 +207,7 @@ def BarChart37(unknown):
     df_trunc['Functional categories'] = df_trunc['Functional categories'].apply(lambda x: ' - '.join(x))
     df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
     df_grouped = df_grouped.reset_index()
-    print(df_grouped)
+
     ncolors = df_grouped['Functional categories'].nunique()
     colors = sns.color_palette(cc.glasbey, n_colors=ncolors)
     labels = df_grouped['Functional categories'].unique()
@@ -205,12 +232,12 @@ def BarChart37(unknown):
     svg_file = f'{visuals}/{svg_name}'
     png_name = 'barplot_COG_37pl' + unknown + str(1) + '.png'
     png_file = f'{visuals}/{png_name}'
-    plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
-BarChart37('with')
-BarChart37('without')
+#BarChart37('with')
+#BarChart37('without')
 
 def ProteinsFastaAn():
     records = []
@@ -303,5 +330,5 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()
 #eggNOGStats()
-#BarChart(True, 'with')
-#BarChart(True, 'without')
+BarChart(True, 'with')
+BarChart(True, 'without')

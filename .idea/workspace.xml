@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="Initial Commit">
-      <change beforePath="$PROJECT_DIR$/.idea/Plasmidome.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Plasmidome.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/Protein_Definer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/Protein_Definer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/Protein_files_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/Protein_files_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/general_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/general_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/plasmid_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/plasmid_detect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codes/station_phys_clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/station_phys_clustering.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/FilteredORFs5.fasta.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Filtered_ORFs4.fasta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/eggnog_FilteredORFs4.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +29,9 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/codes/eggNOG_analyzer.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -56,7 +52,29 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.eggNOG_analyzer">
+    <configuration name="eggNOG_analyzer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/codes/eggNOG_analyzer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="plasmid_detect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Plasmidome" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -79,8 +97,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.plasmid_detect" />
+      <item itemvalue="Python.eggNOG_analyzer" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.eggNOG_analyzer" />
         <item itemvalue="Python.plasmid_detect" />
       </list>
     </recent_temporary>
@@ -124,6 +147,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641396594012" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641399753438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1646826239898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/Plasmidome$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1641547131100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/Plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1641398879932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1647167295935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1647182071015" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1647269090275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1644227333655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/Plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1642588975830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644244352839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
   </component>
 </project>

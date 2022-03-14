@@ -296,7 +296,7 @@ def Clust_map2(vers, df, name, cl, pl):
     print("Clusters:Latitude,C: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" %
           (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
     '''
-    return station_order, station_reorder, cluster_pl_df
+    return station_order, station_reorder,cluster_st_df, cluster_pl_df
 order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
 order_plput = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2]
 order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
