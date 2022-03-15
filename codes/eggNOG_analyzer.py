@@ -137,35 +137,16 @@ def Station_Order(order):
     return final_order
 
 def BarChart(freq, unknown):
+    'plotting stacked barchart for COGs frequencies in all plasmid candidates by sampling points'
     df = FreqFuncStat(freq, unknown)
+    #reorder stations by clusters
     order_Stat = Station_Order(True)
     true_sort1 = [s for s in order_Stat if s in df.St_Depth.unique()]
     print(true_sort1)
     df = df.set_index('St_Depth').loc[true_sort1].reset_index()
     station = df['St_Depth'].to_list()
     labels = df['Functional categories'].unique()
-    f, (ax_hist, ax_bar) = plt.subplots(2, sharex = True, gridspec_kw = {"height_ratios": (.92, .08)})
-
-    # assigning a graph to each ax
-    sns.histplot(df,
-                 x=station,
-                 weights='Function count',
-                 hue='Functional categories',
-                 multiple='stack',
-                 palette="bright",
-                 # Add white borders to the bars.
-                 edgecolor='white',
-                 # Shrink the bars a bit so they don't touch.
-                 shrink=0.8,
-                 ax = ax_hist)
-    #cluster_st_df.reset_index()
-    print(cluster_st_df)
-    sns.barplot(cluster_st_df['St_Depth'], hue = cluster_st_df['Cluster'],  palette='Pastel1', ax = ax_bar, orient='h')
-
-    # Remove x axis name for the boxplot
-    ax_hist.set(xlabel = '')
-
-    '''
+    #prepare figure
     fig = sns.histplot(df,
                        x=station,
                        weights='Function count',
@@ -177,13 +158,11 @@ def BarChart(freq, unknown):
                        # Shrink the bars a bit so they don't touch.
                        shrink=0.8
                        )
-    '''
-
-    f.set(xlabel='Sampling points', ylabel='Function frequency')
+    fig.set(xlabel='Sampling points', ylabel='Function frequency')
     # Put the legend out of the figure
-    f.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16,
+    fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16,
                loc = 2, borderaxespad = 0.)
-    f.tick_params(axis = 'x', rotation = 90, labelsize = 8)
+    fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     #save graph in PNG and vector format
     svg_name = 'barplot_COG_' + unknown + str(1) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
@@ -193,11 +172,16 @@ def BarChart(freq, unknown):
     #plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
 
-def BarChart37(unknown):
+def BarChart_lim(df_class, cluster, file_name, unknown):
+    'plotting stacked barchart for COGs frequencies in plasmids/plasmids+putative plasmids'
     df = MapToFunc()
     df['Plasmid'] = df['Query'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
-    df37 = Plasmid_class()[0]
-    plasmid_list = df37['Plasmid'].unique()
+    plasmid_list = df_class['Plasmid'].unique()
+    #preparing to reorder plasmids by cluster
+    cluster.reset_index(inplace=True)
+    cluster.sort_values(by='Cluster', inplace=True)
+    order_pl = cluster['Plasmids'].to_list()
+
     df_trunc = df.loc[df['Plasmid'].apply(lambda x: x in plasmid_list)]
     df_trunc = df_trunc[['Query', 'Plasmid','COG cat', 'Functional categories']].fillna('missing')
     if unknown != 'with':
@@ -207,10 +191,14 @@ def BarChart37(unknown):
     df_trunc['Functional categories'] = df_trunc['Functional categories'].apply(lambda x: ' - '.join(x))
     df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
     df_grouped = df_grouped.reset_index()
-
+    #reordering plasmids by cluster order
+    true_sort1 = [s for s in order_pl if s in df_grouped.Plasmid.unique()]
+    df_grouped = df_grouped.set_index('Plasmid').loc[true_sort1].reset_index()
+    print(df_grouped['Plasmid'].unique())
     ncolors = df_grouped['Functional categories'].nunique()
     colors = sns.color_palette(cc.glasbey, n_colors=ncolors)
     labels = df_grouped['Functional categories'].unique()
+    #figure
     fig = sns.histplot(df_grouped,
                        x='Plasmid',
                        weights='Function count',
@@ -228,16 +216,14 @@ def BarChart37(unknown):
     # Put the legend out of the figure
     fig.legend(labels, title='Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16, loc = 2, borderaxespad = 0.)
     fig.tick_params(axis='x', rotation=90, labelsize=8)
-    svg_name = 'barplot_COG_37pl' + unknown + str(1) + '.svg'
+    #saving figure
+    svg_name = file_name + unknown + str(1) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'barplot_COG_37pl' + unknown + str(1) + '.png'
+    png_name = file_name + unknown + str(1) + '.png'
     png_file = f'{visuals}/{png_name}'
     #plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-
-#BarChart37('with')
-#BarChart37('without')
 
 def ProteinsFastaAn():
     records = []
@@ -330,5 +316,9 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()
 #eggNOGStats()
-BarChart(True, 'with')
-BarChart(True, 'without')
+#BarChart(True, 'with')
+#BarChart(True, 'without')
+#BarChart_lim(Plasmid_class()[1], cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'with')
+#BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
+#BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
+#BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'without')
