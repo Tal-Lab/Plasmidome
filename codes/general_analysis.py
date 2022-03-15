@@ -446,7 +446,15 @@ def Plasmid_Station():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
+def Candidates_length():
+    data = pd.read_csv(reads_coverage, sep = ',', index_col = None, header = 0)
+    #data = data.reset_index()
+    data['Plasmid'] = data['rname'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
+    data['Plasmid_Length'] = data['rname'].apply(Clean_length)
+    data_length = data[['Plasmid','Plasmid_Length']]
+    print(data_length)
 
+Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
