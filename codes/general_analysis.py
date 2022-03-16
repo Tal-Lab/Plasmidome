@@ -452,9 +452,34 @@ def Candidates_length():
     data['Plasmid'] = data['rname'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     data['Plasmid_Length'] = data['rname'].apply(Clean_length)
     data_length = data[['Plasmid','Plasmid_Length']]
-    print(data_length)
+    df = (data_length.merge(df_class, on = 'Plasmid')
+           .reindex(columns = ['Plasmid', 'Plasmid_Length', 'Class']))
+    df.drop_duplicates(subset = None, keep = 'first', inplace = True)
+    df.reset_index(inplace = True, drop = True)
+    df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
+    print(df)
+    df_pl = df.loc[df['Class']=='Plasmid'].reset_index(drop = True)
+    df_plput = df.loc[(df['Class']=='Plasmid') | (df['Class']=='Putative_plasmid')].reset_index(drop = True)
+    sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 30)
+    svg_name = "Plasmid_lengths_Histo" + str(1) + '.svg'
+    svg_dir = f'{visuals}/{svg_name}'
+    png_name = "Plasmid_lengths_Histo" + str(1) + '.png'
+    png_dir = f'{visuals}/{png_name}'
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.show()
+    df_min = df.loc[df['Length_norm']<=200]
+    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =30)
+    svg_name = "Plasmid_lengths200_Histo" + str(1) + '.svg'
+    svg_dir = f'{visuals}/{svg_name}'
+    png_name = "Plasmid_lengths200_Histo" + str(1) + '.png'
+    png_dir = f'{visuals}/{png_name}'
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.show()
 
-Candidates_length()
+
+#Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
