@@ -185,25 +185,37 @@ def ORF_byPlasmid_stats():
     df_grouped['Plasmid Length']= df_grouped['Plasmids'].apply(Clean_length)
     df_grouped['Plasmids'] = df_grouped['Plasmids'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     #print(df_grouped)
-    pearson_ORF = stats.pearsonr(df_grouped["Number of Proteins"].to_numpy(), df_grouped["Plasmid Length"].to_numpy())
-    print((pearson_ORF))
-    size_num = df_grouped.plot.scatter(x = "Plasmid Length", y = "Number of Proteins")
-    plt.xticks(rotation = 90)
-    plt.xscale('log')
-    svg_name = "Len_Proteins_log" + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Len_Proteins_log" + str(version) + '.png'
-    png_dir = f'{visuals}/{png_name}'
-    # plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
     out = (df_grouped.merge(df_class, left_on = 'Plasmids', right_on = 'Plasmid')
-           .reindex(columns = ['Plasmid', 'Number of Proteins', 'Class']))
-    out.drop_duplicates(subset=None, keep='first', inplace=True)
-    out.reset_index(inplace = True,drop=True)
+           .reindex(columns = ['Plasmid', 'Plasmid Length', 'Number of Proteins', 'Class']))
+    out.drop_duplicates(subset = None, keep = 'first', inplace = True)
+    out.sort_values('Class',inplace = True)
+    out.reset_index(inplace = True, drop = True)
     print(out)
-    sns.histplot(out, x = "Number of Proteins", bins = 15, hue = 'Class', multiple = 'stack')
+    out['Length_norm'] = out['Plasmid Length'].apply(lambda x: round(x / 10 ** 3))
+    pearson_ORF = stats.pearsonr(out["Number of Proteins"].to_numpy(), out["Plasmid Length"].to_numpy())
+    print((pearson_ORF))
+    sns.scatterplot(data=out, x="Length_norm", y="Number of Proteins", hue='Class', style='Class')
+    plt.xlabel('Plasmid length, kb')
+    #plt.xticks(rotation = 90)
+    #plt.xscale('log')
+    svg_name = "Len_Proteins" + str(version) + '.svg'
+    svg_dir = f'{visuals}/{svg_name}'
+    png_name = "Len_Proteins" + str(version) + '.png'
+    png_dir = f'{visuals}/{png_name}'
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.show()
+    out_min = out.loc[out['Length_norm'] <= 200]
+    sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins", hue = 'Class', style = 'Class')
+    plt.xlabel('Plasmid length, kb')
+    svg_name = "Len200_Proteins" + str(version) + '.svg'
+    svg_dir = f'{visuals}/{svg_name}'
+    png_name = "Len200_Proteins" + str(version) + '.png'
+    png_dir = f'{visuals}/{png_name}'
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.show()
+    sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
     plt.axvline(x = out['Number of Proteins'].median(),
                 color = 'blue',
@@ -222,11 +234,11 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHisto" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     df_min=out.loc[out["Number of Proteins"]<100]
-    num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 25, hue = 'Class', multiple = 'stack')
+    num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
                 ls = '--',
@@ -243,10 +255,11 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHistoMin" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-    return df_grouped
+    return df_grouped, out
+
 #ORF_byPlasmid_stats()
 
 def Station():
@@ -389,7 +402,7 @@ def ORF_byStation_stats():
 
 def Plasmid_Station():
     ' plasmid per station statistics '
-    df = ORF_byPlasmid_stats()
+    df = ORF_byPlasmid_stats()[0]
     df_stat=DF_plasmids_byReads()[0]
     df = pd.merge(df, df_stat, left_on = 'Plasmids', right_on = 'NewName')
     df = df.drop(['NewName',"Number of Proteins"], axis = 1)
@@ -447,39 +460,32 @@ def Plasmid_Station():
     plt.show()
 
 def Candidates_length():
-    data = pd.read_csv(reads_coverage, sep = ',', index_col = None, header = 0)
-    #data = data.reset_index()
-    data['Plasmid'] = data['rname'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
-    data['Plasmid_Length'] = data['rname'].apply(Clean_length)
-    data_length = data[['Plasmid','Plasmid_Length']]
-    df = (data_length.merge(df_class, on = 'Plasmid')
-           .reindex(columns = ['Plasmid', 'Plasmid_Length', 'Class']))
-    df.drop_duplicates(subset = None, keep = 'first', inplace = True)
-    df.reset_index(inplace = True, drop = True)
-    df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
-    print(df)
-    df_pl = df.loc[df['Class']=='Plasmid'].reset_index(drop = True)
-    df_plput = df.loc[(df['Class']=='Plasmid') | (df['Class']=='Putative_plasmid')].reset_index(drop = True)
-    sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 30)
-    svg_name = "Plasmid_lengths_Histo" + str(1) + '.svg'
+    df = ORF_byPlasmid_stats()[1]
+    #df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
+    #print(df)
+    sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
+    plt.xlabel('Plasmid length, kb')
+    svg_name = "Plasmid_lengths_Histo" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Plasmid_lengths_Histo" + str(1) + '.png'
+    png_name = "Plasmid_lengths_Histo" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     df_min = df.loc[df['Length_norm']<=200]
-    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =30)
-    svg_name = "Plasmid_lengths200_Histo" + str(1) + '.svg'
+    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
+    plt.xlabel('Plasmid length, kb')
+    svg_name = "Plasmid_lengths200_Histo" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Plasmid_lengths200_Histo" + str(1) + '.png'
+    png_name = "Plasmid_lengths200_Histo" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 
-#Candidates_length()
+
+Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
