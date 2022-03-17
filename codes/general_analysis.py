@@ -202,8 +202,8 @@ def ORF_byPlasmid_stats():
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Len_Proteins" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     out_min = out.loc[out['Length_norm'] <= 200]
     sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins", hue = 'Class', style = 'Class')
@@ -212,8 +212,8 @@ def ORF_byPlasmid_stats():
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Len200_Proteins" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
@@ -234,8 +234,8 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHisto" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     df_min=out.loc[out["Number of Proteins"]<100]
     num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
@@ -255,8 +255,8 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHistoMin" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return df_grouped, out
 
@@ -469,8 +469,8 @@ def Candidates_length():
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Plasmid_lengths_Histo" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     df_min = df.loc[df['Length_norm']<=200]
     sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
@@ -479,13 +479,13 @@ def Candidates_length():
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Plasmid_lengths200_Histo" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 
 
-Candidates_length()
+#Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
