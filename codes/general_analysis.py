@@ -84,7 +84,7 @@ def DF_plasmids_byReads(work_set, file_name):
         df[['NewName', 'station_name']].to_csv(out_file, index = False)
     return df[['NewName', 'station_name']], out_file
 
-DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
+plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
 
 def Coverage_stat(work_set):
     ' plasmid presence statistics '

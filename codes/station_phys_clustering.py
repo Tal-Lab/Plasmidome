@@ -20,7 +20,7 @@ import matplotlib.patches as mpatches
 from scipy import stats
 from pathlib import Path
 import os
-from general_analysis import DF_plasmids_byReads, tables, Station, GetLibSize
+from general_analysis import plasmids_by_reads, tables, Station, GetLibSize
 from plasmid_detect import Plasmid_class
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
@@ -86,7 +86,7 @@ def Physical(vers):
     df_phys = df[['St_Depth','Latitude','Depth','Temp.','Temperature', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate']]
     #print(df_phys)
     return df_phys
-Physical(1)
+#Physical(1)
 
 ### getting statistics on plasmids by reads
 # does it belong here?

@@ -24,9 +24,11 @@ from matplotlib.pyplot import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.patches as mpatches
 from Protein_files_handler import dataset
-from station_phys_clustering import Clust_map, Physical, DF_plasmids_byReads, Station, GetLibSize
+from station_phys_clustering import Clust_map2, Plasmid_class, Physical, plasmids_by_reads, Station, GetLibSize
 
-station_orderCl, station_reorderCl = Clust_map(version)
+station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
+station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
+station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -61,7 +63,7 @@ VF_annot = r"../res/Annotations/VFs.xls"
 proteins_fasta = r"../res/Filtered_ORFs.fasta"
 reads_coverage = r"../res/all_cov.csv"
 
-plasmids_byreads=DF_plasmids_byReads()[1]
+plasmids_byreads=f'{output_dir}/Plasmids_ByReads.csv'
 
 colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
 
@@ -383,7 +385,7 @@ def Clustermap_AB():
     df = FreqFuncStat("CARD")
     df_norm = df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical()
+    parameters = Physical(1)
     parameters = parameters.set_index(parameters['St_Depth'])
     parameters["Temperature"] = parameters['Temp.'].astype(float).round()
     stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
@@ -493,7 +495,7 @@ def Clustermap_Me():
     df = FreqFuncStat("BACMET").reindex(station_order)
     df_norm = df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical()
+    parameters = Physical(1)
     #print(parameters)
     parameters = parameters.set_index(parameters['St_Depth'])
     parameters["Temperature"] = parameters['Temp.'].astype(float).round()
@@ -605,7 +607,7 @@ def Clustermap2(name):
     #df = FreqFuncStat("CARD")
     df_norm = df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical()
+    parameters = Physical(1)
     parameters = parameters.set_index(parameters['St_Depth'])
     parameters["Temperature"] = parameters['Temp.'].astype(float).round()
     stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
@@ -704,8 +706,8 @@ def Clustermap2(name):
     png_name = name + str(version) + '.png'
     png_dir=f'{visuals}/{png_name}'
     #plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return target
 
@@ -725,7 +727,7 @@ def Function_Frequency(name):
 #MergeFunct("BACMET")
 #MergeFunct("CARD")
 #GroupCARDANnot()
-#Clustermap2("CARD")
+Clustermap2("CARD")
 #Clustermap2("BACMET")
-Clustermap_Me()
+#Clustermap_Me()
 #Station_Order()
