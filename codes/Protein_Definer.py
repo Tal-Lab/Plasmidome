@@ -35,9 +35,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 output_dir = f"{path}/data_calculations"
@@ -143,7 +143,8 @@ def MetResDF():
     del metDF['ORF']
     metDF['align_perc'] = metDF['length'] / metDF['ORF_length']
     metDF = CleanFiltered(metDF)
-    print(metDF)
+    print('############ Print first 10 metDF ###########')
+    print(metDF.head())
     return metDF[['qseqid', hits, 'Protein_ID', 'length', 'pident', 'qstart','qend','sseq', 'ORF_length','Plasmid']]
 
 # handling AMR outputs
@@ -166,7 +167,8 @@ def ABResDF():
     del df['ORF']
     df['align_perc'] = df['length'] / df['ORF_length']
     df= CleanFiltered(df)
-    print(df)
+    print('############ Print first 10 CARD ###########')
+    print(df.head())
     return df[['qseqid', hits, 'Protein_ID', 'length', 'pident', 'qstart', 'qend','sseq', 'ORF_length','Plasmid']]
 
 # handling Virulence factors output
@@ -191,7 +193,7 @@ def Annotation(file):
     s.name = 'Compound'
     del df['Compound']
     df = df.join(s)
-    print(df)
+    #print(df)
     return df
 
 # reading AMR annotation file
@@ -218,6 +220,7 @@ def AnnotCARD():
 def DefineStation2():
     df = pd.read_csv(plasmids_byreads, index_col=None, header = 0)
     df.dropna(inplace = True)
+    #print('######## Printing plasmids by reads df ############')
     #print(df)
     return df
 
@@ -229,7 +232,6 @@ def GroupPlaceMapper():
     df1 = df1.rename(columns = {'NewName': "qseqid"})
     #df1['station_name'] = df1['Station'] + "_coverage"
     df1['Depth'] = df1['St_Depth'].apply(lambda x: (int(re.search("_\d+", x).group(0)[1:])))
-    #print(df1)
     #df1.loc[:, 'hits'] = df1.groupby(['St_Depth'])['qseqid'].transform('count')
     return df1
 
@@ -303,9 +305,23 @@ def MapToPlace(name):
         df_plasm = Metal_Compound()
     elif name == "CARD":
         df_plasm = FunctionMapper("CARD")
+    df_plasm.drop('qseqid', axis=1,inplace=True)
+    df_plasm['Plasmid'] = df_plasm['Plasmid'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     df_stations = GroupPlaceMapper()[['qseqid', 'St_Depth']]
-    new_df = pd.merge(df_plasm, df_stations, left_on = 'Plasmid', right_on = 'qseqid')
-    #print(new_df)
+    #new_df = df_stations.merge(df_plasm, left_on = 'qseqid', right_on = 'Plasmid', how='left')
+    if name == "BACMET":
+        new_df = pd.merge(df_plasm, df_stations, left_on = 'Plasmid', right_on = 'qseqid', how = 'right').reindex(
+            columns = ['qseqid', 'St_Depth', 'Compound', 'MetalRes', 'St_Depth'])
+        new_df.fillna('missing', inplace = True)
+        new_df['MetalRes'] = new_df['MetalRes'].apply(lambda x: round(x) if x!= 'missing' else x)
+    elif name == 'CARD':
+        new_df = pd.merge(df_plasm, df_stations, left_on = 'Plasmid', right_on = 'qseqid', how = 'right').reindex(
+            columns = ['qseqid', 'St_Depth', 'Compound', 'AB_Res', 'St_Depth'])
+        new_df.fillna('missing', inplace = True)
+        new_df['AB_Res'] = new_df['AB_Res'].apply(lambda x: round(x) if x!= 'missing' else x)
+
+    new_df = new_df.rename({'qseqid': 'Plasmid'}, axis = 1)
+    new_df = new_df.loc[new_df['Plasmid'] != '94_LNODE_1']
     return new_df
 
 def CoverageDF():
@@ -344,12 +360,18 @@ def MergeFunct(name):
 
 def FreqFuncStat(name):
     df = MapToPlace(name)[['St_Depth', 'Compound']]
-    df_to_append = MergeFunct(name)
+    print('######### Printing mapped resistance genes to sampling points #########')
+    print(df)
+    #df_to_append = MergeFunct(name)
     df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
+    print('############ Printing GroupPlaceMapper ############')
+    print(df2)
     df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(name='Function frequency')
+    print("########### Printing df_grouped from FreqFuncStat ##############")
+    print(df_grouped)
     df_grouped = df_grouped.reset_index()
     df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
-    df_grouped = df_grouped.append(df_to_append)
+    #df_grouped = df_grouped.append(df_to_append)
     df_grouped = df_grouped.rename(columns = {df.columns[0]: 'Sampling Stations'})
     pivot_df = pd.pivot_table(df_grouped,
                               index='Sampling Stations',
@@ -727,7 +749,7 @@ def Function_Frequency(name):
 #MergeFunct("BACMET")
 #MergeFunct("CARD")
 #GroupCARDANnot()
-Clustermap2("CARD")
+#Clustermap2("CARD")
 #Clustermap2("BACMET")
-#Clustermap_Me()
+Clustermap_Me()
 #Station_Order()

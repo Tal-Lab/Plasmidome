@@ -97,13 +97,13 @@ def Cov_plasmids():
     df_more_stat = df_count_stat.loc[df_count_stat['counts']>1]
     number_more_stat = df_more_stat['NewName'].nunique()
     number_one_stat = df_one_stat['NewName'].nunique()
-    print(number_more_stat)
-    print(df_one_stat['NewName'].unique())
+    #print(number_more_stat)
+    #print(df_one_stat['NewName'].unique())
     number_all = df['NewName'].nunique()
     perc_one = (number_one_stat/number_all)*100
     perc_more = (number_more_stat/number_all)*100
-    print(perc_one)
-    print(perc_more)
+    #print(perc_one)
+    #print(perc_more)
 #Cov_plasmids()
 
 def data_plas(df_pl):
