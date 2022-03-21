@@ -47,7 +47,7 @@ Path(output_dir).mkdir(parents=True, exist_ok=True)
 # working files
 #### blast results from different databases
 BacMetExp = f'{dataset}/BacMetExp.csv'
-BacMetPred = f'{dataset}/BacMetPred.csv"'
+BacMetPred = f'{dataset}/BacMetPred.csv'
 AB_res_1 = f'{dataset}/protein_fasta_protein_homolog_model.csv'
 AB_res_2 = f'{dataset}/protein_fasta_protein_knockout_model.csv'
 AB_res_3 = f'{dataset}/protein_fasta_protein_overexpression_model.csv'
@@ -130,6 +130,7 @@ def MetResDF():
     df1 = pd.read_csv(BacMetExp, sep = '\t', index_col = None, header = None)
     df1.columns = colnames
     df1['Protein_ID'] = df1.apply(lambda x: GetProt(x['sseqid'], '^\w+',None,None), axis = 1)
+    print(df1)
     #df1=df1.sort_values('length', ascending = False).groupby(['qseqid']).head(1)
     df2 = pd.read_csv(BacMetPred, sep = '\t', index_col = None, header = None)
     df2.columns = colnames
@@ -311,15 +312,14 @@ def MapToPlace(name):
     #new_df = df_stations.merge(df_plasm, left_on = 'qseqid', right_on = 'Plasmid', how='left')
     if name == "BACMET":
         new_df = pd.merge(df_plasm, df_stations, left_on = 'Plasmid', right_on = 'qseqid', how = 'right').reindex(
-            columns = ['qseqid', 'St_Depth', 'Compound', 'MetalRes', 'St_Depth'])
+            columns = ['qseqid', 'St_Depth', 'Compound', 'MetalRes'])
         new_df.fillna('missing', inplace = True)
         new_df['MetalRes'] = new_df['MetalRes'].apply(lambda x: round(x) if x!= 'missing' else x)
     elif name == 'CARD':
         new_df = pd.merge(df_plasm, df_stations, left_on = 'Plasmid', right_on = 'qseqid', how = 'right').reindex(
-            columns = ['qseqid', 'St_Depth', 'Compound', 'AB_Res', 'St_Depth'])
+            columns = ['qseqid', 'St_Depth', 'Compound', 'AB_Res'])
         new_df.fillna('missing', inplace = True)
         new_df['AB_Res'] = new_df['AB_Res'].apply(lambda x: round(x) if x!= 'missing' else x)
-
     new_df = new_df.rename({'qseqid': 'Plasmid'}, axis = 1)
     new_df = new_df.loc[new_df['Plasmid'] != '94_LNODE_1']
     return new_df
@@ -361,14 +361,14 @@ def MergeFunct(name):
 def FreqFuncStat(name):
     df = MapToPlace(name)[['St_Depth', 'Compound']]
     print('######### Printing mapped resistance genes to sampling points #########')
-    print(df)
+    print(df.head())
     #df_to_append = MergeFunct(name)
     df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
     print('############ Printing GroupPlaceMapper ############')
-    print(df2)
+    print(df2.head())
     df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(name='Function frequency')
     print("########### Printing df_grouped from FreqFuncStat ##############")
-    print(df_grouped)
+    print(df_grouped.head())
     df_grouped = df_grouped.reset_index()
     df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
     #df_grouped = df_grouped.append(df_to_append)
@@ -379,9 +379,9 @@ def FreqFuncStat(name):
                               values='Function frequency',
                               dropna = False,
                               fill_value = 0)
-    if int(len(df_to_append)) != 0:
-        pivot_df = pivot_df.drop(['None'], axis = 1)
-    #print(pivot_df)
+    pivot_df.drop('missing', axis=1, inplace = True)
+    print('###################3 pivoted')
+    print(pivot_df)
     return pivot_df
 
 def Station_Order(order):
@@ -430,6 +430,7 @@ def Clustermap_AB():
                              method = 'ward',
                              #row_cluster = False,
                              #row_colors = row_colors,
+                             #col_cluster = False,
                              linewidths = 0.0,
                              figsize = (14, 10),
                              cmap = sns.color_palette("Blues", as_cmap=True),
@@ -501,13 +502,13 @@ def Clustermap_AB():
     l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
                     borderaxespad = 2.0)
     plt.gca().add_artist(l1)"""
-    svg_name = "CARD" + str(version) + '.svg'
+    svg_name = "CARD_ordAB" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "CARD" + str(version) + '.png'
+    png_name = "CARD_ordAB" + str(version) + '.png'
     png_dir=f'{visuals}/{png_name}'
     #plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return target
 
@@ -541,6 +542,7 @@ def Clustermap_Me():
                              method = 'ward',
                              row_cluster = False,
                              #row_colors = row_colors,
+                             #col_cluster = False,
                              linewidths = 0.0,
                              figsize = (14, 10),
                              cmap = sns.color_palette("Blues", as_cmap=True),
@@ -611,13 +613,13 @@ def Clustermap_Me():
     l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
                     borderaxespad = 2.0)
     plt.gca().add_artist(l1)"""
-    svg_name = "BACMET" + str(version) + '.svg'
+    svg_name = "BACMET_ordAB" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "BACMET" + str(version) + '.png'
+    png_name = "BACMET_ordAB" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     #plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 def Clustermap2(name):
@@ -728,8 +730,8 @@ def Clustermap2(name):
     png_name = name + str(version) + '.png'
     png_dir=f'{visuals}/{png_name}'
     #plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return target
 
@@ -749,7 +751,7 @@ def Function_Frequency(name):
 #MergeFunct("BACMET")
 #MergeFunct("CARD")
 #GroupCARDANnot()
-#Clustermap2("CARD")
-#Clustermap2("BACMET")
+Clustermap2("CARD")
+Clustermap2("BACMET")
 Clustermap_Me()
 #Station_Order()
