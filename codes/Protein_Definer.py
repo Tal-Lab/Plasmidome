@@ -507,8 +507,8 @@ def Clustermap_AB():
     png_name = "CARD_ordAB" + str(version) + '.png'
     png_dir=f'{visuals}/{png_name}'
     #plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return target
 
@@ -618,11 +618,11 @@ def Clustermap_Me():
     png_name = "BACMET_ordAB" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     #plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
-def Clustermap2(name):
+def Clustermap_all(name):
     """
     #to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
     """
@@ -730,10 +730,18 @@ def Clustermap2(name):
     png_name = name + str(version) + '.png'
     png_dir=f'{visuals}/{png_name}'
     #plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return target
+
+def Clsutermap_PlPut(name):
+    """
+    #to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
+    I need to make a clustermap with plasmids+put plasmids / stations of plasmids+put plasmids
+    """
+
+
 
 def Function_Frequency(name):
     df = FreqFuncStat(name)
@@ -751,7 +759,7 @@ def Function_Frequency(name):
 #MergeFunct("BACMET")
 #MergeFunct("CARD")
 #GroupCARDANnot()
-Clustermap2("CARD")
-Clustermap2("BACMET")
-Clustermap_Me()
+#Clustermap2("CARD")
+#Clustermap2("BACMET")
+#Clustermap_Me()
 #Station_Order()
