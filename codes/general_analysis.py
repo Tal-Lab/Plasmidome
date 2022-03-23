@@ -489,18 +489,17 @@ def PieClass():
     df = df.groupby('Class').count()
     data = df['Plasmid'].to_list()
     label = df.index.to_list()
-    print(label)
     colors = sns.color_palette('pastel')[0:3]
     plt.pie(data, labels = label, colors = colors, autopct='%.0f%%')
     svg_name = "Class_piechart" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Class_piechart" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
-PieClass()
+#PieClass()
 #Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
