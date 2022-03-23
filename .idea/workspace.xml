@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="MR and AR. The saved plot is empty">
+    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codes/Protein_Definer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/Protein_Definer.py" afterDir="false" />
     </list>
@@ -173,7 +173,7 @@
       <updated>1641392898226</updated>
       <workItem from="1641392899406" duration="5138000" />
       <workItem from="1647858972514" duration="12538000" />
-      <workItem from="1647944138874" duration="2487000" />
+      <workItem from="1647944138874" duration="14857000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
@@ -217,7 +217,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647878252475</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids">
+      <created>1647961529853</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1647961529853</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -253,7 +260,8 @@
     <MESSAGE value="Plot for candidates lengths statistics" />
     <MESSAGE value="MR and AR. ValueError: Grouper for 'St_Depth' not 1-dimensional" />
     <MESSAGE value="MR and AR. The saved plot is empty" />
-    <option name="LAST_COMMIT_MESSAGE" value="MR and AR. The saved plot is empty" />
+    <MESSAGE value="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids" />
+    <option name="LAST_COMMIT_MESSAGE" value="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641399753438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
@@ -267,7 +275,7 @@
     <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1647357404106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1644227333655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1647436679389" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
-    <SUITE FILE_PATH="coverage/plasmidome$Protein_Definer.coverage" NAME="Protein_Definer Coverage Results" MODIFIED="1647946869180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$Protein_Definer.coverage" NAME="Protein_Definer Coverage Results" MODIFIED="1648034403216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644244352839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
   </component>
 </project>
