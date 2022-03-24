@@ -57,7 +57,7 @@ def CoverageDF(work_set):
     desired_df = data.loc[desired_indices]
     rows = list(desired_df.index)
     arr = desired_df.loc[rows].values
-    return (arr, data)
+    return (arr, desired_df)
 #CoverageDF(plasmids)
 
 def PlasmidsbyReads(work_set):

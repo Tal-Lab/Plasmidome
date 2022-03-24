@@ -20,7 +20,7 @@ import matplotlib.patches as mpatches
 from scipy import stats
 from pathlib import Path
 import os
-from general_analysis import plasmids_by_reads, tables, Station, GetLibSize
+from general_analysis import plasmids_by_reads, tables, Station, GetLibSize, CoverageDF
 from plasmid_detect import Plasmid_class
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
@@ -297,6 +297,32 @@ def Clust_map2(vers, df, name, cl, pl):
           (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
     '''
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
+
+def Correlation_calculation(class_df, cand_df):
+    station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
+    cluster_pl_df = cluster_pl_df.reset_index()
+    df_phys = Physical(1)[['St_Depth','Latitude','Temp.', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate','Silicate' ]]
+    df_phys = df_phys.set_index('St_Depth')
+    df_phys = df_phys.T
+    print(df_phys)
+    reads_df = CoverageDF(cand_df['Plasmid'].unique())[1]
+    reads_df = reads_df.reset_index()
+    reads_df = reads_df.melt(id_vars = ['rname'], var_name = 'Station', value_name = 'coverage')
+    station = Station()
+    reads_stat = reads_df.merge(station, left_on = 'Station', right_on = 'station_name')
+    reads_stat.drop(['station_name', 'Sample'], axis = 1, inplace = True)
+    reads_df_st = pd.pivot(reads_stat, values = 'coverage', index = 'rname', columns = 'St_Depth')
+    #df.melt(id_vars = ['car_model'], var_name = 'date', value_name = '0-60mph_in_seconds')
+    out = cluster_pl_df.merge(reads_df_st, left_on = 'Plasmids', right_on = 'rname')
+    #out.drop(['rname'], axis = 1, inplace = True)
+    out.sort_values('Cluster', inplace = True)
+    out_group=out.groupby('Cluster').mean()
+    print(out_group)
+    corr_df = out_group.corrwith(df_phys, axis = 0)
+    print(corr_df)
+
+Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0])
+
 order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
 order_plput = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2]
 order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
