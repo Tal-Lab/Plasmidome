@@ -29,9 +29,9 @@ import statsmodels.api as sm
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 visuals = f"{path}/visualisations"
@@ -304,7 +304,7 @@ def Correlation_calculation(class_df, cand_df):
     df_phys = Physical(1)[['St_Depth','Latitude','Temp.', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate','Silicate' ]]
     df_phys = df_phys.set_index('St_Depth')
     df_phys = df_phys.T
-    print(df_phys)
+    col_order = df_phys.columns.tolist()
     reads_df = CoverageDF(cand_df['Plasmid'].unique())[1]
     reads_df = reads_df.reset_index()
     reads_df = reads_df.melt(id_vars = ['rname'], var_name = 'Station', value_name = 'coverage')
@@ -317,9 +317,16 @@ def Correlation_calculation(class_df, cand_df):
     #out.drop(['rname'], axis = 1, inplace = True)
     out.sort_values('Cluster', inplace = True)
     out_group=out.groupby('Cluster').mean()
-    print(out_group)
-    corr_df = out_group.corrwith(df_phys, axis = 0)
-    print(corr_df)
+    out_group = out_group.reindex(col_order, axis=1)
+    #out_group = out_group.reindex(sorted(out_group.columns), axis=1)
+    #out_group = out_group.sort_index(axis=1)
+    print(out_group.iloc[1].to_list())
+    print(df_phys.iloc[2].to_list())
+    correlation, p_value = stats.pearsonr(out_group.iloc[1].to_list(), df_phys.iloc[2].to_list())
+    print('Pearson correlation: %d' % correlation)
+    print('p-value: %d' % p_value)
+    #corr_df = out_group.corrwith(df_phys, axis=0)
+    #print(corr_df)
 
 Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0])
 
