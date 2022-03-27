@@ -29,12 +29,13 @@ import statsmodels.api as sm
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 visuals = f"{path}/visualisations"
+tables = f"{path}/data_calculations"
 Path(visuals).mkdir(parents=True, exist_ok=True)
 
 # working files
@@ -298,7 +299,7 @@ def Clust_map2(vers, df, name, cl, pl):
     '''
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
 
-def Correlation_calculation(class_df, cand_df):
+def Correlation_calculation(class_df, cand_df, name):
     station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
     cluster_pl_df = cluster_pl_df.reset_index()
     df_phys = Physical(1)[['St_Depth','Latitude','Temp.', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate','Silicate' ]]
@@ -318,18 +319,24 @@ def Correlation_calculation(class_df, cand_df):
     out.sort_values('Cluster', inplace = True)
     out_group=out.groupby('Cluster').mean()
     out_group = out_group.reindex(col_order, axis=1)
-    #out_group = out_group.reindex(sorted(out_group.columns), axis=1)
-    #out_group = out_group.sort_index(axis=1)
-    print(out_group.iloc[1].to_list())
-    print(df_phys.iloc[2].to_list())
-    correlation, p_value = stats.pearsonr(out_group.iloc[1].to_list(), df_phys.iloc[2].to_list())
-    print('Pearson correlation: %d' % correlation)
-    print('p-value: %d' % p_value)
-    #corr_df = out_group.corrwith(df_phys, axis=0)
-    #print(corr_df)
+    print(out_group)
+    df_pearson = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group.index.to_list())
+    for index_o, row_o in out_group.iterrows():
+        print(index_o)
+        for index_p, row_p in df_phys.iterrows():
+            print("Pearson correlation, p-value for Cluster %s and %s" % (index_o, index_p))
+            correlation, p_value= stats.pearsonr(row_o, row_p)
+            print(round(correlation,3),round(p_value,3))
+            df_pearson[index_p][index_o] = (round(correlation,3),round(p_value,3))
+    print(df_pearson)
+    path_file = f'{tables}/Pearson.xlsx'
+    with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
+        df_pearson.to_excel(writer, sheet_name = name)
 
-Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0])
-
+#Correlation_calculation(Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500),Plasmid_class()[2], 'All')
+#Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
+#Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
+print(Plasmid_class()[0]['Plasmid'].unique())
 order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
 order_plput = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2]
 order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
