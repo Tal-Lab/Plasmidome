@@ -403,7 +403,15 @@ def ORF_byStation_stats():
 def Plasmid_Station():
     ' plasmid per station statistics '
     df = ORF_byPlasmid_stats()[0]
-    df_stat=DF_plasmids_byReads()[0]
+    df_stat=DF_plasmids_byReads(all_candidates, 'Plasmids_ByReads.csv')[0]
+    df_stat= df_stat.loc[df_stat['NewName'] != '94_LNODE_1']
+    df_stat_group = df_stat.groupby('NewName').count()
+    df_1 = df_stat_group.loc[df_stat_group['station_name']!=1]
+    print(df_1)
+    number_1 = df_1.size
+    number_all = df_stat_group.size
+    print(number_1)
+    print(str(((number_1/number_all)*100).round(2))+'%')
     df = pd.merge(df, df_stat, left_on = 'Plasmids', right_on = 'NewName')
     df = df.drop(['NewName',"Number of Proteins"], axis = 1)
     lib = GetLibSize()

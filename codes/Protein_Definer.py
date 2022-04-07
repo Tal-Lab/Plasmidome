@@ -875,12 +875,15 @@ def Clsutermap_PlPut(name):
 
 def Function_Frequency(name):
     df = FreqFuncStat(name)
-
+    df_0 = df[df.eq(0).all(1)]
+    print(df_0.index)
+    print("%s stations without resistance genes" % str(df_0.shape[0]))
+    print("%s stations with resistance genes" % str(df.shape[0] - df_0.shape[0]))
     df_norm = df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
     df.loc['Total']= df.sum()
     number_of_rows = len(df.index)
-    df.loc['Frequency'] = (df.loc['Total']/number_of_rows)*100
+    df.loc['Frequency'] = (df.loc['Total']/(number_of_rows-1))*100
     df_small = df.loc['Frequency'].sort_values(ascending=False)
     print("******************* %s compounds frequency by stations *****************" % name)
     print(df_small.nlargest())

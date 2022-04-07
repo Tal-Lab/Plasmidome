@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment="MR and AR. Plots for Plasmids+Putative plasmids">
+    <list default="true" id="38453b52-3b73-4666-9e65-ff836c1c82cc" name="Changes" comment=" Path to windows. Function to calculate correlation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/Protein_Definer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/Protein_Definer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/eggNOG_analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codes/general_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/general_analysis.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="plasmid_clustering_fix" />
+        <entry key="$PROJECT_DIR$" value="Correlation_calc" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -59,7 +61,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.general_analysis">
+  <component name="RunManager" selected="Python.Protein_Definer">
     <configuration name="Protein_Definer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -148,19 +150,42 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="station_phys_clustering" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\Lucy\AppData\Local\Programs\Python\Python38\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/codes" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/codes/station_phys_clustering.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python.plasmid_detect" />
+      <item itemvalue="Python.Protein_Definer" />
       <item itemvalue="Python.eggNOG_analyzer" />
       <item itemvalue="Python.general_analysis" />
-      <item itemvalue="Python.Protein_Definer" />
+      <item itemvalue="Python.plasmid_detect" />
+      <item itemvalue="Python.station_phys_clustering" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.general_analysis" />
-        <item itemvalue="Python.eggNOG_analyzer" />
-        <item itemvalue="Python.plasmid_detect" />
         <item itemvalue="Python.Protein_Definer" />
         <item itemvalue="Python.eggNOG_analyzer" />
+        <item itemvalue="Python.general_analysis" />
+        <item itemvalue="Python.plasmid_detect" />
+        <item itemvalue="Python.station_phys_clustering" />
       </list>
     </recent_temporary>
   </component>
@@ -175,6 +200,7 @@
       <workItem from="1641392899406" duration="5138000" />
       <workItem from="1647858972514" duration="12538000" />
       <workItem from="1647944138874" duration="14857000" />
+      <workItem from="1648114663280" duration="13238000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1641393827141</created>
@@ -225,7 +251,21 @@
       <option name="project" value="LOCAL" />
       <updated>1647961529853</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Piechart for plasmid classification">
+      <created>1648047427423</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1648047427423</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Piechart for plasmid classification">
+      <created>1648047449188</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1648047449188</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -242,7 +282,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="plasmid_clustering_fix" />
+                        <option value="Correlation_calc" />
                       </list>
                     </value>
                   </entry>
@@ -262,7 +302,8 @@
     <MESSAGE value="MR and AR. ValueError: Grouper for 'St_Depth' not 1-dimensional" />
     <MESSAGE value="MR and AR. The saved plot is empty" />
     <MESSAGE value="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids" />
-    <option name="LAST_COMMIT_MESSAGE" value="MR and AR. Plots are okay. Start preparing plots for plasmids+putative plasmids" />
+    <MESSAGE value="Piechart for plasmid classification" />
+    <option name="LAST_COMMIT_MESSAGE" value="Piechart for plasmid classification" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1641399753438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
@@ -273,10 +314,11 @@
     <SUITE FILE_PATH="coverage/Plasmidome$Protein_Definer.coverage" NAME="Protein_Definer Coverage Results" MODIFIED="1647700641130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1647182071015" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/Plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1642588975830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
-    <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1647357404106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$station_phys_clustering.coverage" NAME="station_phys_clustering Coverage Results" MODIFIED="1648379433405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1649335207293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/plasmidome$plasmid_detect.coverage" NAME="plasmid_detect Coverage Results" MODIFIED="1644227333655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
-    <SUITE FILE_PATH="coverage/plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1648047002009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
-    <SUITE FILE_PATH="coverage/plasmidome$Protein_Definer.coverage" NAME="Protein_Definer Coverage Results" MODIFIED="1648034458007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$general_analysis.coverage" NAME="general_analysis Coverage Results" MODIFIED="1649334515309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
+    <SUITE FILE_PATH="coverage/plasmidome$Protein_Definer.coverage" NAME="Protein_Definer Coverage Results" MODIFIED="1649337702846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
     <SUITE FILE_PATH="coverage/eggNOG_analyzer_py$eggNOG_analyzer.coverage" NAME="eggNOG_analyzer Coverage Results" MODIFIED="1644244352839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/codes" />
   </component>
 </project>
