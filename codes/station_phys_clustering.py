@@ -20,7 +20,7 @@ import matplotlib.patches as mpatches
 from scipy import stats
 from pathlib import Path
 import os
-from general_analysis import plasmids_by_reads, tables, Station, GetLibSize, CoverageDF
+from general_analysis import plasmids_by_reads, tables, Station, GetLibSize, CoverageDF, version
 from plasmid_detect import Plasmid_class
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
@@ -29,9 +29,9 @@ import statsmodels.api as sm
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 visuals = f"{path}/visualisations"
@@ -60,10 +60,13 @@ def Physical(vers):
     df = df.dropna()
     df_for_corr = df.reset_index().drop(['Sample', 'Station'], axis=1)
     df_for_corr = df_for_corr.apply(pd.to_numeric)
-    mask = np.triu(np.ones_like(df_for_corr.corr(), dtype=bool))
-    f, ax = plt.subplots(figsize=(9, 6))
-    sns.heatmap(df_for_corr.corr(), mask=mask,annot_kws={"size": 10},
-                  fmt='.2f', vmin=-1, vmax=1, annot=True,cmap='coolwarm')
+    df_for_corr = df_for_corr[['Latitude', 'Depth', 'Temp.', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Salinity', 'Chlorophyll', 'Turbidity']]
+    print(df_for_corr.columns)
+    #mask = np.triu(np.ones_like(df_for_corr.corr(), dtype=bool))
+    #f, ax = plt.subplots(figsize=(9, 6))
+    #sns.heatmap(df_for_corr.corr(), mask=mask,annot_kws={"size": 10}, fmt='.2f', vmin=-1, vmax=1, annot=True,cmap='coolwarm')
+    sns.heatmap(df_for_corr.corr(), annot_kws={"size": 10}, fmt='.2f', vmin=-1, vmax=1, annot=True, cmap='coolwarm')
+    #plt.show()
     svg_name = 'heatmap_phys_' + str(vers) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
     png_name = 'heatmap_phys_' + str(vers) + '.png'
@@ -71,7 +74,7 @@ def Physical(vers):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
-    #plt.show()
+    plt.show()
     df['St_Depth'] = df['Station'].astype(int).astype(str)+ '_'+df['Depth'].astype(str)
     # print(df['Temp.'].sort_values(ascending = False))
     # temperature ranges should be specified not in the code!
@@ -84,7 +87,7 @@ def Physical(vers):
     temps = ['21-23', '23-25', '25-29', '29-32']
     df['Temperature'] = np.select(conditions, temps)
     # columns should be specified not in the code!
-    df_phys = df[['St_Depth','Latitude','Depth','Temp.','Temperature', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate']]
+    df_phys = df[['St_Depth','Latitude','Depth','Temp.','Temperature', 'Salinity', 'Oxygen', 'Chlorophyll', 'Turbidity', 'Nitrate', 'Phosphate', 'Silicate']]
     #print(df_phys)
     return df_phys
 #Physical(1)
@@ -302,7 +305,7 @@ def Clust_map2(vers, df, name, cl, pl):
 def Correlation_calculation(class_df, cand_df, name):
     station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
     cluster_pl_df = cluster_pl_df.reset_index()
-    df_phys = Physical(1)[['St_Depth','Latitude','Temp.', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate','Silicate' ]]
+    df_phys = Physical(2)[['St_Depth', 'Latitude', 'Depth', 'Temp.', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Salinity', 'Chlorophyll', 'Turbidity']]
     df_phys = df_phys.set_index('St_Depth')
     df_phys = df_phys.T
     col_order = df_phys.columns.tolist()
@@ -328,18 +331,35 @@ def Correlation_calculation(class_df, cand_df, name):
             correlation, p_value= stats.pearsonr(row_o, row_p)
             print(round(correlation,3),round(p_value,3))
             df_pearson[index_p][index_o] = (round(correlation,3),round(p_value,3))
-    print(df_pearson)
-    path_file = f'{tables}/Pearson.xlsx'
-    with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
-        df_pearson.to_excel(writer, sheet_name = name)
+    cols=df_pearson.columns.to_list()
+    #df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
+    df_pearson_2 = df_pearson.assign(**df_pearson[df_pearson.columns.to_list()].apply(lambda x: x.str[0]))
+    df_pearson_2 = df_pearson_2.T
+    print(df_pearson_2)
+    ax = sns.heatmap(df_pearson_2, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
 
-#Correlation_calculation(Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500),Plasmid_class()[2], 'All')
-#Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
-#Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
+    svg_name = 'heatmap_corr_' + name + str(2) + '.svg'
+    svg_file = f'{visuals}/{svg_name}'
+    png_name = 'heatmap_corr_' + name + str(2) + '.png'
+    png_file = f'{visuals}/{png_name}'
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
+    plt.show()
+    path_file = f'{tables}/Pearson.xlsx'
+
+    #with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
+        #df_pearson.to_excel(writer, sheet_name = name)
+
+
+
+
+Correlation_calculation(Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500),Plasmid_class()[2], 'All')
+Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
+Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 print(Plasmid_class()[0]['Plasmid'].unique())
-order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
-order_plput = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2]
-order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
+#order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
+#order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
 
 #print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
 #Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)

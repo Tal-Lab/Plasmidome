@@ -25,9 +25,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
