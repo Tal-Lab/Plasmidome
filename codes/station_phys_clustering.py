@@ -29,9 +29,9 @@ import statsmodels.api as sm
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 visuals = f"{path}/visualisations"
@@ -60,7 +60,7 @@ def Physical(vers):
     df = df.dropna()
     df_for_corr = df.reset_index().drop(['Sample', 'Station'], axis=1)
     df_for_corr = df_for_corr.apply(pd.to_numeric)
-    df_for_corr = df_for_corr[['Latitude', 'Depth', 'Temp.', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Salinity', 'Chlorophyll', 'Turbidity']]
+    df_for_corr = df_for_corr[['Latitude', 'Salinity', 'Chlorophyll', 'Turbidity', 'Temp.', 'Oxygen', 'Depth', 'Nitrate', 'Phosphate', 'Silicate']]
     print(df_for_corr.columns)
     #mask = np.triu(np.ones_like(df_for_corr.corr(), dtype=bool))
     #f, ax = plt.subplots(figsize=(9, 6))
@@ -305,7 +305,7 @@ def Clust_map2(vers, df, name, cl, pl):
 def Correlation_calculation(class_df, cand_df, name):
     station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
     cluster_pl_df = cluster_pl_df.reset_index()
-    df_phys = Physical(2)[['St_Depth', 'Latitude', 'Depth', 'Temp.', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Salinity', 'Chlorophyll', 'Turbidity']]
+    df_phys = Physical(3)[['St_Depth', 'Latitude', 'Salinity', 'Chlorophyll', 'Turbidity', 'Temp.', 'Oxygen', 'Depth', 'Nitrate', 'Phosphate', 'Silicate']]
     df_phys = df_phys.set_index('St_Depth')
     df_phys = df_phys.T
     col_order = df_phys.columns.tolist()
@@ -338,9 +338,9 @@ def Correlation_calculation(class_df, cand_df, name):
     print(df_pearson_2)
     ax = sns.heatmap(df_pearson_2, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
 
-    svg_name = 'heatmap_corr_' + name + str(2) + '.svg'
+    svg_name = 'heatmap_corr_' + name + str(3) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'heatmap_corr_' + name + str(2) + '.png'
+    png_name = 'heatmap_corr_' + name + str(3) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
@@ -354,9 +354,9 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-Correlation_calculation(Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500),Plasmid_class()[2], 'All')
-Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
-Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
+Correlation_calculation(Clust_map2(5,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+#Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
+#Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 print(Plasmid_class()[0]['Plasmid'].unique())
 #order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
 #order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
