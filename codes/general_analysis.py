@@ -25,9 +25,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
@@ -39,6 +39,7 @@ reads_coverage = r"../res/all_cov.csv"
 proteins = r"../res/Filtered_ORFs.fasta"
 library = r"../res/LibrarySize.csv"
 stations = r"../res/stations.txt"
+nt_stats = r"../res/nt_3.csv"
 
 df_class = Plasmid_class()[2]
 plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
@@ -84,7 +85,7 @@ def DF_plasmids_byReads(work_set, file_name):
         df[['NewName', 'station_name']].to_csv(out_file, index = False)
     return df[['NewName', 'station_name']], out_file
 
-plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
+#plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
 
 def Coverage_stat(work_set):
     ' plasmid presence statistics '
@@ -499,6 +500,11 @@ def PieClass():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
+def ntdb_stats():
+    df = pd.read_csv(nt_stats, sep = '\t', index_col = None, header= None, error_bad_lines=False)
+    print(df)
+
+ntdb_stats()
 #PieClass()
 #Candidates_length()
 #ORF_byStation_stats()
