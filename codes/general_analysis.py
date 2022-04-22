@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import seaborn as sns
 from scipy import stats
-from plasmid_detect import Plasmid_class
+from plasmid_detect import Plasmid_class, colnames
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -104,7 +104,7 @@ def Coverage_stat(work_set):
 def ORF_stats():
     ' ORF statistics '
     records = []
-    lenghts=[]
+    lenghts = []
     for record in SeqIO.parse(proteins, "fasta"):
         records.append(record.id)
         prot_len=len(record)
@@ -502,9 +502,22 @@ def PieClass():
 
 def ntdb_stats():
     df = pd.read_csv(nt_stats, sep = '\t', index_col = None, header= None, error_bad_lines=False)
-    print(df)
+    df.columns = colnames
+    df = df[['qseqid','stitle', 'evalue', 'length', 'pident', 'mismatch',\
+            'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send']]
+    df.sort_values(by='pident', axis=0, ascending=False, inplace=True)
+    df['len'] = df['qseqid'].apply(Clean_length)
+    df['AP'] = ((abs(df['qstart']-df['qend'])/df['len'])*100).round(3)
+    print(df['pident'].min())
+    print(df['AP'].min())
+    df_high = df.loc[(df['pident']>90) & (df['AP']>90)]
+    print(df_high['qseqid'].nunique())
+    df_chrom = df.loc[df['stitle'].str.contains('chromosome')]
+    print(df_chrom['qseqid'].nunique())
+    df_vir = df.loc[(df['stitle'].str.contains('virus')) | (df['stitle'].str.contains('phage'))]
+    print(df_vir['qseqid'].nunique())
 
-ntdb_stats()
+#ntdb_stats()
 #PieClass()
 #Candidates_length()
 #ORF_byStation_stats()
