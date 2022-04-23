@@ -21,9 +21,9 @@ from station_phys_clustering import Clust_map2, Plasmid_class
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 out_dir = f"{path}/data_calculations"
@@ -314,7 +314,7 @@ def Frequency_ofCategory():
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-#Frequency_ofCategory()
+Frequency_ofCategory()
 #eggNOGStats()
 #BarChart(True, 'with')
 #BarChart(True, 'without')
