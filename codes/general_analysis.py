@@ -552,6 +552,10 @@ def nt_counts():
     nt_virus = df_nt[(df_nt['stitle'].str.contains('virus')) | (df_nt['stitle'].str.contains('phage'))]
     print('Number of plasmid candidates, matched to viral elements: %d' % nt_virus['Plasmid'].nunique())
     print('Percentage  of plasmid candidates, matched to viral elements: %d' % ((nt_virus['Plasmid'].nunique() / n_nt_plasmids) * 100))
+    # getting candidates matching chromosomal of viral elements
+    nt_chromvir = df_nt[df_nt['stitle'].str.contains('chromosome') | (df_nt['stitle'].str.contains('virus')) | (df_nt['stitle'].str.contains('phage'))]
+    print('Number of plasmid candidates, matched to chromosomal or viral elements: %d' % nt_chromvir['Plasmid'].nunique())
+    print('Percentage  of plasmid candidates, matched to chromosomal or viral elements: %d' % ((nt_chromvir['Plasmid'].nunique() /  plasmids_by_reads['NewName'].nunique()) * 100))
     # getting names of candidates with match in nt-database
     nt_plasmids = df_nt['Plasmid'].unique()
     # print(nt_plasmids)
@@ -567,7 +571,7 @@ def nt_counts():
     # counting the number of plasmid candidates with significant (>90% PI and >90% coverage) match in nt-database
     df_nt_high = df_nt[(df_nt['pident']>90) & (df_nt['qcovs']>90)]
     df_nt_high = df_nt_high.loc[abs(df_nt_high['qend']-df_nt_high['qstart']).between((df_nt_high['Pl_length']-round((df_nt_high['Pl_length']*0.1),0)), (df_nt_high['Pl_length']+round((df_nt_high['Pl_length']*0.1),0)))]
-    print(df_nt_high[['Plasmid','stitle','pident','length','qcovs']])
+    #print(df_nt_high[['Plasmid','stitle','pident','length','qcovs']])
     out_file = f'{tables}/nt_high.csv'
     # print(out_file)
     #writing candidates with significant match to file
@@ -580,7 +584,7 @@ def nt_counts():
 
 #nt_counts()
 #PieClass()
-Candidates_length()
+#Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
