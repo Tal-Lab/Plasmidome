@@ -462,9 +462,31 @@ def Plasmid_Station():
     plt.show()
 
 def Candidates_length():
+    """ Statistics for candidates lengths """
     df = ORF_byPlasmid_stats()[1]
     #df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
-    #print(df)
+    print(df.columns)
+    # getting the longest plasmid candidate and its length
+    df_max = df['Plasmid Length'].max()
+    print("The longest candidate length is %d bp" % df_max)
+    # calculating number of plasmid candidates with length <100 bp
+    df100 = df.loc[df['Length_norm'] <= 100]
+    print('Number of plasmids with length <=100 kb is: %d' % df100['Plasmid'].nunique())
+    print('Percentage of plasmids with length <=100 kb is: %d' % ((df100['Plasmid'].nunique()/df['Plasmid'].nunique())*100))
+    # calculating number of plasmid candidates with length around 140 bp
+    df140 = df.loc[df['Length_norm'].between(120,200)]
+    print('Number of plasmids around 140 kb is: %d' % df140['Plasmid'].nunique())
+    # getting plasmid candidates classified as uncertain
+    df_uncert = df[df['Class']=='Uncertain']
+    pl_uncert = df_uncert['Plasmid'].nunique()
+    max_unc = df_uncert['Plasmid Length'].max()
+    min_unc = df_uncert['Plasmid Length'].min()
+    print("Candidates classified as uncertain are in range from %d to %d bp" % (min_unc, max_unc))
+    # getting number of uncertain candidates shorter then 4 kb
+    df4kb = df_uncert[df_uncert['Length_norm'] < 4]
+    print('Number of plasmids with length < 4 kb is: %d' % df4kb['Plasmid'].nunique())
+    print('Percentage of plasmids with length < 4 kb is: %d' % ((df4kb['Plasmid'].nunique() / pl_uncert) * 100))
+    # plotting histogram for candidate's lengths, colored by class
     sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths_Histo" + str(version) + '.svg'
@@ -474,7 +496,9 @@ def Candidates_length():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
+    # getting candidates <200bp into separate dataframe
     df_min = df.loc[df['Length_norm']<=200]
+    # plotting histogram for candidate's lengths (<200bp), colored by class
     sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths200_Histo" + str(version) + '.svg'
@@ -556,7 +580,7 @@ def nt_counts():
 
 #nt_counts()
 #PieClass()
-#Candidates_length()
+Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]
