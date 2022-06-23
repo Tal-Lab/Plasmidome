@@ -1,27 +1,27 @@
-COG cat,Functional categories
-A,RNA processing and modification
-B,Chromatin Structure and dynamics
-C,Energy production and conversion
-D,"Cell cycle control, Cell division, Chromosome Partitioning"
-E,Amino Acid transport and metabolism
-F,Nucleotide metabolism and transport
-G,Carbohydrate metabolism and transport
-H,Coenzyme metabolism and transport
-I,Lipid metabolism and transport
-J,"Tranlsation, Ribosomal structure and Biogenesis"
-K,Transcription
-L,"Replication, recombination and repair"
-M,Cell wall/membrane/envelop biogenesis
-N,Cell motility
-O,"Post-translational modification, protein turnover, chaperones"
-P,Inorganic ion transport and metabolism
-Q,"Secondary metabolites biosynthesis, transport and catabolism"
-T,Signal Transduction
-U,"Intracellular trafficing, secretion and vesicular transport"
-Y,Nuclear structure
-Z,Cytoskeleton
-R,General Functional Prediction only
-S,Function Unknown
-V,Defence mechanisms
-W,Extracellular structures
-X,Mobilome: Prophages. Transposons
+COG cat,Functional categories,DB representation,Number of proteins,Number of genes
+A,RNA processing and modification,5,729,5
+B,Chromatin Structure and dynamics,2,254,2
+C,Energy production and conversion,388,"223,340",385
+D,"Cell cycle control, Cell division, Chromosome Partitioning",191,"65,333",189
+E,Amino Acid transport and metabolism,290,"303,576",285
+F,Nucleotide metabolism and transport,129,"102,508",120
+G,Carbohydrate metabolism and transport,258,"231,877",241
+H,Coenzyme metabolism and transport,257,,
+I,Lipid metabolism and transport,131,,
+J,"Tranlsation, Ribosomal structure and Biogenesis",351,"275,044",347
+K,Transcription,212,"272,365",176
+L,"Replication, recombination and repair",189,"146,012",169
+M,Cell wall/membrane/envelop biogenesis,240,"244,326",229
+N,Cell motility,85,"57,166",83
+O,"Post-translational modification, protein turnover, chaperones",211,"175,601",186
+P,Inorganic ion transport and metabolism,241,,
+Q,"Secondary metabolites biosynthesis, transport and catabolism",98,,
+T,Signal Transduction,225,"236,941",202
+U,"Intracellular trafficing, secretion and vesicular transport",109,"62,030",99
+Y,Nuclear structure,0,0,0
+Z,Cytoskeleton,6,"3,540",4
+R,General Functional Prediction only,559,,
+S,Function Unknown,725,,
+V,Defence mechanisms,175,"115,502",153
+W,Extracellular structures,35,"24,817",34
+X,Mobilome: Prophages. Transposons,126,"43,025",68
