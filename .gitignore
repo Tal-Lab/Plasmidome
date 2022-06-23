@@ -1,1 +1,4 @@
-/.idea/misc.xml
+/.idea/*
+/codes/__pycache__/*
+.DS_store
+"codes/C:\\Users\\Lucy\\iCloudDrive\\Documents/"
