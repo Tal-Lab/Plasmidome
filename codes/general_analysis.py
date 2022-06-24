@@ -26,9 +26,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
@@ -560,7 +560,7 @@ def nt_counts():
     nt_plasmids = df_nt['Plasmid'].unique()
     # print(nt_plasmids)
     # gettiing number of sampling points where each candidate was found
-    stat_pl = plasmids_by_reads.groupby('NewName').size().reset_index(name = 'Number_of_stations')
+    stat_pl = plasmids_by_reads.groupby('NewName').size().reset_index(name='Number_of_stations')
     # print(stat_pl)
     # getting number of sampling points, where candidates with no match in nt-database where found
     non_nt_pl = stat_pl[~stat_pl['NewName'].isin(nt_plasmids)].reset_index(drop = True)
