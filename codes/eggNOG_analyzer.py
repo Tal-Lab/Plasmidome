@@ -17,14 +17,15 @@ from scipy.special import comb
 from collections import defaultdict
 import matplotlib.patches as mpatches
 from station_phys_clustering import Clust_map2, Plasmid_class
+from scipy.stats import hypergeom
 ### Description
 # add description
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 out_dir = f"{path}/data_calculations"
@@ -292,17 +293,28 @@ def Physical():
     return df[['St_Depth','Depth','Temperature']]
 
 def prob_func(x, orfs, genes, df_db, df_orfs):
+    ''' Function to calculate COG categories statistics. \
+    Function gets COG category (x), number of genes, \
+    assigned any COG category (orfs), cog-database, orf_database.'''
+    # getting number of genes assigned particular COG category x from cof and orfs databases
     df_db = df_db[df_db['COG cat'] == x]
     cog_db = df_db.iloc[0]['DB representation']
     df_orfs = df_orfs[df_orfs['COG cat'] == x]
     cog_plasmids = df_orfs.iloc[0]['Function count']
-    print(genes, cog_db, orfs, cog_plasmids)
+    #print(genes, cog_db, orfs, cog_plasmids)
+    rv = hypergeom(genes, cog_db, orfs)
+    pmf_cog = rv.pmf(cog_plasmids)
+    pval = hypergeom.sf(cog_plasmids-1, genes, cog_db, orfs)
+    #print (pmf_cog)
+    print('The probability of getting %d ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pmf_cog)))
+    print('The probability of getting %d or more ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pval)))
     #not working
-    prob = hypergeom_pmf(genes, cog_db, orfs, cog_plasmids)
-    print(prob)
-    return prob
+    #prob = hypergeom_pmf(genes, cog_db, orfs, cog_plasmids)
+    #print(prob)
+    return pmf_cog
 
 def Frequency_ofCategory():
+    """ Statistics for COG categories """
     df_station = MapToPlace()[['St_Depth', 'COG cat', 'Functional categories']]
     df_categories = df_station[['COG cat', 'Functional categories']].drop_duplicates()
     df_plasmids = SplitColumn()[['Query', 'COG cat']]
@@ -320,12 +332,16 @@ def Frequency_ofCategory():
     #df_pl_count = df_plasmids['COG cat'].value_counts(normalize = False).to_frame(name = 'Function count').sort_values(by = 'Function count', ascending = False)
     print(df_pl_count.head())
     #print(df_pl_count[df_pl_count['COG cat']=='L'])
-    # getting COG statistics
+    # getting COG elemments in COG database
     df_cogs = csv_reader(cog_categories)
     df_cogs = df_cogs.loc[df_cogs['COG cat'] != 'S']
+    # calculating all genes in COG db
     db_genes = df_cogs['DB representation'].astype('int').sum()
+    # calculating probability of getting particular ammount of genes assigned a particular COG category by random
     df_pl_count['cog_prob'] = df_pl_count['COG cat'].apply(prob_func, args=(plasmid_orfs,db_genes,df_cogs, df_pl_count))
+    df_pl_count['cog_prob'] = df_pl_count['cog_prob'].apply(lambda x: "{:.2e}".format(x))
     print(df_pl_count.head())
+    ### getting statistics for COG elements in the sampling points
     df_station['COG cat'] = df_station['COG cat'].replace('-', 'missing').fillna('missing')
     df_station = df_station[(df_station['COG cat'] != 'missing') & (df_station['COG cat'] != 'S')]
     df_grouped = df_station['COG cat'].value_counts(normalize = True).to_frame(name = 'Function count').sort_values(
