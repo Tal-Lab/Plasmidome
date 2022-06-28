@@ -157,7 +157,7 @@ def Clust_map2(vers, df, name, cl, pl):
                              )
     figure1.ax_col_dendrogram.remove()
     figure1.ax_row_dendrogram.remove()
-
+    fontsize = 14
     # station clusters indices correspond to indices of original df
 
     L_st = figure1.dendrogram_row.linkage
@@ -165,11 +165,11 @@ def Clust_map2(vers, df, name, cl, pl):
     rows = []
     for i, cluster in enumerate(clusters_st):
         rows.append([coverage.index[i], cluster])
-    cluster_st_df = pd.DataFrame(rows, columns=["St_Depth", "Cluster"])
+    cluster_st_df = pd.DataFrame(rows, columns=["St_Depth", "Sampling points clusters"])
     cluster_st_df = cluster_st_df.set_index(parameters['St_Depth'])
     stat_cluster = dict(
-        zip(cluster_st_df['Cluster'].unique(), sns.color_palette("Pastel1", cluster_st_df['Cluster'].nunique())))
-    cluster_st = cluster_st_df['Cluster'].map(stat_cluster)
+        zip(cluster_st_df['Sampling points clusters'].unique(), sns.color_palette("Pastel1", cluster_st_df['Sampling points clusters'].nunique())))
+    cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
     stations = cluster_st_df.index.values.tolist()
     
     # plasmid clusters indices correspond to indices of original df
@@ -179,11 +179,11 @@ def Clust_map2(vers, df, name, cl, pl):
     cols = []
     for i, cluster in enumerate(clusters_pl):
         cols.append([coverage.columns[i], cluster])
-    cluster_pl_df = pd.DataFrame(cols, columns = ["Plasmids", "Cluster"])
+    cluster_pl_df = pd.DataFrame(cols, columns = ["Plasmids", "Plasmid candidates clusters"])
     cluster_pl_df = cluster_pl_df.set_index('Plasmids')
     plas_cluster = dict(
-        zip(cluster_pl_df['Cluster'].unique(), sns.color_palette("Greys", cluster_pl_df['Cluster'].nunique())))
-    cluster_pl = cluster_pl_df['Cluster'].map(plas_cluster)
+        zip(cluster_pl_df['Plasmid candidates clusters'].unique(), sns.color_palette("Greys", cluster_pl_df['Plasmid candidates clusters'].nunique())))
+    cluster_pl = cluster_pl_df['Plasmid candidates clusters'].map(plas_cluster)
     plasmids = cluster_pl_df.index.values.tolist()
 
     empty = 0*len(stations)
@@ -204,11 +204,11 @@ def Clust_map2(vers, df, name, cl, pl):
                              xticklabels = False,
                              yticklabels = True,
                              rasterized = True,
-                             cbar_kws = {"ticks": [0, 100]}
-                             )
+                             cbar_kws = {"ticks": [0, 100]},
+                             annot_kws={'size': 14})
     # g.set_axis_labels(["Plasmid candidates", "Sampling stations"])
     figure2.fig.subplots_adjust(left = -.01, right = 0.8)
-    figure2.cax.set_title("AP")
+    figure2.cax.set_title("AP", fontdict={'fontsize':14})
     figure2.ax_cbar.set_position((0.92, .16, .03, .6))
     figure2.ax_col_dendrogram.remove()
     figure2.ax_row_dendrogram.remove()
@@ -226,28 +226,29 @@ def Clust_map2(vers, df, name, cl, pl):
     # temperature legend
     tem_legend = []
     for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
+        temp_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_temp[label], label = label)
         tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-25, 1.13), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
+    l1 = figure2.ax_row_dendrogram.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (0, 0), loc = "upper left",
+                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize, fontsize=fontsize)
+    #plt.gca().add_artist(l1)
     # depth legend
     # loop?
     dep_legend = []
     for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
+        dep_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_depth[label], label = label)
         dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-25, 0.45), loc = "right",
-                    borderaxespad = 2.0)
+    l2 = figure2.ax_row_dendrogram.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (0, 0), loc = "left",
+                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize,  fontsize=fontsize)
     salt_legend = []
     for label in parameters['Salinity'].sort_values().unique():
-        salt_patch = mpatches.Patch(color = stat_salt[label], label = label)
+        salt_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_salt[label], label = label)
         salt_legend.append(salt_patch)
-    l3 = plt.legend(title = 'Salinity', handles = salt_legend, bbox_to_anchor = (-25, -.11), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l2)
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 14)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 14)
+    l3 = figure2.ax_row_dendrogram.legend(title = 'Salinity', handles = salt_legend, bbox_to_anchor = (0, 0), loc = "lower left",
+                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize, fontsize=fontsize)
+    legends = [l1,l2,l3]
+    #plt.gca().add_artist(l2)
+    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = fontsize)
+    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = fontsize)
     svg_name=name +str(vers)+'.svg'
     svg_file=f'{visuals}/{svg_name}'
     png_name=name +str(vers)+'.png'
@@ -258,15 +259,13 @@ def Clust_map2(vers, df, name, cl, pl):
     plt.show()  # Push new figure on stack
     station_order = coverage.index.values.tolist()
     station_reorder = figure2.dendrogram_row.reordered_ind
-
-
     # calculate correlation vector
     parameters["Temp."] = parameters['Temp.'].astype(float)
     parameters['Depth'] = parameters['Depth'].astype(int)
     parameters['Latitude'] = parameters['Latitude'].astype(float)
     df_correlation = parameters[['Temp.', 'Depth', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Latitude']].merge(
         cluster_st, left_index=True, right_index=True)
-    Cluster_array = df_correlation['Cluster'].to_numpy()
+    Cluster_array = df_correlation['Plasmid candidates clusters'].to_numpy()
     param_arrays = [df_correlation['Temp.'], df_correlation['Depth'], df_correlation['Salinity'],
                     df_correlation['Oxygen'], df_correlation['Latitude'],
                     df_correlation['Nitrate'], df_correlation['Phosphate'], df_correlation['Silicate']]
@@ -354,7 +353,7 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-Correlation_calculation(Clust_map2(5,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+Correlation_calculation(Clust_map2(6,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 print(Plasmid_class()[0]['Plasmid'].unique())
