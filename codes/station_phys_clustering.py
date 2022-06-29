@@ -14,6 +14,8 @@ import pandas as pd
 import seaborn as sns; sns.set(color_codes=True)
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
+import pylab
+from pylab import *
 import scipy.cluster.hierarchy as sch
 from collections import defaultdict
 import matplotlib.patches as mpatches
@@ -50,7 +52,7 @@ def data_file():
     df=Station()
     data = data.rename(columns = df.set_index('station_name')['St_Depth'].to_dict())
     data = data.rename_axis("Plasmid candidates")
-    data = data.rename_axis("Sampling stations", axis="columns")
+    data = data.rename_axis("Sampling points", axis="columns")
     # transpose data to fit it in clustermap with stations on the y axis and candidates on the x axis
     data_transp = data.transpose()
     return data_transp
@@ -157,7 +159,6 @@ def Clust_map2(vers, df, name, cl, pl):
                              )
     figure1.ax_col_dendrogram.remove()
     figure1.ax_row_dendrogram.remove()
-    fontsize = 14
     # station clusters indices correspond to indices of original df
 
     L_st = figure1.dendrogram_row.linkage
@@ -194,22 +195,23 @@ def Clust_map2(vers, df, name, cl, pl):
     stat_space = dict(zip(space_df[' '].unique(), "white"))
     space_st = space_df[' '].map(stat_space)
     row_colors = pd.concat([cluster_st, salt, temperature, depth, space_st], axis = 1)
+    sns.set(font_scale = 3.2)
     figure2 = sns.clustermap(data = coverage,
                              metric = "euclidean",
                              method = 'ward',
                              row_colors = row_colors,
                              col_colors=cluster_pl,
+                             figsize = (30, 30),
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              linewidths = 0.0,
                              xticklabels = False,
                              yticklabels = True,
                              rasterized = True,
-                             cbar_kws = {"ticks": [0, 100]},
-                             annot_kws={'size': 14})
-    # g.set_axis_labels(["Plasmid candidates", "Sampling stations"])
+                             cbar_kws = {"ticks": [0, 100]})
+    #figure2.ax_heatmap.tick_params(axis = 'both', which = 'major', pad = 50)
     figure2.fig.subplots_adjust(left = -.01, right = 0.8)
-    figure2.cax.set_title("AP", fontdict={'fontsize':14})
-    figure2.ax_cbar.set_position((0.92, .16, .03, .6))
+    figure2.cax.set_title("Coverage(%)", pad=30.0, fontdict={'fontsize':36})
+    figure2.ax_cbar.set_position((0.92, .26, .03, .5))
     figure2.ax_col_dendrogram.remove()
     figure2.ax_row_dendrogram.remove()
 
@@ -226,29 +228,25 @@ def Clust_map2(vers, df, name, cl, pl):
     # temperature legend
     tem_legend = []
     for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_temp[label], label = label)
+        temp_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_temp[label], label = label, linewidth=0)
         tem_legend.append(temp_patch)
-    l1 = figure2.ax_row_dendrogram.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (0, 0), loc = "upper left",
-                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize, fontsize=fontsize)
-    #plt.gca().add_artist(l1)
+    l1 = plt.legend(tem_legend, parameters["Temperature"].sort_values().unique(), loc="upper left", title = 'Temperature', title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, 0.8), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
+    plt.gca().add_artist(l1)
     # depth legend
     # loop?
     dep_legend = []
     for label in parameters['Depth'].sort_values().unique():
-        dep_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_depth[label], label = label)
+        dep_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_depth[label], label = label, linewidth=0)
         dep_legend.append(dep_patch)
-    l2 = figure2.ax_row_dendrogram.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (0, 0), loc = "left",
-                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize,  fontsize=fontsize)
+    l2 = plt.legend(dep_legend, parameters['Depth'].sort_values().unique(), loc= "center left",  title = 'Depth',title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, .5), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
     salt_legend = []
     for label in parameters['Salinity'].sort_values().unique():
-        salt_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_salt[label], label = label)
+        salt_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_salt[label], label = label, linewidth=0)
         salt_legend.append(salt_patch)
-    l3 = figure2.ax_row_dendrogram.legend(title = 'Salinity', handles = salt_legend, bbox_to_anchor = (0, 0), loc = "lower left",
-                    borderaxespad = 2.0, bbox_transform=gcf().transFigure, title_fontsize=fontsize, fontsize=fontsize)
-    legends = [l1,l2,l3]
-    #plt.gca().add_artist(l2)
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = fontsize)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = fontsize)
+    l3 = plt.legend(salt_legend,parameters['Salinity'].sort_values().unique(), loc="lower left", title = 'Salinity',title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, .25), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
+    plt.gca().add_artist(l2)
+    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels())
+    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels())
     svg_name=name +str(vers)+'.svg'
     svg_file=f'{visuals}/{svg_name}'
     png_name=name +str(vers)+'.png'
