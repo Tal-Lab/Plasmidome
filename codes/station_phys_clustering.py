@@ -263,10 +263,10 @@ def Clust_map2(vers, df, name, cl, pl):
     parameters['Latitude'] = parameters['Latitude'].astype(float)
     df_correlation = parameters[['Temp.', 'Depth', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Latitude']].merge(
         cluster_st, left_index=True, right_index=True)
-    Cluster_array = df_correlation['Plasmid candidates clusters'].to_numpy()
-    param_arrays = [df_correlation['Temp.'], df_correlation['Depth'], df_correlation['Salinity'],
-                    df_correlation['Oxygen'], df_correlation['Latitude'],
-                    df_correlation['Nitrate'], df_correlation['Phosphate'], df_correlation['Silicate']]
+    #Cluster_array = df_correlation['Plasmid candidates clusters'].to_numpy()
+    #param_arrays = [df_correlation['Temp.'], df_correlation['Depth'], df_correlation['Salinity'],
+    #               df_correlation['Oxygen'], df_correlation['Latitude'],
+    #               df_correlation['Nitrate'], df_correlation['Phosphate'], df_correlation['Silicate']]
 
     '''
     #pearson_dict = {}
@@ -316,8 +316,8 @@ def Correlation_calculation(class_df, cand_df, name):
     #df.melt(id_vars = ['car_model'], var_name = 'date', value_name = '0-60mph_in_seconds')
     out = cluster_pl_df.merge(reads_df_st, left_on = 'Plasmids', right_on = 'rname')
     #out.drop(['rname'], axis = 1, inplace = True)
-    out.sort_values('Cluster', inplace = True)
-    out_group=out.groupby('Cluster').mean()
+    out.sort_values('Plasmid candidates clusters', inplace = True)
+    out_group=out.groupby('Plasmid candidates clusters').mean()
     out_group = out_group.reindex(col_order, axis=1)
     print(out_group)
     df_pearson = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group.index.to_list())
@@ -333,6 +333,7 @@ def Correlation_calculation(class_df, cand_df, name):
     df_pearson_2 = df_pearson.assign(**df_pearson[df_pearson.columns.to_list()].apply(lambda x: x.str[0]))
     df_pearson_2 = df_pearson_2.T
     print(df_pearson_2)
+    sns.set(font_scale = 1.2)
     ax = sns.heatmap(df_pearson_2, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
 
     svg_name = 'heatmap_corr_' + name + str(3) + '.svg'
