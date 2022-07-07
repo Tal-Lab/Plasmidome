@@ -91,7 +91,7 @@ def Physical(vers):
     # columns should be specified not in the code!
     df_phys = df[['St_Depth','Latitude','Depth','Temp.','Temperature', 'Salinity', 'Oxygen', 'Chlorophyll', 'Turbidity', 'Nitrate', 'Phosphate', 'Silicate']]
     #print(df_phys)
-    return df_phys
+    return df_phys, df_for_corr
 #Physical(1)
 
 ### getting statistics on plasmids by reads
@@ -124,7 +124,7 @@ def data_plas(df_pl):
 def Clust_map2(vers, df, name, cl, pl):
     coverage = data_plas(df)
     #print(coverage.index)
-    parameters = Physical(1)
+    parameters = Physical(1)[0]
     parameters = parameters.set_index(parameters['St_Depth'])
     # maybe put parameters in loop?
     parameters["Temperature"] = parameters['Temp.'].astype(float).round().astype(int)
@@ -299,13 +299,36 @@ def Clust_map2(vers, df, name, cl, pl):
     '''
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
 
+def Pearson_cor(df1,df2,df_to_update):
+    for index_o, row_o in df1.iterrows():
+        # iterating clusters and getting coverage of the index_o cluster at each row_o
+        for index_p, row_p in df2.iterrows():
+            # iterating physical parameters and getting parameter of the index_p environmental condition at each row_p sampling point
+            print("Pearson correlation, p-value for Cluster %s and %s" % (index_o, index_p))
+            correlation, p_value= stats.pearsonr(row_o, row_p) # calculating Pearson correlation and p-value for cluster:env.condition in each sampling point
+            print(round(correlation,3),round(p_value,3))
+            df_to_update[index_p][index_o] = (round(correlation,3),round(p_value,3)) # updating df_pearson dataframe at with calculated correlation values
+    return df_to_update
+
 def Correlation_calculation(class_df, cand_df, name):
+    ''' The function calculates correlation between plasmidome clusters and environmental conditions '''
     station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
+    # getting plasmid candidates clusters
     cluster_pl_df = cluster_pl_df.reset_index()
-    df_phys = Physical(3)[['St_Depth', 'Latitude', 'Salinity', 'Chlorophyll', 'Turbidity', 'Temp.', 'Oxygen', 'Depth', 'Nitrate', 'Phosphate', 'Silicate']]
+    cluster_pl_df['Plasmid candidates clusters'] = 'C' + cluster_pl_df['Plasmid candidates clusters'].astype(str)
+    # getting sampling points clusters
+    cluster_st_df = cluster_st_df.reset_index(drop=True)
+    cluster_st_df['Sampling points clusters'] = cluster_st_df['Sampling points clusters'].astype(int).apply(lambda x: chr(ord('`')+x))
+    cluster_st_df['Sampling points clusters'] = 'C' + cluster_st_df['Sampling points clusters']
+    print(cluster_st_df)
+    #getting physical parameters dataframes
+    df_phys, df_phys_corr = Physical(3)
+    df_phys = df_phys[['St_Depth', 'Latitude', 'Salinity', 'Chlorophyll', 'Turbidity', 'Temp.', 'Oxygen', 'Depth', 'Nitrate', 'Phosphate', 'Silicate']]
     df_phys = df_phys.set_index('St_Depth')
-    df_phys = df_phys.T
+    df_phys = df_phys.T # physical parameters: y=parameter; x=sampling point
+    df_phys_corr = df_phys_corr.corr() # physical parameters cross-correlation
     col_order = df_phys.columns.tolist()
+    ### getting coverage of plasmid candidates in each sampling point
     reads_df = CoverageDF(cand_df['Plasmid'].unique())[1]
     reads_df = reads_df.reset_index()
     reads_df = reads_df.melt(id_vars = ['rname'], var_name = 'Station', value_name = 'coverage')
@@ -313,29 +336,40 @@ def Correlation_calculation(class_df, cand_df, name):
     reads_stat = reads_df.merge(station, left_on = 'Station', right_on = 'station_name')
     reads_stat.drop(['station_name', 'Sample'], axis = 1, inplace = True)
     reads_df_st = pd.pivot(reads_stat, values = 'coverage', index = 'rname', columns = 'St_Depth')
-    #df.melt(id_vars = ['car_model'], var_name = 'date', value_name = '0-60mph_in_seconds')
-    out = cluster_pl_df.merge(reads_df_st, left_on = 'Plasmids', right_on = 'rname')
-    #out.drop(['rname'], axis = 1, inplace = True)
-    out.sort_values('Plasmid candidates clusters', inplace = True)
-    out_group=out.groupby('Plasmid candidates clusters').mean()
-    out_group = out_group.reindex(col_order, axis=1)
-    print(out_group)
-    df_pearson = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group.index.to_list())
-    for index_o, row_o in out_group.iterrows():
-        print(index_o)
-        for index_p, row_p in df_phys.iterrows():
-            print("Pearson correlation, p-value for Cluster %s and %s" % (index_o, index_p))
-            correlation, p_value= stats.pearsonr(row_o, row_p)
-            print(round(correlation,3),round(p_value,3))
-            df_pearson[index_p][index_o] = (round(correlation,3),round(p_value,3))
-    cols=df_pearson.columns.to_list()
+    ### getting coverage of plasmid candidates clusters in each sampling point
+    out_pl = cluster_pl_df.merge(reads_df_st, left_on = 'Plasmids', right_on = 'rname')
+    out_pl.sort_values('Plasmid candidates clusters', inplace = True)
+    out_group_pl =out_pl.groupby('Plasmid candidates clusters').mean() # calculating coverage average for each plasmid candidates cluster at each sampling point
+    out_group_pl = out_group_pl.reindex(col_order, axis=1) # working dataframe with y=plasmid candidates cluster, x=sampling point, values=coverage.mean
+    df_pearson_pl = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group_pl.index.to_list()) # empty dataframe for pearson clusters:env.conditions
+    ### getting Pearson correlation for each cluster-env.condition
+    Pearson_cor(out_group_pl, df_phys, df_pearson_pl)
     #df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
-    df_pearson_2 = df_pearson.assign(**df_pearson[df_pearson.columns.to_list()].apply(lambda x: x.str[0]))
-    df_pearson_2 = df_pearson_2.T
-    print(df_pearson_2)
-    sns.set(font_scale = 1.2)
-    ax = sns.heatmap(df_pearson_2, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
+    df_pearson_2 = df_pearson_pl.assign(**df_pearson_pl[df_pearson_pl.columns.to_list()].apply(lambda x: x.str[0]))
+    ### getting coverage of plasmid candidates in each sampling point cluster
+    out_st = cluster_st_df.merge(reads_df_st.T, left_on = 'St_Depth', right_on = 'St_Depth')
+    out_st.sort_values('Sampling points clusters', inplace = True)
+    out_group_st=out_st.groupby('Sampling points clusters').mean() # calculating average coverage  for each plasmid candidate at each sampling points cluster
+    out_group_plst = cluster_pl_df.merge(out_group_st.T, left_on = 'Plasmids', right_on = 'rname')
+    print(out_group_plst)
+    #out_group_st = out_group_st.reindex(col_order, axis=1) # working dataframe with y= sampling points cluster, x=plasmid candidate, values=coverage.mean
+    #df_pearson_st = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group_st.index.to_list()) # empty dataframe for pearson clusters:env.conditions
+    ### getting Pearson correlation for each cluster-env.condition
+    #Pearson_cor(out_group_st, df_phys, df_pearson_st)
 
+    df_pl_cluster_corr = out_group.T
+    df_pl_cluster_corr = df_pl_cluster_corr.corr()
+    df_pl_cluster_corr_P = pd.concat([df_pl_cluster_corr, df_pearson_2], axis=1)
+    print(df_pl_cluster_corr_P)
+    df_pearson_2_trans = df_pearson_2.T
+    df_pears = pd.concat([df_pearson_2_trans, df_phys_corr], axis=1)
+    df_Pearson = df_pl_cluster_corr_P.append(df_pears)
+    #df_pears = pd.concat([df_pears, df_cluster_corr], axis=1)
+    #print(df_cluster_corr)
+    print(df_Pearson)
+    plt.figure(figsize = (15,12))
+    sns.set(font_scale = 1.2)
+    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
     svg_name = 'heatmap_corr_' + name + str(3) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
     png_name = 'heatmap_corr_' + name + str(3) + '.png'
@@ -352,7 +386,7 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-Correlation_calculation(Clust_map2(6,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+Correlation_calculation(Clust_map2(7,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 print(Plasmid_class()[0]['Plasmid'].unique())
