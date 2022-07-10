@@ -128,12 +128,12 @@ def Clust_map2(vers, df, name, cl, pl):
     parameters = parameters.set_index(parameters['St_Depth'])
     # maybe put parameters in loop?
     parameters["Temperature"] = parameters['Temp.'].astype(float).round().astype(int)
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(), sns.color_palette("Reds", parameters['Temperature'].nunique())))
+    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(), sns.color_palette("vlag", parameters['Temperature'].nunique())))
     temperature = parameters["Temperature"].map(stat_temp)
     stat_depth = dict(zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
     depth = parameters['Depth'].map(stat_depth)
     parameters["Salinity"] = parameters['Salinity'].astype(float).round().astype(int)
-    stat_salt = dict(zip(parameters['Salinity'].sort_values().unique(), sns.color_palette("Greens", parameters['Salinity'].nunique())))
+    stat_salt = dict(zip(parameters['Salinity'].sort_values().unique(), sns.color_palette("YlGn", parameters['Salinity'].nunique())))
     salt = parameters['Salinity'].map(stat_salt)
     parameters["Oxygen"] = parameters['Oxygen'].astype(float).round().astype(int)
     stat_O2 = dict(zip(parameters['Oxygen'].sort_values().unique(), sns.color_palette("ocean_r", parameters['Oxygen'].nunique())))
@@ -169,7 +169,7 @@ def Clust_map2(vers, df, name, cl, pl):
     cluster_st_df = pd.DataFrame(rows, columns=["St_Depth", "Sampling points clusters"])
     cluster_st_df = cluster_st_df.set_index(parameters['St_Depth'])
     stat_cluster = dict(
-        zip(cluster_st_df['Sampling points clusters'].unique(), sns.color_palette("Pastel1", cluster_st_df['Sampling points clusters'].nunique())))
+        zip(cluster_st_df['Sampling points clusters'].unique(), sns.color_palette("colorblind", cluster_st_df['Sampling points clusters'].nunique())))
     cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
     stations = cluster_st_df.index.values.tolist()
     
@@ -257,49 +257,10 @@ def Clust_map2(vers, df, name, cl, pl):
     plt.show()  # Push new figure on stack
     station_order = coverage.index.values.tolist()
     station_reorder = figure2.dendrogram_row.reordered_ind
-    # calculate correlation vector
-    parameters["Temp."] = parameters['Temp.'].astype(float)
-    parameters['Depth'] = parameters['Depth'].astype(int)
-    parameters['Latitude'] = parameters['Latitude'].astype(float)
-    df_correlation = parameters[['Temp.', 'Depth', 'Salinity', 'Oxygen', 'Nitrate', 'Phosphate', 'Silicate', 'Latitude']].merge(
-        cluster_st, left_index=True, right_index=True)
-    #Cluster_array = df_correlation['Plasmid candidates clusters'].to_numpy()
-    #param_arrays = [df_correlation['Temp.'], df_correlation['Depth'], df_correlation['Salinity'],
-    #               df_correlation['Oxygen'], df_correlation['Latitude'],
-    #               df_correlation['Nitrate'], df_correlation['Phosphate'], df_correlation['Silicate']]
-
-    '''
-    #pearson_dict = {}
-    for param_col in param_arrays:
-        param_array = param_col.to_numpy()
-        model = LinearRegression.fit(Cluster_array, param_array)
-        print(LinearRegression.score(Cluster_array, param_array))
-        #pearson_param = stats.pearsonr(Cluster_array, param_array)
-        #entry = {'r': pearson_param[0].round(3), 'p-value': pearson_param[1].round(3)}
-        #pearson_dict[param_col.name] = entry
-    #print(pearson_dict)
-    #df_params_pearson = pd.DataFrame(pearson_dict).T
-    #df_params_pearson.fillna(0, inplace=True)
-    #print(df_params_pearson)
-    
-    # df_correlation = parameters['Depth'].merge(cluster_df,left_index=True, right_index=True)
-
-    slope_t, intercept_t, r_value_t, p_value_t, std_err_t = stats.linregress(df_correlation["Cluster"],
-                                                                             df_correlation["Temp."])
-    print("Clusters:Temperature,C: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" %
-          (slope_t.round(3), intercept_t.round(3), r_value_t.round(3), p_value_t.round(3), std_err_t.round(3)))
-    slope_d, intercept_d, r_value_d, p_value_d, std_err_d = stats.linregress(df_correlation["Cluster"],
-                                                                             df_correlation["Depth"])
-    print("Clusters:Depth,m: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" % (
-        slope_d.round(3), intercept_d.round(3), r_value_d.round(3), p_value_d.round(3), std_err_d.round(3)))
-    slope_l, intercept_l, r_value_l, p_value_l, std_err_l = stats.linregress(df_correlation["Cluster"],
-                                                                             df_correlation["Latitude"])
-    print("Clusters:Latitude,C: slope=%f; intercept=%f; r_value=%f; p_value=%f, str_err=%f" %
-          (slope_l.round(3), intercept_l.round(3), r_value_l.round(3), p_value_l.round(3), std_err_l.round(3)))
-    '''
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
 
 def Pearson_cor(df1,df2,df_to_update):
+    ''' The function uses stats.pearsonr to calculate Pearson correlation between two vectors'''
     for index_o, row_o in df1.iterrows():
         # iterating clusters and getting coverage of the index_o cluster at each row_o
         for index_p, row_p in df2.iterrows():
@@ -346,50 +307,36 @@ def Correlation_calculation(class_df, cand_df, name):
     Pearson_cor(out_group_pl, df_phys, df_pearson_pl)
     #df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
     df_pearson_2 = df_pearson_pl.assign(**df_pearson_pl[df_pearson_pl.columns.to_list()].apply(lambda x: x.str[0]))
-    ### getting coverage of plasmid candidates in each sampling point cluster
-    out_st = cluster_st_df.merge(reads_df_st.T, left_on = 'St_Depth', right_on = 'St_Depth')
-    out_st.sort_values('Sampling points clusters', inplace = True)
-    out_group_st=out_st.groupby('Sampling points clusters').mean() # calculating average coverage  for each plasmid candidate at each sampling points cluster
-    out_group_plst = cluster_pl_df.merge(out_group_st.T, left_on = 'Plasmids', right_on = 'rname')
-    print(out_group_plst)
-    #out_group_st = out_group_st.reindex(col_order, axis=1) # working dataframe with y= sampling points cluster, x=plasmid candidate, values=coverage.mean
-    #df_pearson_st = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group_st.index.to_list()) # empty dataframe for pearson clusters:env.conditions
-    ### getting Pearson correlation for each cluster-env.condition
-    #Pearson_cor(out_group_st, df_phys, df_pearson_st)
-
-    df_pl_cluster_corr = out_group.T
+    # correlation dfs
+    df_pl_cluster_corr = out_group_pl.T
     df_pl_cluster_corr = df_pl_cluster_corr.corr()
-    df_pl_cluster_corr_P = pd.concat([df_pl_cluster_corr, df_pearson_2], axis=1)
-    print(df_pl_cluster_corr_P)
+    df_pl_cluster_corr_P = pd.concat([df_pl_cluster_corr, df_pearson_2], axis=1) #correlation matrix C1-8:C1-8,envs
     df_pearson_2_trans = df_pearson_2.T
-    df_pears = pd.concat([df_pearson_2_trans, df_phys_corr], axis=1)
+    df_pears = pd.concat([df_pearson_2_trans, df_phys_corr], axis=1) #correlation matrix C1-8,envs:C1-8,envs
     df_Pearson = df_pl_cluster_corr_P.append(df_pears)
-    #df_pears = pd.concat([df_pears, df_cluster_corr], axis=1)
-    #print(df_cluster_corr)
-    print(df_Pearson)
+    ### plotting correlation matrix
     plt.figure(figsize = (15,12))
     sns.set(font_scale = 1.2)
-    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True)
-    svg_name = 'heatmap_corr_' + name + str(3) + '.svg'
+    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {"ticks": [-1, 1]})
+    svg_name = 'heatmap_corr_' + name + str(4) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'heatmap_corr_' + name + str(3) + '.png'
+    png_name = 'heatmap_corr_' + name + str(4) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
     path_file = f'{tables}/Pearson.xlsx'
-
-    #with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
-        #df_pearson.to_excel(writer, sheet_name = name)
-
+    with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
+        df_Pearson.to_excel(writer, sheet_name = name)
 
 
 
-Correlation_calculation(Clust_map2(7,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+
+#Correlation_calculation(Clust_map2(7,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
-print(Plasmid_class()[0]['Plasmid'].unique())
+#print(Plasmid_class()[0]['Plasmid'].unique())
 #order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
 #order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
 
