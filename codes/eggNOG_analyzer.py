@@ -1,5 +1,5 @@
 import pandas as pd
-import re
+import re, os
 from Bio import SeqIO
 import numpy as np
 #import plotly.express as px
@@ -40,8 +40,8 @@ plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
 physical = r"../res/station_physical.xlsx"
 
 station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
-station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+#station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
+#station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)
@@ -145,31 +145,40 @@ def BarChart(freq, unknown):
     print(true_sort1)
     df = df.set_index('St_Depth').loc[true_sort1].reset_index()
     station = df['St_Depth'].to_list()
+    ncolors = df['Functional categories'].nunique()
+    colors = sns.color_palette(cc.glasbey, n_colors = ncolors)
     labels = df['Functional categories'].unique()
     #prepare figure
-    fig = sns.histplot(df,
-                       x=station,
-                       weights='Function count',
-                       hue='Functional categories',
-                       multiple='stack',
-                       palette="bright",
-                       # Add white borders to the bars.
-                       edgecolor='white',
-                       # Shrink the bars a bit so they don't touch.
-                       shrink=0.8
-                       )
-    fig.set(xlabel='Sampling points', ylabel='Function frequency')
-    # Put the legend out of the figure
-    fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16,
-               loc = 2, borderaxespad = 0.)
-    fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
+    sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
+    plt.figure(figsize = (15, 12))
+    sns.set(font_scale = 2)
+    with sns.axes_style("ticks"):
+        fig = sns.histplot(df,
+                           y=station,
+                           weights='Function count',
+                           hue='Functional categories',
+                           multiple='stack',
+                           hue_order = labels[::-1],
+                           palette=colors,
+                           # Add white borders to the bars.
+                           edgecolor='white')
+        fig.set(ylabel='Sampling points', xlabel='Function frequency')
+        plt.margins(0,0)
+        #fig.set_style("white")
+        #fig.yaxis.set_label_position("right")
+        #fig.yaxis.set_ticks_position("right")
+        # Put the legend out of the figure
+        fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1, 1), ncol = 1, title_fontsize = 'large',
+               fontsize='medium', frameon=False, loc = 2, borderaxespad = 0.)
+    #fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     #save graph in PNG and vector format
-    svg_name = 'barplot_COG_' + unknown + str(1) + '.svg'
+    svg_name = 'barplot_COG_' + unknown + str(2) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'barplot_COG_' + unknown + str(1) + '.png'
+    png_name = 'barplot_COG_' + unknown + str(2) + '.png'
     png_file = f'{visuals}/{png_name}'
-    #plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
-    #plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
 
 def BarChart_lim(df_class, cluster, file_name, unknown):
@@ -179,7 +188,7 @@ def BarChart_lim(df_class, cluster, file_name, unknown):
     plasmid_list = df_class['Plasmid'].unique()
     #preparing to reorder plasmids by cluster
     cluster.reset_index(inplace=True)
-    cluster.sort_values(by='Cluster', inplace=True)
+    cluster.sort_values(by='Plasmid candidates clusters', inplace=True)
     order_pl = cluster['Plasmids'].to_list()
 
     df_trunc = df.loc[df['Plasmid'].apply(lambda x: x in plasmid_list)]
@@ -199,30 +208,33 @@ def BarChart_lim(df_class, cluster, file_name, unknown):
     colors = sns.color_palette(cc.glasbey, n_colors=ncolors)
     labels = df_grouped['Functional categories'].unique()
     #figure
-    fig = sns.histplot(df_grouped,
-                       x='Plasmid',
-                       weights='Function count',
-                       hue='Functional categories',
-                       hue_order = labels[::-1],
-                       multiple='stack',
-                       #palette= {'bright',ncolors},
-                       palette = colors,
-                       # Add white borders to the bars.
-                       edgecolor='white',
-                       # Shrink the bars a bit so they don't touch.
-                       shrink=0.8
-                       )
-    fig.set(xlabel='Plasmid', ylabel='Function frequency')
-    # Put the legend out of the figure
-    fig.legend(labels, title='Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16, loc = 2, borderaxespad = 0.)
-    fig.tick_params(axis='x', rotation=90, labelsize=8)
+    with sns.axes_style("ticks"):
+        fig = sns.histplot(df_grouped,
+                           x='Plasmid',
+                           weights='Function count',
+                           hue='Functional categories',
+                           hue_order = labels[::-1],
+                           multiple='stack',
+                           #palette= {'bright',ncolors},
+                           palette = colors,
+                           # Add white borders to the bars.
+                           edgecolor='white',
+                           # Shrink the bars a bit so they don't touch.
+                           shrink=0.8
+                           )
+        fig.set(xlabel='Plasmid', ylabel='Function frequency')
+        fig.margins(x = 0.1)
+        # Put the legend out of the figure
+        fig.legend(labels, title='Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16, loc = 2, borderaxespad = 0.)
+        fig.tick_params(axis='x', rotation=90, labelsize=8)
     #saving figure
     svg_name = file_name + unknown + str(1) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
     png_name = file_name + unknown + str(1) + '.png'
     png_file = f'{visuals}/{png_name}'
-    #plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+        plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 def ProteinsFastaAn():
@@ -314,10 +326,11 @@ def Frequency_ofCategory():
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
+
 #Frequency_ofCategory()
 #eggNOGStats()
-#BarChart(True, 'with')
-#BarChart(True, 'without')
+BarChart(True, 'with')
+BarChart(True, 'without')
 #BarChart_lim(Plasmid_class()[1], cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'with')
 #BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
