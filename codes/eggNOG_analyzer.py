@@ -150,8 +150,8 @@ def BarChart(freq, unknown):
     labels = df['Functional categories'].unique()
     #prepare figure
     sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
-    plt.figure(figsize = (15, 12))
-    sns.set(font_scale = 2)
+    plt.figure(figsize = (17, 14))
+    sns.set(font_scale = 1.6)
     with sns.axes_style("ticks"):
         fig = sns.histplot(df,
                            y=station,
@@ -162,13 +162,15 @@ def BarChart(freq, unknown):
                            palette=colors,
                            # Add white borders to the bars.
                            edgecolor='white')
-        fig.set(ylabel='Sampling points', xlabel='Function frequency')
+        #fig.set(ylabel='Sampling points', xlabel='Function frequency')
+        fig.set_xlabel('Function frequency', fontsize = 'medium')
+        fig.set_ylabel('Sampling points', fontsize = 'medium')
         plt.margins(0,0)
         #fig.set_style("white")
         #fig.yaxis.set_label_position("right")
         #fig.yaxis.set_ticks_position("right")
         # Put the legend out of the figure
-        fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1, 1), ncol = 1, title_fontsize = 'large',
+        fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.05, 1), ncol = 1, title_fontsize = 'large',
                fontsize='medium', frameon=False, loc = 2, borderaxespad = 0.)
     #fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     #save graph in PNG and vector format
