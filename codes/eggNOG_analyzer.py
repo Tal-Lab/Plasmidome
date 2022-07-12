@@ -150,8 +150,9 @@ def BarChart(freq, unknown):
     labels = df['Functional categories'].unique()
     #prepare figure
     sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
-    plt.figure(figsize = (17, 14))
-    sns.set(font_scale = 1.6)
+    plt.figure(figsize = (8, 8))
+    sns.set(font_scale = 0.95
+            )
     with sns.axes_style("ticks"):
         fig = sns.histplot(df,
                            y=station,
@@ -170,13 +171,13 @@ def BarChart(freq, unknown):
         #fig.yaxis.set_label_position("right")
         #fig.yaxis.set_ticks_position("right")
         # Put the legend out of the figure
-        fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.05, 1), ncol = 1, title_fontsize = 'large',
+        fig.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1, title_fontsize = 'medium',
                fontsize='medium', frameon=False, loc = 2, borderaxespad = 0.)
     #fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     #save graph in PNG and vector format
-    svg_name = 'barplot_COG_' + unknown + str(2) + '.svg'
+    svg_name = 'barplot_COG_' + unknown + str(3) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'barplot_COG_' + unknown + str(2) + '.png'
+    png_name = 'barplot_COG_' + unknown + str(3) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
