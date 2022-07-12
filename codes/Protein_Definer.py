@@ -873,6 +873,114 @@ def Clsutermap_PlPut(name):
     #figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
+def Clsutermap(name, set_p):
+    '''
+    This function creates clustermap for AR and MR based on name
+    for set of plasmid candidates (plasmids/putative/all based on set_p)
+    P.S.to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
+    '''
+    ### getting correct set of plasmid candidates
+    if set_p == 'Pl':
+        station_order = Station_Order(station_reorder7, station_order7)
+        candidates = Plasmid_class()[0]['Plasmid'].unique()
+    elif set_p == 'PlPut':
+        station_order = Station_Order(station_reorderPlPut, station_orderPlPut)
+        candidates = Plasmid_class()[1]['Plasmid'].unique()
+    else:
+        station_order = Station_Order(station_reorderCl, station_orderCl)
+        candidates = Plasmid_class()[1]['Plasmid'].unique()
+    # df_init = FreqFuncStat(name)
+    print(candidates)
+    df_init = MapToPlace(name)[['Plasmid', 'St_Depth', 'Compound']]
+    df = df_init.loc[df_init['Plasmid'].isin(candidates)]
+    df = df[['St_Depth', 'Compound']]
+    print('######### Printing mapped resistance genes to sampling points #########')
+    print(df.head())
+    # df_to_append = MergeFunct(name)
+    df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
+    print('############ Printing GroupPlaceMapper ############')
+    print(df2.head())
+    df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(
+        name = 'Function frequency')
+    print("########### Printing df_grouped from FreqFuncStat ##############")
+    print(df_grouped.head())
+    df_grouped = df_grouped.reset_index()
+    df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
+    # df_grouped = df_grouped.append(df_to_append)
+    df_grouped = df_grouped.rename(columns = {df.columns[0]: 'Sampling Stations'})
+    pivot_df = pd.pivot_table(df_grouped,
+                              index = 'Sampling Stations',
+                              columns = 'Compound',
+                              values = 'Function frequency',
+                              dropna = False,
+                              fill_value = 0)
+    pivot_df.drop('missing', axis = 1, inplace = True)
+    pivot_df = pivot_df.reindex(station_order)
+    df_norm = pivot_df
+    df_norm[:] = np.where(df_norm == 0, 0, 1)
+    figure1 = sns.clustermap(data = df_norm,
+                             metric = "euclidean",
+                             method = 'ward',
+                             row_cluster = False,
+                             #row_colors = row_colors,
+                             linewidths = 0.0,
+                             figsize = (14, 10),
+                             cmap = sns.color_palette("Blues", as_cmap = True),
+                             xticklabels = True,
+                             yticklabels = True,
+                             rasterized = True,
+                             cbar_pos = None
+                             )
+    figure1.ax_col_dendrogram.remove()
+    figure1.ax_row_dendrogram.remove()
+
+    # get heatmap position
+    hm = figure1.ax_heatmap.get_position()
+    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 'small')
+    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 'small')
+    figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
+    figure1.gs.update(right = 0.90)
+
+    # divide existing axes
+    divider = make_axes_locatable(figure1.ax_heatmap)
+
+    # get dataframe with library sizes
+    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
+    print("printing library")
+    print(library)
+    library = library.rename(columns = {library.columns[0]: 'Library Size'})
+
+    # create new axes for bar plot
+    ax = divider.append_axes("right", size = "20%", pad = 1.1)
+
+    # Sort the values for the bar plot to have the same order as clusters
+    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
+    ind = np.array([list(library.index.values).index(t) for t in target])
+
+    # plot bar plot in ax
+    ax.barh(np.arange(len(target)), library['Library Size'].values[ind], visible=False)
+    ax.set_yticklabels([])
+    ax.set_xlabel('Library Size, Mbp')
+
+    t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
+    ax.set_xticklabels(t)
+
+    ax.set_ylim(-0.5, len(library.index) - .5)
+    ax.invert_yaxis()
+
+    svg_name = name + '_'+ set_p+ str(version) + '.svg'
+    svg_dir = f'{visuals}/{svg_name}'
+    png_name = name + '_'+ set_p+ str(version) + '.png'
+    png_dir = f'{visuals}/{png_name}'
+    # plt.autoscale()
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        plt.savefig(svg_dir, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        plt.savefig(png_dir, format='png', dpi=gcf().dpi, bbox_inches='tight')
+    plt.show()
+
+Clsutermap('BACMET', 'All')
+
+
 def Function_Frequency(name):
     df = FreqFuncStat(name)
 
