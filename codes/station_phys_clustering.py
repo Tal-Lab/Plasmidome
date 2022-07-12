@@ -210,8 +210,8 @@ def Clust_map2(vers, df, name, cl, pl):
                              cbar_kws = {"ticks": [0, 100]})
     #figure2.ax_heatmap.tick_params(axis = 'both', which = 'major', pad = 50)
     figure2.fig.subplots_adjust(left = -.01, right = 0.8)
-    figure2.cax.set_title("Coverage(%)", pad=30.0, fontdict={'fontsize':36})
-    figure2.ax_cbar.set_position((0.92, .26, .03, .5))
+    figure2.cax.set_title("Coverage (%)", pad=30.0, fontdict={'fontsize':36})
+    figure2.ax_cbar.set_position((0.92, .36, .03, .3))
     figure2.ax_col_dendrogram.remove()
     figure2.ax_row_dendrogram.remove()
 
@@ -343,6 +343,6 @@ def Correlation_calculation(class_df, cand_df, name):
 #print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
 #Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 #Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-#Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
+Clust_map2(8,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
 
 
