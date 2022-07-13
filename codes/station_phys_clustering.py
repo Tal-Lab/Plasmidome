@@ -303,6 +303,12 @@ def Correlation_calculation(class_df, cand_df, name):
     out_group_pl =out_pl.groupby('Plasmid candidates clusters').mean() # calculating coverage average for each plasmid candidates cluster at each sampling point
     out_group_pl = out_group_pl.reindex(col_order, axis=1) # working dataframe with y=plasmid candidates cluster, x=sampling point, values=coverage.mean
     df_pearson_pl = pd.DataFrame(columns = df_phys.index.to_list(), index = out_group_pl.index.to_list()) # empty dataframe for pearson clusters:env.conditions
+
+    #getting dataframe of data for Pearson
+    hm_data = out_group_pl.append(df_phys)
+    print(hm_data)
+    hm = sns.heatmap(hm_data, cmap = 'coolwarm', annot = False)
+    plt.show()
     ### getting Pearson correlation for each cluster-env.condition
     Pearson_cor(out_group_pl, df_phys, df_pearson_pl)
     #df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
@@ -318,14 +324,14 @@ def Correlation_calculation(class_df, cand_df, name):
     plt.figure(figsize = (15,12))
     sns.set(font_scale = 1.2)
     ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {"ticks": [-1, 1]})
+    ax_fig = ax.get_figure()
     svg_name = 'heatmap_corr_' + name + str(4) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
     png_name = 'heatmap_corr_' + name + str(4) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
-        plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
-        plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
-    plt.show()
+        ax_fig.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        ax_fig.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     path_file = f'{tables}/Pearson.xlsx'
     with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
         df_Pearson.to_excel(writer, sheet_name = name)
@@ -333,7 +339,7 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-#Correlation_calculation(Clust_map2(7,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+Correlation_calculation(Clust_map2(9,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 #print(Plasmid_class()[0]['Plasmid'].unique())
@@ -343,6 +349,6 @@ def Correlation_calculation(class_df, cand_df, name):
 #print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
 #Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 #Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-Clust_map2(8,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
+#Clust_map2(8,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
 
 
