@@ -397,483 +397,7 @@ def Station_Order(order, init_order):
     print(final_order)
     return final_order
 
-def Clustermap_AB():
-    """
-    #to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
-    """
-    #station_order = Station_Order(station_reorderCl)
-    #df = FreqFuncStat("CARD").reindex(station_order)
-    df = FreqFuncStat("CARD")
-    df_norm = df
-    df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical(1)
-    parameters = parameters.set_index(parameters['St_Depth'])
-    parameters["Temperature"] = parameters['Temp.'].astype(float).round()
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
-                         sns.color_palette("Reds", parameters['Temperature'].nunique())))
-    temperature = parameters["Temperature"].map(stat_temp)
-    stat_depth = dict(
-        zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
-    depth = parameters['Depth'].map(stat_depth)
-    stations = parameters.index.values.tolist()
-    empty = 0 * len(stations)
-    for_df = {'St_Depth': stations, 'Empty': empty}
-    space_df = pd.DataFrame(for_df)
-    space_df = space_df.set_index(parameters['St_Depth'])
-    space_df.columns = ['St_Depth', ' ']
-    stat_space = dict(zip(space_df[' '].unique(), "white"))
-    space_st = space_df[' '].map(stat_space)
-    row_colors = pd.concat([temperature, depth, space_st], axis = 1)
-    figure1 = sns.clustermap(data = df_norm,
-                             metric = "euclidean",
-                             method = 'ward',
-                             #row_cluster = False,
-                             #row_colors = row_colors,
-                             #col_cluster = False,
-                             linewidths = 0.0,
-                             figsize = (14, 10),
-                             cmap = sns.color_palette("Blues", as_cmap=True),
-                             xticklabels = True,
-                             yticklabels = True,
-                             rasterized = True,
-                             cbar_pos = None
-                             )
-    figure1.ax_col_dendrogram.remove()
-    figure1.ax_row_dendrogram.remove()
-
-    #get heatmap position
-    hm = figure1.ax_heatmap.get_position()
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 12)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 12)
-    figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right=0.90)
-
-    # divide existing axes
-    divider = make_axes_locatable(figure1.ax_heatmap)
-
-    # get dataframe with library sizes
-    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
-    print("printing library")
-    print(library)
-    library = library.rename(columns = {library.columns[0]: 'Library Size'})
-
-    # create new axes for bar plot
-    ax = divider.append_axes("right", size = "20%", pad = 1.1)
-
-    # Sort the values for the bar plot to have the same order as clusters
-    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
-    ind = np.array([list(library.index.values).index(t) for t in target])
-
-    # plot bar plot in ax
-    ax.barh(np.arange(len(target)), library['Library Size'].values[ind])
-    ax.set_yticklabels([])
-    ax.set_xlabel('Library Size, Mbp')
-
-    t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
-    ax.set_xticklabels(t)
-
-    ax.set_ylim(-0.5, len(library.index) - .5)
-    ax.invert_yaxis()
-
-    for tick_label in figure1.ax_heatmap.axes.get_yticklabels():
-        tick_text = tick_label.get_text()
-        #new_label = tick_text + '*'
-        if tick_text == "192_10":
-            tick_label.set_text("192_10{}".format('\star'))
-            tick_label.set_color('red')
-        elif tick_text == "149_10":
-            tick_label.set_text("149_10{}".format('\star'))
-            tick_label.set_color('red')
-
-    """# temperature legend
-    tem_legend = []
-    for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
-        tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-6.7, 1), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
-    # depth legend
-    dep_legend = []
-    for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
-        dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)"""
-    svg_name = "CARD_ordAB" + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = "CARD_ordAB" + str(version) + '.png'
-    png_dir=f'{visuals}/{png_name}'
-    #plt.autoscale()
-    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
-    return target
-
-def Clustermap_Me():
-    # to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
-    station_order = Clustermap_AB()
-    df = FreqFuncStat("BACMET").reindex(station_order)
-    df_norm = df
-    df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical(1)
-    #print(parameters)
-    parameters = parameters.set_index(parameters['St_Depth'])
-    parameters["Temperature"] = parameters['Temp.'].astype(float).round()
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
-                         sns.color_palette("Reds", parameters['Temperature'].nunique())))
-    temperature = parameters["Temperature"].map(stat_temp)
-    stat_depth = dict(
-        zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
-    depth = parameters['Depth'].map(stat_depth)
-    stations = parameters.index.values.tolist()
-    empty = 0 * len(stations)
-    for_df = {'St_Depth': stations, 'Empty': empty}
-    space_df = pd.DataFrame(for_df)
-    space_df = space_df.set_index(parameters['St_Depth'])
-    space_df.columns = ['St_Depth', ' ']
-    stat_space = dict(zip(space_df[' '].unique(), "white"))
-    space_st = space_df[' '].map(stat_space)
-    row_colors = pd.concat([temperature, depth, space_st], axis = 1)
-    figure1 = sns.clustermap(data = df_norm,
-                             metric = "euclidean",
-                             method = 'ward',
-                             row_cluster = False,
-                             #row_colors = row_colors,
-                             #col_cluster = False,
-                             linewidths = 0.0,
-                             figsize = (14, 10),
-                             cmap = sns.color_palette("Blues", as_cmap=True),
-                             xticklabels = True,
-                             yticklabels = True,
-                             rasterized = True,
-                             cbar_pos = None
-                             )
-    figure1.ax_col_dendrogram.remove()
-    figure1.ax_row_dendrogram.remove()
-
-    #get heatmap position
-    hm = figure1.ax_heatmap.get_position()
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 12)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 12)
-    figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right=0.90)
-
-    # divide existing axes
-    divider = make_axes_locatable(figure1.ax_heatmap)
-
-    # get dataframe with library sizes
-    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
-    print(library)
-    library = library.rename(columns = {library.columns[0]: 'Library Size'})
-
-    # create new axes for bar plot
-    ax = divider.append_axes("right", size = "20%", pad = 1.1)
-
-    # Sort the values for the bar plot to have the same order as clusters
-    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
-    ind = np.array([list(library.index.values).index(t) for t in target])
-
-    # plot bar plot in ax
-    ax.barh(np.arange(len(target)), library['Library Size'].values[ind])
-    ax.set_yticklabels([])
-    ax.set_xlabel('Library Size, Mbp')
-
-    t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
-    ax.set_xticklabels(t)
-
-    ax.set_ylim(-0.5, len(library.index) - .5)
-    ax.invert_yaxis()
-
-    for tick_label in figure1.ax_heatmap.axes.get_yticklabels():
-        tick_text = tick_label.get_text()
-        #new_label = tick_text + '*'
-        if tick_text == "192_10":
-            tick_label.set_text("192_10{}".format('\star'))
-            tick_label.set_color('red')
-        elif tick_text == "149_10":
-            tick_label.set_text("149_10{}".format('\star'))
-            tick_label.set_color('red')
-    """
-    # temperature legend
-    tem_legend = []
-    for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
-        tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-6.7, 1), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
-    # depth legend
-    dep_legend = []
-    for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
-        dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)"""
-    svg_name = "BACMET_ordAB" + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = "BACMET_ordAB" + str(version) + '.png'
-    png_dir = f'{visuals}/{png_name}'
-    #plt.autoscale()
-    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
-
-def Clustermap_all(name):
-    """
-    #to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
-    """
-    station_order = Station_Order(station_reorderCl, station_orderCl)
-    df = FreqFuncStat(name).reindex(station_order)
-    #df = FreqFuncStat("CARD")
-    df_norm = df
-    df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical(1)
-    parameters = parameters.set_index(parameters['St_Depth'])
-    parameters["Temperature"] = parameters['Temp.'].astype(float).round()
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
-                         sns.color_palette("Reds", parameters['Temperature'].nunique())))
-    temperature = parameters["Temperature"].map(stat_temp)
-    stat_depth = dict(
-        zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
-    depth = parameters['Depth'].map(stat_depth)
-    stations = parameters.index.values.tolist()
-    empty = 0 * len(stations)
-    for_df = {'St_Depth': stations, 'Empty': empty}
-    space_df = pd.DataFrame(for_df)
-    space_df = space_df.set_index(parameters['St_Depth'])
-    space_df.columns = ['St_Depth', ' ']
-    stat_space = dict(zip(space_df[' '].unique(), "white"))
-    space_st = space_df[' '].map(stat_space)
-    row_colors = pd.concat([temperature, depth, space_st], axis = 1)
-    figure1 = sns.clustermap(data = df_norm,
-                             metric = "euclidean",
-                             method = 'ward',
-                             row_cluster = False,
-                             #row_colors = row_colors,
-                             linewidths = 0.0,
-                             figsize = (14, 10),
-                             cmap = sns.color_palette("Blues", as_cmap=True),
-                             xticklabels = True,
-                             yticklabels = True,
-                             rasterized = True,
-                             cbar_pos = None
-                             )
-    figure1.ax_col_dendrogram.remove()
-    figure1.ax_row_dendrogram.remove()
-
-    #get heatmap position
-    hm = figure1.ax_heatmap.get_position()
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 12)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 12)
-    figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right=0.90)
-
-    # divide existing axes
-    divider = make_axes_locatable(figure1.ax_heatmap)
-
-    # get dataframe with library sizes
-    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
-    print("printing library")
-    print(library)
-    library = library.rename(columns = {library.columns[0]: 'Library Size'})
-
-    # create new axes for bar plot
-    ax = divider.append_axes("right", size = "20%", pad = 1.1)
-
-    # Sort the values for the bar plot to have the same order as clusters
-    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
-    ind = np.array([list(library.index.values).index(t) for t in target])
-
-    # plot bar plot in ax
-    ax.barh(np.arange(len(target)), library['Library Size'].values[ind])
-    ax.set_yticklabels([])
-    ax.set_xlabel('Library Size, Mbp')
-
-    t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
-    ax.set_xticklabels(t)
-
-    ax.set_ylim(-0.5, len(library.index) - .5)
-    ax.invert_yaxis()
-
-    for tick_label in figure1.ax_heatmap.axes.get_yticklabels():
-        tick_text = tick_label.get_text()
-        #new_label = tick_text + '*'
-        if tick_text == "192_10":
-            tick_label.set_text("192_10{}".format('\star'))
-            tick_label.set_color('red')
-        elif tick_text == "149_10":
-            tick_label.set_text("149_10{}".format('\star'))
-            tick_label.set_color('red')
-
-    """# temperature legend
-    tem_legend = []
-    for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
-        tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-6.7, 1), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
-    # depth legend
-    dep_legend = []
-    for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
-        dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)"""
-    svg_name = name + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = name + str(version) + '.png'
-    png_dir=f'{visuals}/{png_name}'
-    #plt.autoscale()
-    figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
-    return target
-
-def Clsutermap_PlPut(name):
-    """
-    #to preserve initial clustering order; don't forget uncomment <row_cluster=False> in clustermap
-    I need to make a clustermap with plasmids+put plasmids / stations of plasmids+put plasmids
-    """
-    station_order = Station_Order(station_reorderPlPut, station_orderPlPut)
-    #df_init = FreqFuncStat(name)
-    df_init = MapToPlace(name)[['Plasmid', 'St_Depth', 'Compound']]
-    candidates = Plasmid_class()[1]['Plasmid'].unique()
-    print(candidates)
-    df = df_init.loc[df_init['Plasmid'].isin(candidates)]
-    df = df[['St_Depth', 'Compound']]
-    print('######### Printing mapped resistance genes to sampling points #########')
-    print(df.head())
-    # df_to_append = MergeFunct(name)
-    df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
-    print('############ Printing GroupPlaceMapper ############')
-    print(df2.head())
-    df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(
-        name = 'Function frequency')
-    print("########### Printing df_grouped from FreqFuncStat ##############")
-    print(df_grouped.head())
-    df_grouped = df_grouped.reset_index()
-    df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
-    # df_grouped = df_grouped.append(df_to_append)
-    df_grouped = df_grouped.rename(columns = {df.columns[0]: 'Sampling Stations'})
-    pivot_df = pd.pivot_table(df_grouped,
-                              index = 'Sampling Stations',
-                              columns = 'Compound',
-                              values = 'Function frequency',
-                              dropna = False,
-                              fill_value = 0)
-    pivot_df.drop('missing', axis = 1, inplace = True)
-    pivot_df = pivot_df.reindex(station_order)
-    df_norm = pivot_df
-    df_norm[:] = np.where(df_norm == 0, 0, 1)
-    parameters = Physical(1)
-    parameters = parameters.set_index(parameters['St_Depth'])
-    parameters["Temperature"] = parameters['Temp.'].astype(float).round()
-    stat_temp = dict(zip(parameters["Temperature"].sort_values().unique(),
-                         sns.color_palette("Reds", parameters['Temperature'].nunique())))
-    temperature = parameters["Temperature"].map(stat_temp)
-    stat_depth = dict(
-        zip(parameters['Depth'].sort_values().unique(), sns.color_palette("PuBu", parameters['Depth'].nunique())))
-    depth = parameters['Depth'].map(stat_depth)
-    stations = parameters.index.values.tolist()
-    empty = 0 * len(stations)
-    for_df = {'St_Depth': stations, 'Empty': empty}
-    space_df = pd.DataFrame(for_df)
-    space_df = space_df.set_index(parameters['St_Depth'])
-    space_df.columns = ['St_Depth', ' ']
-    stat_space = dict(zip(space_df[' '].unique(), "white"))
-    space_st = space_df[' '].map(stat_space)
-    row_colors = pd.concat([temperature, depth, space_st], axis = 1)
-    figure1 = sns.clustermap(data = df_norm,
-                             metric = "euclidean",
-                             method = 'ward',
-                             row_cluster = False,
-                             # row_colors = row_colors,
-                             linewidths = 0.0,
-                             figsize = (14, 10),
-                             cmap = sns.color_palette("Blues", as_cmap = True),
-                             xticklabels = True,
-                             yticklabels = True,
-                             rasterized = True,
-                             cbar_pos = None
-                             )
-    figure1.ax_col_dendrogram.remove()
-    figure1.ax_row_dendrogram.remove()
-
-    # get heatmap position
-    hm = figure1.ax_heatmap.get_position()
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 12)
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 12)
-    figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right = 0.90)
-
-    # divide existing axes
-    divider = make_axes_locatable(figure1.ax_heatmap)
-
-    # get dataframe with library sizes
-    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
-    print("printing library")
-    print(library)
-    library = library.rename(columns = {library.columns[0]: 'Library Size'})
-
-    # create new axes for bar plot
-    ax = divider.append_axes("right", size = "20%", pad = 1.1)
-
-    # Sort the values for the bar plot to have the same order as clusters
-    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
-    ind = np.array([list(library.index.values).index(t) for t in target])
-
-    # plot bar plot in ax
-    ax.barh(np.arange(len(target)), library['Library Size'].values[ind])
-    ax.set_yticklabels([])
-    ax.set_xlabel('Library Size, Mbp')
-
-    t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
-    ax.set_xticklabels(t)
-
-    ax.set_ylim(-0.5, len(library.index) - .5)
-    ax.invert_yaxis()
-
-    for tick_label in figure1.ax_heatmap.axes.get_yticklabels():
-        tick_text = tick_label.get_text()
-        # new_label = tick_text + '*'
-        if tick_text == "192_10":
-            tick_label.set_text("192_10{}".format('\star'))
-            tick_label.set_color('red')
-        elif tick_text == "149_10":
-            tick_label.set_text("149_10{}".format('\star'))
-            tick_label.set_color('red')
-
-    """# temperature legend
-    tem_legend = []
-    for label in parameters["Temperature"].sort_values().unique():
-        temp_patch = mpatches.Patch(color = stat_temp[label], label = label)
-        tem_legend.append(temp_patch)
-    l1 = plt.legend(title = 'Temperature', handles = tem_legend, bbox_to_anchor = (-6.7, 1), loc = "upper right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)
-    # depth legend
-    dep_legend = []
-    for label in parameters['Depth'].sort_values().unique():
-        dep_patch = mpatches.Patch(color = stat_depth[label], label = label)
-        dep_legend.append(dep_patch)
-    l2 = plt.legend(title = 'Depth', handles = dep_legend, bbox_to_anchor = (-6.7, 0), loc = "lower right",
-                    borderaxespad = 2.0)
-    plt.gca().add_artist(l1)"""
-    svg_name = name + '_PlPut' + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = name + '_PlPut' + str(version) + '.png'
-    png_dir = f'{visuals}/{png_name}'
-    # plt.autoscale()
-    #figure1.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #figure1.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
-
-def Clsutermap(name, set_p):
+def Clustermap(name, set_p):
     '''
     This function creates clustermap for AR and MR based on name
     for set of plasmid candidates (plasmids/putative/all based on set_p)
@@ -883,12 +407,24 @@ def Clsutermap(name, set_p):
     if set_p == 'Pl':
         station_order = Station_Order(station_reorder7, station_order7)
         candidates = Plasmid_class()[0]['Plasmid'].unique()
+        # get row_clusters
+        stat_cluster = dict(zip(cluster_st_df7['Sampling points clusters'].unique(),
+                                sns.color_palette("colorblind", cluster_st_df7['Sampling points clusters'].nunique())))
+        cluster_st = cluster_st_df7['Sampling points clusters'].map(stat_cluster)
     elif set_p == 'PlPut':
         station_order = Station_Order(station_reorderPlPut, station_orderPlPut)
         candidates = Plasmid_class()[1]['Plasmid'].unique()
+        # get row_clusters
+        stat_cluster = dict(zip(cluster_st_dfPlPut['Sampling points clusters'].unique(),
+                                sns.color_palette("colorblind", cluster_st_dfPlPut['Sampling points clusters'].nunique())))
+        cluster_st = cluster_st_dfPlPut['Sampling points clusters'].map(stat_cluster)
     else:
         station_order = Station_Order(station_reorderCl, station_orderCl)
         candidates = Plasmid_class()[1]['Plasmid'].unique()
+        # get row_clusters
+        stat_cluster = dict(zip(cluster_st_df['Sampling points clusters'].unique(),
+                                sns.color_palette("colorblind", cluster_st_df['Sampling points clusters'].nunique())))
+        cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
     # df_init = FreqFuncStat(name)
     print(candidates)
     df_init = MapToPlace(name)[['Plasmid', 'St_Depth', 'Compound']]
@@ -907,9 +443,9 @@ def Clsutermap(name, set_p):
     df_grouped = df_grouped.reset_index()
     df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
     # df_grouped = df_grouped.append(df_to_append)
-    df_grouped = df_grouped.rename(columns = {df.columns[0]: 'Sampling Stations'})
+    df_grouped = df_grouped.rename(columns = {df.columns[0]: 'Sampling points'})
     pivot_df = pd.pivot_table(df_grouped,
-                              index = 'Sampling Stations',
+                              index = 'Sampling points',
                               columns = 'Compound',
                               values = 'Function frequency',
                               dropna = False,
@@ -918,11 +454,21 @@ def Clsutermap(name, set_p):
     pivot_df = pivot_df.reindex(station_order)
     df_norm = pivot_df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
+
+    # get dataframe with library sizes
+    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
+    library = library.rename(columns = {library.columns[0]: 'Library Size'})
+    # Sort the values for the bar plot to have the same order as clusters
+    library = library.reindex(station_order)
+    print("printing library")
+    print(library)
+
+    sns.set(font_scale = 1.2)
     figure1 = sns.clustermap(data = df_norm,
                              metric = "euclidean",
                              method = 'ward',
                              row_cluster = False,
-                             #row_colors = row_colors,
+                             row_colors = cluster_st,
                              linewidths = 0.0,
                              figsize = (14, 10),
                              cmap = sns.color_palette("Blues", as_cmap = True),
@@ -933,53 +479,39 @@ def Clsutermap(name, set_p):
                              )
     figure1.ax_col_dendrogram.remove()
     figure1.ax_row_dendrogram.remove()
-
     # get heatmap position
     hm = figure1.ax_heatmap.get_position()
     plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 'small')
     plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 'small')
     figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right = 0.90)
+    figure1.gs.update(right = 0.80)
 
     # divide existing axes
     divider = make_axes_locatable(figure1.ax_heatmap)
 
-    # get dataframe with library sizes
-    library = GetLibSize()[['St_Depth', 'Size']].set_index('St_Depth')
-    print("printing library")
-    print(library)
-    library = library.rename(columns = {library.columns[0]: 'Library Size'})
-
     # create new axes for bar plot
     ax = divider.append_axes("right", size = "20%", pad = 1.1)
 
-    # Sort the values for the bar plot to have the same order as clusters
-    target = [t.get_text() for t in np.array(figure1.ax_heatmap.get_yticklabels())]
-    ind = np.array([list(library.index.values).index(t) for t in target])
-
-    # plot bar plot in ax
-    ax.barh(np.arange(len(target)), library['Library Size'].values[ind], visible=False)
+    # set parameters for bar plot
+    ax.set_facecolor('white')
     ax.set_yticklabels([])
-    ax.set_xlabel('Library Size, Mbp')
-
+    ax.set_xlabel('Library size, Mbp')
     t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
     ax.set_xticklabels(t)
-
     ax.set_ylim(-0.5, len(library.index) - .5)
     ax.invert_yaxis()
+    # plot bar plot in ax
+    ax.barh(np.arange(len(library.index)), library['Library Size'].values)
 
     svg_name = name + '_'+ set_p+ str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = name + '_'+ set_p+ str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+    if not os.path.isfile(svg_dir) and not os.path.isfile(png_dir):
         plt.savefig(svg_dir, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_dir, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
-
-Clsutermap('BACMET', 'All')
-
 
 def Function_Frequency(name):
     df = FreqFuncStat(name)
@@ -995,12 +527,5 @@ def Function_Frequency(name):
 
 #Function_Frequency("BACMET")
 #Function_Frequency("CARD")
-#MergeFunct("BACMET")
-#MergeFunct("CARD")
-#GroupCARDANnot()
-#Clustermap2("CARD")
-#Clustermap2("BACMET")
-#Clustermap_Me()
-#Station_Order()
-#Clsutermap_PlPut("CARD")
-#Clsutermap_PlPut("BACMET")
+#Clustermap('BACMET', 'All')
+#Clustermap('CARD', 'All')
