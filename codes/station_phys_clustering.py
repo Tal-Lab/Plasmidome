@@ -24,6 +24,7 @@ from pathlib import Path
 import os
 from general_analysis import plasmids_by_reads, tables, Station, GetLibSize, CoverageDF, version
 from plasmid_detect import Plasmid_class
+from sklearn.preprocessing import Normalizer
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
 
@@ -306,8 +307,23 @@ def Correlation_calculation(class_df, cand_df, name):
 
     #getting dataframe of data for Pearson
     hm_data = out_group_pl.append(df_phys)
-    print(hm_data)
-    hm = sns.heatmap(hm_data, cmap = 'coolwarm', annot = False)
+    counter_list = list(enumerate(hm_data.columns.to_list(), 0))
+    init_df = pd.DataFrame(counter_list, columns = ['Number', 'Sampling points']).set_index('Number').reindex(
+        station_reorder)
+    final_order = init_df['Sampling points'].to_list()
+    hm_data = hm_data.reindex(final_order, axis = 1)
+    hm_data=hm_data.subtract(hm_data.min(axis = 1), axis = 0).divide(hm_data.max(axis = 1) - hm_data.min(axis = 1), axis = 0).fillna(0)
+    plt.figure(figsize = (15, 12))
+    sns.set(font_scale = 1.2)
+    hm = sns.heatmap(hm_data, cmap = 'coolwarm', annot = False, vmin=0, vmax=1, cbar_kws = {"ticks": [0, 1]})
+    hm_fig = hm.get_figure()
+    svg_name = 'heatmap_data_' + name + str(4) + '.svg'
+    svg_file = f'{visuals}/{svg_name}'
+    png_name = 'heatmap_data_' + name + str(4) + '.png'
+    png_file = f'{visuals}/{png_name}'
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        hm_fig.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+        hm_fig.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     ### getting Pearson correlation for each cluster-env.condition
     Pearson_cor(out_group_pl, df_phys, df_pearson_pl)
@@ -322,7 +338,6 @@ def Correlation_calculation(class_df, cand_df, name):
     df_Pearson = df_pl_cluster_corr_P.append(df_pears)
     ### plotting correlation matrix
     plt.figure(figsize = (15,12))
-    sns.set(font_scale = 1.2)
     ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {"ticks": [-1, 1]})
     ax_fig = ax.get_figure()
     svg_name = 'heatmap_corr_' + name + str(4) + '.svg'
