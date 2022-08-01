@@ -69,8 +69,8 @@ colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatc
 
 ####### Getting predicted protein's lengths
 
-# reading parsing and creating dataframe from protein fasta file
 def ORF_fasta():
+    ''' Reading parsing and creating dataframe from protein fasta file '''
     # Create DataFrame
     df_plasmids = pd.DataFrame({'ORF':[],'ORF_length':[]})
     with open(proteins_fasta, 'r') as proteins:
@@ -87,24 +87,24 @@ def ORF_fasta():
 prot_DF=ORF_fasta()
 ####### Handling BLAST outputs
 
-# retreiving plasmid length from node-name
 def Clean_length(node_name):
+    ''' Retreiving plasmid length from node-name '''
     if re.search('h\_\d+', node_name):
         pos = int(re.search('h\_\d+', node_name).group(0)[2:])
         return pos
     else:
         return node_name
 
-# retreiving protein name from protein description
 def GetProt(prot_name,pattern,start, stop):
+    ''' Retreiving protein name from protein description '''
     if re.search(pattern, prot_name):
         pos = re.search(pattern, prot_name).group()[start:stop]
         return pos
     else:
         return prot_name
 
-# getting best hits from blast files
 def CleanFiltered(df):
+    ''' Getting best hits from blast files '''
     #cleaning data from additional hits
     grouped = df.groupby("qseqid") #grouping of dataframe by query
     result = []
