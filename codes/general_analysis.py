@@ -21,13 +21,14 @@ from scipy import stats
 from plasmid_detect import Plasmid_class, colnames
 
 pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
@@ -39,7 +40,7 @@ reads_coverage = r"../res/all_cov.csv"
 proteins = r"../res/Filtered_ORFs.fasta"
 library = r"../res/LibrarySize.csv"
 stations = r"../res/stations.txt"
-nt_stats = r"../res/nt_3.csv"
+nt_entries = r"../res/dataset/nt_blast.zip"
 
 df_class = Plasmid_class()[2]
 plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
@@ -85,7 +86,7 @@ def DF_plasmids_byReads(work_set, file_name):
         df[['NewName', 'station_name']].to_csv(out_file, index = False)
     return df[['NewName', 'station_name']], out_file
 
-#plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
+plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
 
 def Coverage_stat(work_set):
     ' plasmid presence statistics '
@@ -104,7 +105,7 @@ def Coverage_stat(work_set):
 def ORF_stats():
     ' ORF statistics '
     records = []
-    lenghts = []
+    lenghts=[]
     for record in SeqIO.parse(proteins, "fasta"):
         records.append(record.id)
         prot_len=len(record)
@@ -461,9 +462,31 @@ def Plasmid_Station():
     plt.show()
 
 def Candidates_length():
+    """ Statistics for candidates lengths """
     df = ORF_byPlasmid_stats()[1]
     #df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
-    #print(df)
+    print(df.columns)
+    # getting the longest plasmid candidate and its length
+    df_max = df['Plasmid Length'].max()
+    print("The longest candidate length is %d bp" % df_max)
+    # calculating number of plasmid candidates with length <100 bp
+    df100 = df.loc[df['Length_norm'] <= 100]
+    print('Number of plasmids with length <=100 kb is: %d' % df100['Plasmid'].nunique())
+    print('Percentage of plasmids with length <=100 kb is: %d' % ((df100['Plasmid'].nunique()/df['Plasmid'].nunique())*100))
+    # calculating number of plasmid candidates with length around 140 bp
+    df140 = df.loc[df['Length_norm'].between(120,200)]
+    print('Number of plasmids around 140 kb is: %d' % df140['Plasmid'].nunique())
+    # getting plasmid candidates classified as uncertain
+    df_uncert = df[df['Class']=='Uncertain']
+    pl_uncert = df_uncert['Plasmid'].nunique()
+    max_unc = df_uncert['Plasmid Length'].max()
+    min_unc = df_uncert['Plasmid Length'].min()
+    print("Candidates classified as uncertain are in range from %d to %d bp" % (min_unc, max_unc))
+    # getting number of uncertain candidates shorter then 4 kb
+    df4kb = df_uncert[df_uncert['Length_norm'] < 4]
+    print('Number of plasmids with length < 4 kb is: %d' % df4kb['Plasmid'].nunique())
+    print('Percentage of plasmids with length < 4 kb is: %d' % ((df4kb['Plasmid'].nunique() / pl_uncert) * 100))
+    # plotting histogram for candidate's lengths, colored by class
     sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths_Histo" + str(version) + '.svg'
@@ -473,7 +496,9 @@ def Candidates_length():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
+    # getting candidates <200bp into separate dataframe
     df_min = df.loc[df['Length_norm']<=200]
+    # plotting histogram for candidate's lengths (<200bp), colored by class
     sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths200_Histo" + str(version) + '.svg'
@@ -500,24 +525,64 @@ def PieClass():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
-def ntdb_stats():
-    df = pd.read_csv(nt_stats, sep = '\t', index_col = None, header= None, error_bad_lines=False)
-    df.columns = colnames
-    df = df[['qseqid','stitle', 'evalue', 'length', 'pident', 'mismatch',\
-            'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send']]
-    df.sort_values(by='pident', axis=0, ascending=False, inplace=True)
-    df['len'] = df['qseqid'].apply(Clean_length)
-    df['AP'] = ((abs(df['qstart']-df['qend'])/df['len'])*100).round(3)
-    print(df['pident'].min())
-    print(df['AP'].min())
-    df_high = df.loc[(df['pident']>90) & (df['AP']>90)]
-    print(df_high['qseqid'].nunique())
-    df_chrom = df.loc[df['stitle'].str.contains('chromosome')]
-    print(df_chrom['qseqid'].nunique())
-    df_vir = df.loc[(df['stitle'].str.contains('virus')) | (df['stitle'].str.contains('phage'))]
-    print(df_vir['qseqid'].nunique())
+def nt_counts():
+    """Function for nt-database statistics: number of all and significant matches,\
+    matches to chromosomal and viral elements; getting number of sampling points,\
+    where candidates with no match in this database where found"""
+    #creating dataframe from nt-blast file
+    df_nt = pd.read_csv(nt_entries, compression='zip', sep = '\t', index_col = None, header = None)
+    df_nt.columns = colnames
+    #reading dataframe for plasmids stations by reads
+    plasmids_by_reads = DF_plasmids_byReads(all_candidates, 'Plasmids_ByReads.csv')[0]
+    plasmids_by_reads = plasmids_by_reads[plasmids_by_reads.NewName != '94_LNODE_1']
+    #extracting plasmid length from the query id
+    df_nt['Pl_length'] = df_nt['qseqid'].apply(lambda x: re.search(r'\d+$', x).group(0))
+    df_nt['Pl_length'] = df_nt['Pl_length'].astype(int)
+    # extracting plasmid name from the query id
+    df_nt['Plasmid'] = df_nt['qseqid'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
+    #counting the number of plasmid candidates with match in nt-database
+    n_nt_plasmids = df_nt['Plasmid'].nunique()
+    print('Number of plasmid candidates, with %d match in nt-database: %d' % ((round((df_nt['pident'].min()),0)), n_nt_plasmids))
+    print('Percentage of plasmid candidates, with %d match in nt-database: %d' % ((round((df_nt['pident'].min()),0)), ((n_nt_plasmids/ plasmids_by_reads['NewName'].nunique()) * 100)))
+    # counting the number of plasmid candidates with match to bacterial chromosome in nt-database
+    nt_chromosome = df_nt[df_nt['stitle'].str.contains('chromosome')]
+    print('Number of plasmid candidates, matched to chromosome: %d' % nt_chromosome['Plasmid'].nunique())
+    print('Percentage  of plasmid candidates, matched to chromosome: %d' % ((nt_chromosome['Plasmid'].nunique() / n_nt_plasmids) * 100))
+    # counting the number of plasmid candidates with match to viral elements in nt-database
+    nt_virus = df_nt[(df_nt['stitle'].str.contains('virus')) | (df_nt['stitle'].str.contains('phage'))]
+    print('Number of plasmid candidates, matched to viral elements: %d' % nt_virus['Plasmid'].nunique())
+    print('Percentage  of plasmid candidates, matched to viral elements: %d' % ((nt_virus['Plasmid'].nunique() / n_nt_plasmids) * 100))
+    # getting candidates matching chromosomal of viral elements
+    nt_chromvir = df_nt[df_nt['stitle'].str.contains('chromosome') | (df_nt['stitle'].str.contains('virus')) | (df_nt['stitle'].str.contains('phage'))]
+    print('Number of plasmid candidates, matched to chromosomal or viral elements: %d' % nt_chromvir['Plasmid'].nunique())
+    print('Percentage  of plasmid candidates, matched to chromosomal or viral elements: %d' % ((nt_chromvir['Plasmid'].nunique() /  plasmids_by_reads['NewName'].nunique()) * 100))
+    # getting names of candidates with match in nt-database
+    nt_plasmids = df_nt['Plasmid'].unique()
+    # print(nt_plasmids)
+    # gettiing number of sampling points where each candidate was found
+    stat_pl = plasmids_by_reads.groupby('NewName').size().reset_index(name='Number_of_stations')
+    # print(stat_pl)
+    # getting number of sampling points, where candidates with no match in nt-database where found
+    non_nt_pl = stat_pl[~stat_pl['NewName'].isin(nt_plasmids)].reset_index(drop = True)
+    # getting candidates, which had no match in nt-database, found in more than 1 sampling point
+    non_nt_1st = non_nt_pl[non_nt_pl['Number_of_stations'] > 1]
+    print('Number of plasmid candidates, with no significant match in nt-database, appearing more than in 1 sampling point: %d' % non_nt_1st['NewName'].nunique())
+    print('Percentage of plasmid candidates, with no significant match in nt-database, appearing more than in 1 sampling point: %d' % ((non_nt_1st['NewName'].nunique() / non_nt_pl['NewName'].nunique()) * 100))
+    # counting the number of plasmid candidates with significant (>90% PI and >90% coverage) match in nt-database
+    df_nt_high = df_nt[(df_nt['pident']>90) & (df_nt['qcovs']>90)]
+    df_nt_high = df_nt_high.loc[abs(df_nt_high['qend']-df_nt_high['qstart']).between((df_nt_high['Pl_length']-round((df_nt_high['Pl_length']*0.1),0)), (df_nt_high['Pl_length']+round((df_nt_high['Pl_length']*0.1),0)))]
+    #print(df_nt_high[['Plasmid','stitle','pident','length','qcovs']])
+    out_file = f'{tables}/nt_high.csv'
+    # print(out_file)
+    #writing candidates with significant match to file
+    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
+        df_nt_high[['Plasmid','sseqid','stitle','pident','length','mismatch','qcovs','qstart', 'qend', 'sstart', 'send']].to_csv(out_file, index = False)
+    print(df_nt_high['Plasmid'].unique())
+    print('Number of plasmid candidates, with significant match in nt-database: %d'
+          % df_nt_high['Plasmid'].nunique())
+    print('Percentage of plasmid candidates, with significant match in nt-database: %d' % ((df_nt_high['Plasmid'].nunique() / plasmids_by_reads['NewName'].nunique()) * 100))
 
-#ntdb_stats()
+#nt_counts()
 #PieClass()
 #Candidates_length()
 #ORF_byStation_stats()

@@ -13,17 +13,19 @@ import colorcet as cc
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
 import scipy.cluster.hierarchy as sch
+from scipy.special import comb
 from collections import defaultdict
 import matplotlib.patches as mpatches
 from station_phys_clustering import Clust_map2, Plasmid_class
+from scipy.stats import hypergeom
 ### Description
 # add description
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 out_dir = f"{path}/data_calculations"
@@ -70,15 +72,15 @@ def SplitColumn():
 
 def DefineStation():
     df = pd.read_csv(plasmids_byreads, index_col=None, header = 0)
-    df.dropna(inplace = True)
+    df.dropna(inplace=True)
     return df
 
 def Station():
     with open(stations) as adressFile:
-        matrix = np.loadtxt(adressFile, dtype = "str")
-    df = pd.DataFrame(data = matrix, index = None, columns = matrix[0, 0:])
+        matrix = np.loadtxt(adressFile, dtype="str")
+    df = pd.DataFrame(data=matrix, index=None, columns=matrix[0, 0:])
     df.reset_index()
-    df.drop(index = 0, inplace = True)
+    df.drop(index=0, inplace=True)
     df['station_name'] = df['Sample'] + "_coverage"
     return df
 
@@ -87,7 +89,7 @@ def GroupPlaceMapper():
     df2 = Station()
     df1['St_Depth'] = df1['station_name'].map(df2.set_index('station_name')['St_Depth'])
     #df1['station_name'] = df1['Station'] + "_coverage"
-    df1['Depth'] = df1['St_Depth'].apply(lambda x: (int(re.search("_\d+", x).group(0)[1:])))
+    df1['Depth'] = df1['St_Depth'].apply(lambda x: (int(re.search("\d+", x).group(0)[1:])))
     return df1
 
 def MapToFunc():
@@ -101,7 +103,7 @@ def MapToPlace():
     df_plasm = MapToFunc()
     df_plasm['qseqid'] = df_plasm['Query'].apply(lambda x: re.search('^.*\_', x).group(0)[:-1])
     df_stations = GroupPlaceMapper()[['NewName', 'St_Depth']]
-    new_df = pd.merge(df_plasm, df_stations, left_on = 'qseqid', right_on = 'NewName')
+    new_df = pd.merge(df_plasm, df_stations, left_on='qseqid', right_on='NewName')
     #print(new_df)
     return new_df
 
@@ -290,7 +292,33 @@ def Physical():
     df["Temperature"] = df['Temp.'].astype(float).round()
     return df[['St_Depth','Depth','Temperature']]
 
+def prob_func(x, orfs, genes, df_db, df_orfs):
+    ''' Function to calculate COG categories statistics. \
+    Function gets COG category (x), number of genes, \
+    assigned any COG category (orfs), cog-database, orf_database.'''
+    # getting number of genes assigned particular COG category x from cog and orfs databases
+    df_db = df_db[df_db['COG cat'] == x]
+    cog_db = df_db.iloc[0]['DB representation']
+    df_orfs = df_orfs[df_orfs['COG cat'] == x]
+    cog_plasmids = df_orfs.iloc[0]['Function count']
+    #print(genes, cog_db, orfs, cog_plasmids)
+    rv = hypergeom(genes, cog_db, orfs)
+    pmf_cog = rv.pmf(cog_plasmids)
+    pval = hypergeom.sf(cog_plasmids-1, genes, cog_db, orfs)
+    cog_freq = (cog_db/genes)*100
+    cog_orf_freq = (cog_plasmids/orfs)*100
+    #print (pmf_cog)
+    print('The probability of getting %d ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pmf_cog)))
+    print('The probability of getting %d or more ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pval)))
+    print('The frequency of COG-%s in COG-database: (%d/%d)*100=%f' % (x, cog_db, genes, round(cog_freq,2)))
+    print('The frequency of COG-%s in our plasmids: (%d/%d)*100=%f' % (x, cog_plasmids, orfs, round(cog_orf_freq, 2)))
+    #not working
+    #prob = hypergeom_pmf(genes, cog_db, orfs, cog_plasmids)
+    #print(prob)
+    return pmf_cog
+
 def Frequency_ofCategory():
+    """ Statistics for COG categories """
     df_station = MapToPlace()[['St_Depth', 'COG cat', 'Functional categories']]
     df_categories = df_station[['COG cat', 'Functional categories']].drop_duplicates()
     df_plasmids = SplitColumn()[['Query', 'COG cat']]
@@ -302,7 +330,22 @@ def Frequency_ofCategory():
     result = pd.concat([df_grouped, df_categories.set_index('COG cat')['Functional categories']], axis = 1)
     #df_grouped['Functional categories'] = df_grouped['COG cat'].map(df_categories.set_index('COG cat')['Functional categories'])
     print("******************* COG categories frequency by proteins *****************")
-    print(result.head())
+    #print(result.head())
+    df_pl_count = df_plasmids.groupby('COG cat').size().reset_index(name='Function count').sort_values(by='Function count', ascending = False)
+    plasmid_orfs = df_plasmids['Query'].nunique()
+    #df_pl_count = df_plasmids['COG cat'].value_counts(normalize = False).to_frame(name = 'Function count').sort_values(by = 'Function count', ascending = False)
+    print(df_pl_count.head())
+    #print(df_pl_count[df_pl_count['COG cat']=='L'])
+    # getting COG elemments in COG database
+    df_cogs = csv_reader(cog_categories)
+    df_cogs = df_cogs.loc[df_cogs['COG cat'] != 'S']
+    # calculating all genes in COG db
+    db_genes = df_cogs['DB representation'].astype('int').sum()
+    # calculating probability of getting particular ammount of genes assigned a particular COG category by random
+    df_pl_count['cog_prob'] = df_pl_count['COG cat'].apply(prob_func, args=(plasmid_orfs,db_genes,df_cogs, df_pl_count))
+    df_pl_count['cog_prob'] = df_pl_count['cog_prob'].apply(lambda x: "{:.2e}".format(x))
+    print(df_pl_count.head())
+    ### getting statistics for COG elements in the sampling points
     df_station['COG cat'] = df_station['COG cat'].replace('-', 'missing').fillna('missing')
     df_station = df_station[(df_station['COG cat'] != 'missing') & (df_station['COG cat'] != 'S')]
     df_grouped = df_station['COG cat'].value_counts(normalize = True).to_frame(name = 'Function count').sort_values(

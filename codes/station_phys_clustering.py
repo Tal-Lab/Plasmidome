@@ -29,9 +29,9 @@ import statsmodels.api as sm
 
 # uncomment relevant path to OS
 # Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 visuals = f"{path}/visualisations"
@@ -354,7 +354,7 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-Correlation_calculation(Clust_map2(5,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+#Correlation_calculation(Clust_map2(5,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 print(Plasmid_class()[0]['Plasmid'].unique())
