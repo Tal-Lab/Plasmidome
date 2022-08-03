@@ -1,5 +1,5 @@
 import pandas as pd
-import re, os
+import re
 from Bio import SeqIO
 import numpy as np
 #import plotly.express as px
@@ -13,9 +13,11 @@ import colorcet as cc
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
 import scipy.cluster.hierarchy as sch
+from scipy.special import comb
 from collections import defaultdict
 import matplotlib.patches as mpatches
 from station_phys_clustering import Clust_map2, Plasmid_class
+from scipy.stats import hypergeom
 ### Description
 # add description
 
@@ -40,8 +42,8 @@ plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
 physical = r"../res/station_physical.xlsx"
 
 station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
-#station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-#station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
+station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)
@@ -305,7 +307,33 @@ def Physical():
     df["Temperature"] = df['Temp.'].astype(float).round()
     return df[['St_Depth','Depth','Temperature']]
 
+def prob_func(x, orfs, genes, df_db, df_orfs):
+    ''' Function to calculate COG categories statistics. \
+    Function gets COG category (x), number of genes, \
+    assigned any COG category (orfs), cog-database, orf_database.'''
+    # getting number of genes assigned particular COG category x from cog and orfs databases
+    df_db = df_db[df_db['COG cat'] == x]
+    cog_db = df_db.iloc[0]['DB representation']
+    df_orfs = df_orfs[df_orfs['COG cat'] == x]
+    cog_plasmids = df_orfs.iloc[0]['Function count']
+    #print(genes, cog_db, orfs, cog_plasmids)
+    rv = hypergeom(genes, cog_db, orfs)
+    pmf_cog = rv.pmf(cog_plasmids)
+    pval = hypergeom.sf(cog_plasmids-1, genes, cog_db, orfs)
+    cog_freq = (cog_db/genes)*100
+    cog_orf_freq = (cog_plasmids/orfs)*100
+    #print (pmf_cog)
+    print('The probability of getting %d ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pmf_cog)))
+    print('The probability of getting %d or more ORFs assigned COG-%s out of %d ORFs is %s.' % (cog_plasmids, x, orfs, "{:.2e}".format(pval)))
+    print('The frequency of COG-%s in COG-database: (%d/%d)*100=%f' % (x, cog_db, genes, round(cog_freq,2)))
+    print('The frequency of COG-%s in our plasmids: (%d/%d)*100=%f' % (x, cog_plasmids, orfs, round(cog_orf_freq, 2)))
+    #not working
+    #prob = hypergeom_pmf(genes, cog_db, orfs, cog_plasmids)
+    #print(prob)
+    return pmf_cog
+
 def Frequency_ofCategory():
+    """ Statistics for COG categories """
     df_station = MapToPlace()[['St_Depth', 'COG cat', 'Functional categories']]
     df_categories = df_station[['COG cat', 'Functional categories']].drop_duplicates()
     df_plasmids = SplitColumn()[['Query', 'COG cat']]
@@ -317,7 +345,22 @@ def Frequency_ofCategory():
     result = pd.concat([df_grouped, df_categories.set_index('COG cat')['Functional categories']], axis = 1)
     #df_grouped['Functional categories'] = df_grouped['COG cat'].map(df_categories.set_index('COG cat')['Functional categories'])
     print("******************* COG categories frequency by proteins *****************")
-    print(result.head())
+    #print(result.head())
+    df_pl_count = df_plasmids.groupby('COG cat').size().reset_index(name='Function count').sort_values(by='Function count', ascending = False)
+    plasmid_orfs = df_plasmids['Query'].nunique()
+    #df_pl_count = df_plasmids['COG cat'].value_counts(normalize = False).to_frame(name = 'Function count').sort_values(by = 'Function count', ascending = False)
+    print(df_pl_count.head())
+    #print(df_pl_count[df_pl_count['COG cat']=='L'])
+    # getting COG elemments in COG database
+    df_cogs = csv_reader(cog_categories)
+    df_cogs = df_cogs.loc[df_cogs['COG cat'] != 'S']
+    # calculating all genes in COG db
+    db_genes = df_cogs['DB representation'].astype('int').sum()
+    # calculating probability of getting particular ammount of genes assigned a particular COG category by random
+    df_pl_count['cog_prob'] = df_pl_count['COG cat'].apply(prob_func, args=(plasmid_orfs,db_genes,df_cogs, df_pl_count))
+    df_pl_count['cog_prob'] = df_pl_count['cog_prob'].apply(lambda x: "{:.2e}".format(x))
+    print(df_pl_count.head())
+    ### getting statistics for COG elements in the sampling points
     df_station['COG cat'] = df_station['COG cat'].replace('-', 'missing').fillna('missing')
     df_station = df_station[(df_station['COG cat'] != 'missing') & (df_station['COG cat'] != 'S')]
     df_grouped = df_station['COG cat'].value_counts(normalize = True).to_frame(name = 'Function count').sort_values(
@@ -329,11 +372,10 @@ def Frequency_ofCategory():
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-
 #Frequency_ofCategory()
 #eggNOGStats()
-BarChart(True, 'with')
-BarChart(True, 'without')
+#BarChart(True, 'with')
+#BarChart(True, 'without')
 #BarChart_lim(Plasmid_class()[1], cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'with')
 #BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
