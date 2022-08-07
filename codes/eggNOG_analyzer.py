@@ -370,6 +370,65 @@ def Frequency_ofCategory():
     print("******************* COG categories frequency by stations *****************")
     print(result.head())
 
+def PieChart(df, file_name, unknown):
+    ''' This function creates Piechart of COG families distribution '''
+    df['COG cat'] = df['COG cat'].replace('-', 'missing').fillna('missing')
+    df=df.fillna('missing')
+    print(df)
+    if unknown == 'without':
+        df = df[(df['COG cat'] != 'missing') & (df['COG cat'] != 'S')]
+    print(df)
+    gen_num = df['Query'].nunique()
+    print(gen_num)
+    #df_grouped = df.groupby[['COG cat', 'Functional categories']].value_counts(normalize = True).to_frame(name = 'Function count').sort_values(by = 'Function count', ascending = False)
+    df_grouped = df.groupby(['COG cat', 'Functional categories']).size().reset_index(name="Function count")
+    df_grouped['Function frequency'] = (df_grouped["Function count"]/gen_num)*100
+    print(df_grouped)
+    #df_grouped['Function count'] = df_grouped['Function count'] * 100
+    #print(df_grouped)
+    ncolors = df_grouped['Functional categories'].nunique()
+    colors = sns.color_palette(cc.glasbey, n_colors = ncolors)
+    labels = df_grouped['Functional categories'].unique()
+    # prepare figure
+    #sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
+    #plt.figure(figsize = (8, 8))
+    #sns.set(font_scale = 0.95)
+    """
+    with sns.axes_style("ticks"):
+        fig = sns.histplot(df,
+                           y = station,
+                           weights = 'Function count',
+                           hue = 'Functional categories',
+                           multiple = 'stack',
+                           hue_order = labels[::-1],
+                           palette = colors,
+                           # Add white borders to the bars.
+                           edgecolor = 'white')
+        # fig.set(ylabel='Sampling points', xlabel='Function frequency')
+        fig.set_xlabel('Function frequency', fontsize = 'medium')
+        fig.set_ylabel('Sampling points', fontsize = 'medium')
+        plt.margins(0, 0)
+        # fig.set_style("white")
+        # fig.yaxis.set_label_position("right")
+        # fig.yaxis.set_ticks_position("right")
+    """
+    # Put the legend out of the figure
+    plt.pie(df_grouped['Function frequency'], labels = labels, colors = colors, autopct = '%0.0f%%')
+    plt.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1,title_fontsize = 'medium',fontsize = 'medium', frameon = False, loc = 2, borderaxespad = 0.)
+    # fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
+    # save graph in PNG and vector format
+    """
+    svg_name = 'barplot_COG_' + unknown + str(3) + '.svg'
+    svg_file = f'{visuals}/{svg_name}'
+    png_name = 'barplot_COG_' + unknown + str(3) + '.png'
+    png_file = f'{visuals}/{png_name}'
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+        plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    """
+    plt.show()
+
+
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()
@@ -380,3 +439,4 @@ pd.set_option('display.max_rows', None)
 #BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'without')
+PieChart(MapToFunc(),'PieChart_COG','with')
