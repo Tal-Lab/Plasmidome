@@ -386,34 +386,18 @@ def PieChart(df, file_name, unknown):
     print(df_grouped)
     #df_grouped['Function count'] = df_grouped['Function count'] * 100
     #print(df_grouped)
+    df_grouped = df_grouped.sort_values('Function frequency', ascending = False)
     ncolors = df_grouped['Functional categories'].nunique()
     colors = sns.color_palette(cc.glasbey, n_colors = ncolors)
-    labels = df_grouped['Functional categories'].unique()
+    df_grouped['Func_cat'] = df_grouped[['COG cat', 'Functional categories']].apply(tuple, axis = 1)
+    df_grouped['Func_cat'] = df_grouped['Func_cat'].apply(lambda x: ' - '.join(x))
+    labels = df_grouped['Func_cat'].unique()
+    labels_pie = df_grouped['COG cat'].unique()
     # prepare figure
-    #sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
     #plt.figure(figsize = (8, 8))
-    #sns.set(font_scale = 0.95)
-    """
-    with sns.axes_style("ticks"):
-        fig = sns.histplot(df,
-                           y = station,
-                           weights = 'Function count',
-                           hue = 'Functional categories',
-                           multiple = 'stack',
-                           hue_order = labels[::-1],
-                           palette = colors,
-                           # Add white borders to the bars.
-                           edgecolor = 'white')
-        # fig.set(ylabel='Sampling points', xlabel='Function frequency')
-        fig.set_xlabel('Function frequency', fontsize = 'medium')
-        fig.set_ylabel('Sampling points', fontsize = 'medium')
-        plt.margins(0, 0)
-        # fig.set_style("white")
-        # fig.yaxis.set_label_position("right")
-        # fig.yaxis.set_ticks_position("right")
-    """
-    # Put the legend out of the figure
-    plt.pie(df_grouped['Function frequency'], labels = labels, colors = colors, autopct = '%0.0f%%')
+    sns.set(font_scale = 0.95)
+    #plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors, autopct = '%0.0f%%')
+    plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors)
     plt.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1,title_fontsize = 'medium',fontsize = 'medium', frameon = False, loc = 2, borderaxespad = 0.)
     # fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     # save graph in PNG and vector format
