@@ -397,7 +397,15 @@ def PieChart(df, file_name, unknown):
     #plt.figure(figsize = (8, 8))
     sns.set(font_scale = 0.95)
     #plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors, autopct = '%0.0f%%')
-    plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors)
+    slices_pie = df_grouped['COG cat'].nunique()
+    explode = [0] * slices_pie
+    print(explode)
+    ind = slices_pie-10
+    print(ind)
+    explode[ind:] = [0.1]*10
+    explode = tuple(explode)
+    print(explode)
+    plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors, explode = explode)
     plt.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1,title_fontsize = 'medium',fontsize = 'medium', frameon = False, loc = 2, borderaxespad = 0.)
     # fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     # save graph in PNG and vector format
