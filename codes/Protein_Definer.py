@@ -7,7 +7,7 @@ Author: Lucy
 ### Description
 # description!!!!
 
-version=11
+version=12
 
 import pandas as pd
 import numpy as np
@@ -25,6 +25,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.patches as mpatches
 from Protein_files_handler import dataset
 from station_phys_clustering import Clust_map2, Plasmid_class, Physical, plasmids_by_reads, Station, GetLibSize
+from plasmid_detect import Function_ORF
 
 station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
 station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
@@ -247,9 +248,10 @@ def FunctionMapper(name):
         fun_anot = fun_anot.rename(columns = {"Drug_Class": "Compound"})
         df_plasm = ABResDF()
     new_df = pd.merge(df_plasm, fun_anot, how = 'inner', on = 'Protein_ID')
-    #print(new_df)
+    #print("########### Printing df for %s" % name)
+    #print(new_df[['qseqid', 'Compound']])
     return new_df
-#FunctionMapper("CARD")
+
 def Clean_Compound(compound_name):
     if re.search('\w+\)]', compound_name):
         pos = re.search('\w+\)]', compound_name).group(0)[:-2]
@@ -283,6 +285,7 @@ def CARDfuncs():
     #card_file = GroupCARDANnot()
     card_file = f'{output_dir}/{"card_annot_byplasmids.csv"}'
     card_df = pd.read_csv(card_file)
+    print(card_df)
     card_df = card_df.rename(columns = {card_df.columns[1]: "Protein_name",
                                         card_df.columns[4]: "Compound"})
     #print(card_df)
@@ -298,7 +301,7 @@ def CARD_to_Plasm():
     df_plasm = ABResDF()
     df_card = CARDfuncs()[['Protein_ID','Compound']]
     new_df = pd.merge(df_plasm, df_card, how = 'inner', on = 'Protein_ID')
-    #print(new_df)
+    print(new_df)
     return new_df
 
 def MapToPlace(name):
@@ -364,11 +367,11 @@ def FreqFuncStat(name):
     print(df.head())
     #df_to_append = MergeFunct(name)
     df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
-    print('############ Printing GroupPlaceMapper ############')
-    print(df2.head())
+    #print('############ Printing GroupPlaceMapper ############')
+    #print(df2.head())
     df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(name='Function frequency')
-    print("########### Printing df_grouped from FreqFuncStat ##############")
-    print(df_grouped.head())
+    #print("########### Printing df_grouped from FreqFuncStat ##############")
+    #print(df_grouped.head())
     df_grouped = df_grouped.reset_index()
     df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
     #df_grouped = df_grouped.append(df_to_append)
@@ -380,21 +383,21 @@ def FreqFuncStat(name):
                               dropna = False,
                               fill_value = 0)
     pivot_df.drop('missing', axis=1, inplace = True)
-    print('###################3 pivoted')
-    print(pivot_df)
+    #print('################### pivoted')
+    #print(pivot_df)
     return pivot_df
 
 def Station_Order(order, init_order):
     counter_list = list(enumerate(init_order, 0))
-    print("prinying counter list")
-    print(counter_list)
+    #print("prinying counter list")
+    #print(counter_list)
     station_order = order
-    print("Printing station order")
-    print(station_order)
+    #print("Printing station order")
+    #print(station_order)
     init_df = pd.DataFrame(counter_list, columns = ['Number', 'Sampling Station']).set_index('Number').reindex(station_order)
-    print(init_df)
+    #print(init_df)
     final_order = init_df['Sampling Station'].to_list()
-    print(final_order)
+    #print(final_order)
     return final_order
 
 def Clustermap(name, set_p):
@@ -426,20 +429,20 @@ def Clustermap(name, set_p):
                                 sns.color_palette("colorblind", cluster_st_df['Sampling points clusters'].nunique())))
         cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
     # df_init = FreqFuncStat(name)
-    print(candidates)
+    #print(candidates)
     df_init = MapToPlace(name)[['Plasmid', 'St_Depth', 'Compound']]
     df = df_init.loc[df_init['Plasmid'].isin(candidates)]
     df = df[['St_Depth', 'Compound']]
-    print('######### Printing mapped resistance genes to sampling points #########')
-    print(df.head())
+    #print('######### Printing mapped resistance genes to sampling points #########')
+    #print(df.head())
     # df_to_append = MergeFunct(name)
     df2 = GroupPlaceMapper()[['station_name', 'St_Depth']].drop_duplicates()
-    print('############ Printing GroupPlaceMapper ############')
-    print(df2.head())
+    #print('############ Printing GroupPlaceMapper ############')
+    #print(df2.head())
     df_grouped = df.groupby('St_Depth')['Compound'].value_counts(normalize = False).to_frame(
         name = 'Function frequency')
-    print("########### Printing df_grouped from FreqFuncStat ##############")
-    print(df_grouped.head())
+    #print("########### Printing df_grouped from FreqFuncStat ##############")
+    #print(df_grouped.head())
     df_grouped = df_grouped.reset_index()
     df_grouped['station_name'] = df_grouped['St_Depth'].map(df2.set_index('St_Depth')['station_name'])
     # df_grouped = df_grouped.append(df_to_append)
@@ -460,9 +463,8 @@ def Clustermap(name, set_p):
     library = library.rename(columns = {library.columns[0]: 'Library Size'})
     # Sort the values for the bar plot to have the same order as clusters
     library = library.reindex(station_order)
-    print("printing library")
-    print(library)
-
+    #print("printing library")
+    #print(library)
     sns.set(font_scale = 1.2)
     figure1 = sns.clustermap(data = df_norm,
                              metric = "euclidean",
@@ -470,7 +472,7 @@ def Clustermap(name, set_p):
                              row_cluster = False,
                              row_colors = cluster_st,
                              linewidths = 0.0,
-                             figsize = (14, 10),
+                             figsize = (14, 14),
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              xticklabels = True,
                              yticklabels = True,
@@ -525,7 +527,14 @@ def Function_Frequency(name):
     print("******************* %s compounds frequency by stations *****************" % name)
     print(df_small.nlargest())
 
+def ORF_table():
+    CARD = FunctionMapper("CARD")[['qseqid', 'Compound']]
+    BacMet = FunctionMapper("BACMET")[['qseqid', 'Compound']]
+    other_funcs = Function_ORF()
+    print(other_funcs)
+
+ORF_table()
 #Function_Frequency("BACMET")
 #Function_Frequency("CARD")
-#Clustermap('BACMET', 'All')
-#Clustermap('CARD', 'All')
+Clustermap('BACMET', 'All')
+Clustermap('CARD', 'All')
