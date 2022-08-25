@@ -1,5 +1,5 @@
 import pandas as pd
-import re
+import re, os
 from Bio import SeqIO
 import numpy as np
 #import plotly.express as px
@@ -373,10 +373,10 @@ def Frequency_ofCategory():
 def PieChart(df, file_name, unknown):
     ''' This function creates Piechart of COG families distribution '''
     df['COG cat'] = df['COG cat'].replace('-', 'missing').fillna('missing')
-    df=df.fillna('missing')
+    df=df.fillna('No category assigned')
     print(df)
     if unknown == 'without':
-        df = df[(df['COG cat'] != 'missing') & (df['COG cat'] != 'S')]
+        df = df[(df['COG cat'] != 'No category assigned') & (df['COG cat'] != 'S')]
     print(df)
     gen_num = df['Query'].nunique()
     print(gen_num)
@@ -394,30 +394,27 @@ def PieChart(df, file_name, unknown):
     labels = df_grouped['Func_cat'].unique()
     labels_pie = df_grouped['COG cat'].unique()
     # prepare figure
-    #plt.figure(figsize = (8, 8))
     sns.set(font_scale = 0.95)
     #plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors, autopct = '%0.0f%%')
     slices_pie = df_grouped['COG cat'].nunique()
     explode = [0] * slices_pie
     print(explode)
-    ind = slices_pie-10
+    ind = slices_pie-4
     print(ind)
-    explode[ind:] = [0.1]*10
+    explode[ind:] = [0.2]*4
     explode = tuple(explode)
     print(explode)
-    plt.pie(df_grouped['Function frequency'], labels = labels_pie, colors = colors, explode = explode)
+    plt.pie(df_grouped['Function frequency'], colors = colors, explode = explode)
     plt.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1,title_fontsize = 'medium',fontsize = 'medium', frameon = False, loc = 2, borderaxespad = 0.)
     # fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     # save graph in PNG and vector format
-    """
-    svg_name = 'barplot_COG_' + unknown + str(3) + '.svg'
+    svg_name = 'Piechart_COG_' + unknown + str(3) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'barplot_COG_' + unknown + str(3) + '.png'
+    png_name = 'Piechart_COG_' + unknown + str(3) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
         plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    """
     plt.show()
 
 
@@ -431,4 +428,5 @@ pd.set_option('display.max_rows', None)
 #BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
 #BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'without')
-PieChart(MapToFunc(),'PieChart_COG','with')
+#PieChart(MapToFunc(),'PieChart_COG','with')
+#PieChart(MapToFunc(),'PieChart_COG','without')
