@@ -246,8 +246,10 @@ def FunctionMapper(name):
     elif name == "CARD":
         fun_anot = AnnotCARD()[['Protein_ID','Drug_Class']]
         fun_anot = fun_anot.rename(columns = {"Drug_Class": "Compound"})
+        print(fun_anot.head())
         df_plasm = ABResDF()
-    new_df = pd.merge(df_plasm, fun_anot, how = 'inner', on = 'Protein_ID')
+        print(df_plasm.head())
+    new_df = pd.merge(df_plasm, fun_anot, on = 'Protein_ID', how = 'inner')
     #print("########### Printing df for %s" % name)
     #print(new_df[['qseqid', 'Compound']])
     return new_df
@@ -517,7 +519,6 @@ def Clustermap(name, set_p):
 
 def Function_Frequency(name):
     df = FreqFuncStat(name)
-
     df_norm = df
     df_norm[:] = np.where(df_norm == 0, 0, 1)
     df.loc['Total']= df.sum()
@@ -529,12 +530,24 @@ def Function_Frequency(name):
 
 def ORF_table():
     CARD = FunctionMapper("CARD")[['qseqid', 'Compound']]
+    CARD = CARD.rename(columns = {CARD.columns[1]: "Compound-CARD"})
+    #print(CARD.head())
     BacMet = FunctionMapper("BACMET")[['qseqid', 'Compound']]
+    BacMet = BacMet.rename(columns = {BacMet.columns[1]: "Compound-BacMet"})
+    #print(BacMet.head())
     other_funcs = Function_ORF()
-    print(other_funcs)
+    other_funcs2 = other_funcs.merge(BacMet, left_on="ORF_name", right_on = 'qseqid',  how = 'inner')
+    del other_funcs2['qseqid']
+    print(other_funcs2.head())
+    all_functions = other_funcs2.merge(CARD, left_on = "ORF_name", right_on = 'qseqid', how = 'inner')
+    del all_functions['qseqid']
+    print(all_functions.head())
+    orfs_name = f'{output_dir}/{"orf_functions_overall.csv"}'
+    if not os.path.isfile(orfs_name) or os.stat(orfs_name).st_size == 0:
+        all_functions.to_csv(orfs_name, index = False)
 
-ORF_table()
+#ORF_table()
 #Function_Frequency("BACMET")
 #Function_Frequency("CARD")
-Clustermap('BACMET', 'All')
-Clustermap('CARD', 'All')
+#Clustermap('BACMET', 'All')
+#Clustermap('CARD', 'All')
