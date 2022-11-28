@@ -434,7 +434,7 @@ def table():
 
 
 
-table()
+#table()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()

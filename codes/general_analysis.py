@@ -7,7 +7,7 @@ Author: Lucy Androsiuk
 ### Description
 # add description
 
-version=3
+version=4
 
 import numpy as np
 import pandas as pd
@@ -218,8 +218,9 @@ def ORF_byPlasmid_stats():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
+    plt.xlabel('Number of ORFs')
     #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
-    plt.axvline(x = out['Number of Proteins'].median(),
+    """plt.axvline(x = out['Number of Proteins'].median(),
                 color = 'blue',
                 ls = '--',
                 lw = 1.0)
@@ -230,7 +231,7 @@ def ORF_byPlasmid_stats():
                 color = 'red',
                 lw = 1.0)
     plt.text(out['Number of Proteins'].mean() * 1.1, max_ylim * 0.8,
-             'Mean: {:.2f}'.format(out['Number of Proteins'].mean()))
+             'Mean: {:.2f}'.format(out['Number of Proteins'].mean()))"""
     svg_name = "ProteinsHisto" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "ProteinsHisto" + str(version) + '.png'
@@ -239,9 +240,10 @@ def ORF_byPlasmid_stats():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-    df_min=out.loc[out["Number of Proteins"]<100]
+    df_min=out.loc[out["Number of Proteins"]<=100]
     num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
-    plt.axvline(x = df_min['Number of Proteins'].median(),
+    plt.xlabel('Number of ORFs')
+    """plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
                 ls = '--',
                 lw = 1.5)
@@ -251,7 +253,8 @@ def ORF_byPlasmid_stats():
     plt.axvline(x = df_min['Number of Proteins'].mean(),
                 color = 'red',lw = 1.5)
     plt.text(df_min['Number of Proteins'].mean() * 1.1, max_ylim * 0.8,
-             'Mean: {:.2f}'.format(df_min['Number of Proteins'].mean()))
+             'Mean: {:.2f}'.format(df_min['Number of Proteins'].mean()))"""
+
     svg_name = "ProteinsHistoMin" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "ProteinsHistoMin" + str(version) + '.png'
@@ -497,7 +500,7 @@ def Candidates_length():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     # getting candidates <200bp into separate dataframe
-    df_min = df.loc[df['Length_norm']<=200]
+    df_min = df.loc[df['Length_norm']<=100]
     # plotting histogram for candidate's lengths (<200bp), colored by class
     sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
     plt.xlabel('Plasmid length, kb')
@@ -584,6 +587,7 @@ def nt_counts():
 
 #nt_counts()
 #PieClass()
+#ORF_byPlasmid_stats()
 #Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
