@@ -171,7 +171,10 @@ def Clust_map2(vers, df, name, cl, pl):
     cluster_st_df = cluster_st_df.set_index(parameters['St_Depth'])
     stat_cluster = dict(
         zip(cluster_st_df['Sampling points clusters'].unique(), sns.color_palette("colorblind", cluster_st_df['Sampling points clusters'].nunique())))
+    up_dict = {5:(1.0,0.76, 0.04)}
+    stat_cluster.update(up_dict)
     cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
+    print(cluster_st)
     stations = cluster_st_df.index.values.tolist()
     
     # plasmid clusters indices correspond to indices of original df
@@ -354,7 +357,7 @@ def Correlation_calculation(class_df, cand_df, name):
 
 
 
-Correlation_calculation(Clust_map2(9,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+#Correlation_calculation(Clust_map2(9,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 #print(Plasmid_class()[0]['Plasmid'].unique())
@@ -364,6 +367,6 @@ Correlation_calculation(Clust_map2(9,Plasmid_class()[2],'PlPutUnc_HMannot_', 115
 #print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
 #Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 #Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-#Clust_map2(8,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
+#Clust_map2(11,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
 
 

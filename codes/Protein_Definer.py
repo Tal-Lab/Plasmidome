@@ -7,7 +7,7 @@ Author: Lucy
 ### Description
 # description!!!!
 
-version=12
+version=13
 
 import pandas as pd
 import numpy as np
@@ -415,6 +415,9 @@ def Clustermap(name, set_p):
         # get row_clusters
         stat_cluster = dict(zip(cluster_st_df7['Sampling points clusters'].unique(),
                                 sns.color_palette("colorblind", cluster_st_df7['Sampling points clusters'].nunique())))
+
+        up_dict = {5: (1.0, 0.76, 0.04)}
+        stat_cluster.update(up_dict)
         cluster_st = cluster_st_df7['Sampling points clusters'].map(stat_cluster)
     elif set_p == 'PlPut':
         station_order = Station_Order(station_reorderPlPut, station_orderPlPut)
@@ -422,6 +425,8 @@ def Clustermap(name, set_p):
         # get row_clusters
         stat_cluster = dict(zip(cluster_st_dfPlPut['Sampling points clusters'].unique(),
                                 sns.color_palette("colorblind", cluster_st_dfPlPut['Sampling points clusters'].nunique())))
+        up_dict = {5: (1.0, 0.76, 0.04)}
+        stat_cluster.update(up_dict)
         cluster_st = cluster_st_dfPlPut['Sampling points clusters'].map(stat_cluster)
     else:
         station_order = Station_Order(station_reorderCl, station_orderCl)
@@ -429,6 +434,8 @@ def Clustermap(name, set_p):
         # get row_clusters
         stat_cluster = dict(zip(cluster_st_df['Sampling points clusters'].unique(),
                                 sns.color_palette("colorblind", cluster_st_df['Sampling points clusters'].nunique())))
+        up_dict = {5: (1.0, 0.76, 0.04)}
+        stat_cluster.update(up_dict)
         cluster_st = cluster_st_df['Sampling points clusters'].map(stat_cluster)
     # df_init = FreqFuncStat(name)
     #print(candidates)
