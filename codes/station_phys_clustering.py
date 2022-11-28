@@ -338,11 +338,11 @@ def Correlation_calculation(class_df, cand_df, name):
     df_Pearson = df_pl_cluster_corr_P.append(df_pears)
     ### plotting correlation matrix
     plt.figure(figsize = (15,12))
-    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {"ticks": [-1, 1]})
+    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {'label': 'Pearson correlation',"ticks": [-1, 1]})
     ax_fig = ax.get_figure()
-    svg_name = 'heatmap_corr_' + name + str(4) + '.svg'
+    svg_name = 'heatmap_corr_' + name + str(5) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'heatmap_corr_' + name + str(4) + '.png'
+    png_name = 'heatmap_corr_' + name + str(5) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         ax_fig.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')

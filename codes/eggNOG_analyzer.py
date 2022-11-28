@@ -30,6 +30,7 @@ path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # working directories
 out_dir = f"{path}/data_calculations"
 visuals = f"{path}/visualisations"
+tables = f"{path}/data_calculations"
 
 # working files
 combined_output = r"../res/unique_plasmids.fasta"
@@ -417,7 +418,23 @@ def PieChart(df, file_name, unknown):
         plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
+def table():
+    df_cog = MapToFunc()
+    df_grouped = df_cog.groupby(['COG cat','Functional categories']).count().sort_values(by = 'Query', ascending = False)
+    all_funcs = df_grouped['Query'].sum()
+    print(all_funcs)
+    no_unknown = all_funcs - df_grouped.loc[("S","Function Unknown"),"Query"]
+    print(no_unknown)
+    df_grouped['Function frequency'] = df_grouped['Query'].apply(lambda x: round(((x/all_funcs)*100),2))
+    df_grouped['Function frequency without unknown function'] = df_grouped['Query'].apply(lambda x: round(((x/no_unknown)*100),2))
+    df_grouped.loc[("S","Function Unknown"), 'Function frequency without unknown function'] = '-'
+    #df_grouped=df_grouped.round({'Function frequency': 3, 'Function frequency without unknown function': 3})
+    print(df_grouped)
+    df_grouped.to_excel(f'{tables}/COG_table.xlsx')
 
+
+
+table()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 #Frequency_ofCategory()
