@@ -7,7 +7,7 @@ Author: Lucy
 ### Description
 # description!!!!
 
-version=13
+version=14
 
 import pandas as pd
 import numpy as np
@@ -17,7 +17,7 @@ import sys
 from Bio import SeqIO
 from pathlib import Path
 import timeit
-from scipy.cluster.hierarchy import linkage, fcluster
+from scipy.cluster.hierarchy import linkage, fcluster, leaves_list
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
@@ -36,9 +36,9 @@ pd.set_option('display.max_rows', None)
 
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 output_dir = f"{path}/data_calculations"
@@ -481,7 +481,7 @@ def Clustermap(name, set_p):
                              row_cluster = False,
                              row_colors = cluster_st,
                              linewidths = 0.0,
-                             figsize = (14, 14),
+                             figsize = (15, 12),
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              xticklabels = True,
                              yticklabels = True,
