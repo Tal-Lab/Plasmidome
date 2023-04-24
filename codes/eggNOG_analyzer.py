@@ -312,6 +312,8 @@ def prob_func(x, orfs, genes, df_db, df_orfs):
     ''' Function to calculate COG categories statistics. \
     Function gets COG category (x), number of genes, \
     assigned any COG category (orfs), cog-database, orf_database.'''
+    print(genes)
+    print(orfs)
     # getting number of genes assigned particular COG category x from cog and orfs databases
     df_db = df_db[df_db['COG cat'] == x]
     cog_db = df_db.iloc[0]['DB representation']
