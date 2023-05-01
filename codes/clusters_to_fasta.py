@@ -28,11 +28,13 @@ def FilteredPlasmids_toFasta():
     name_map = read_csv()
     # Iterate over fasta records and write to output with new names
     with open(filtered_candidates, "w") as out:  # Open the output file for writing
+        records_filtered= []
         for record in SeqIO.parse(all_candidates, "fasta"):  # Use SeqIO.parse to read the input FASTA file
-            if record.id in name_map:  # Check if the current record has a new name
-                record.id = name_map[record.id]  # Update the record's ID with the new name
+            if record.id[:record.id.index('_cov_')] in name_map:  # Check if the current record has a new name
+                record.id = name_map[record.id[:record.id.index('_cov_')]]  # Update the record's ID with the new name
                 record.name = ""  # Set name and description to empty strings to avoid printing them
                 record.description = ""
-            SeqIO.write(record, out, "fasta")  # Write the updated record to the output file
+                records_filtered.append(record)
+        SeqIO.write(records_filtered, out, "fasta")  # Write the updated record to the output file
 
 FilteredPlasmids_toFasta()

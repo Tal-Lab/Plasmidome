@@ -16,6 +16,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 import multiprocessing as mp, time
 from itertools import combinations
+from pathlib import Path
 
 pd.set_option('max_columns', None)
 pd.set_option('max_rows', None)
