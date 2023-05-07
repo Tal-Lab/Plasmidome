@@ -3,7 +3,7 @@ Created on 26/04/2023
 
 Author: Lucy Androsiuk
 """
-import os
+import os, time
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -19,9 +19,12 @@ from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 import networkx as nx
 from joblib import Parallel, delayed
+from multiprocessing import Pool
 
 
 Entrez.email = "androsiu@post.bgu.ac.il"
+Entrez.sleep_between_tries = 30
+Entrez.api_key = 'ca6eb8a4fb72d1093bbe60949306958cdc08'
 
 # uncomment relevant path to OS
 # Windows
@@ -77,18 +80,48 @@ merged = merged.drop('Sample', axis = 1)
 #print(merged)
 
 def get_family_for_genus(genus):
-    Entrez.sleep_between_tries = 20
-    handle = Entrez.esearch(db="taxonomy", term=genus)
+    print(genus)
+    # Search for the genus using Entrez
+    handle = Entrez.esearch(db = 'taxonomy', term = genus)
     record = Entrez.read(handle)
-    if len(record["IdList"]) == 0:
-        return None
-    id = record["IdList"][0]
-    handle = Entrez.efetch(db="taxonomy", id=id, retmode="xml")
-    record = Entrez.read(handle)
-    for r in record[0]["LineageEx"]:
-        if r["Rank"] == "family":
-            return r["ScientificName"]
-    return None
+    print(record)
+    handle.close()
+
+    # Get the taxonomy information for the genus
+    if record['Count'] == '0':
+        # Genus not found in Entrez
+        family = 'Unknown'
+        phylum = 'Unknown'
+    else:
+        # Get the taxonomy record for the genus
+        id_list = record['IdList']
+        handle = Entrez.efetch(db = 'taxonomy', id = id_list[0], retmode = 'xml')
+        record = Entrez.read(handle)
+        #print(record)
+        handle.close()
+
+        # Extract the family and phylum information
+        lineage = record[0]['LineageEx']
+        print(lineage)
+        if [item['ScientificName'] for item in lineage if item['Rank'] == 'family']:
+            family = [item['ScientificName'] for item in lineage if item['Rank'] == 'family'][0]
+        else:
+            family = 'Unknown'
+        if [item['ScientificName'] for item in lineage if item['Rank'] == 'phylum']:
+            phylum = [item['ScientificName'] for item in lineage if item['Rank'] == 'phylum'][0]
+        else:
+            phylum = 'Unknown'
+
+    print(family, phylum)
+
+    # Return the taxonomy information
+    return family, phylum
+
+# Define a function to apply the get_taxonomy function to each genus in parallel
+def get_taxonomy_parallel (genus):
+    family, phylum = get_family_for_genus(genus)
+    time.sleep(0.5)  # Add a delay to avoid overloading the Entrez servers
+    return family, phylum
 
 def corr_coef(plasmid_df ,bact_df, name):
     #bullshit
@@ -150,7 +183,7 @@ def Physical(vers):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
-    plt.show()
+    #plt.show()
     df['St_Depth'] = df['Station'].astype(int).astype(str)+ '_'+df['Depth'].astype(str)
     # print(df['Temp.'].sort_values(ascending = False))
     # temperature ranges should be specified not in the code!
@@ -280,7 +313,7 @@ def Clust_map (vers, df, name, cl, pl):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
         plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()  # Push new figure on stack
+    #plt.show()  # Push new figure on stack
     station_order = df.index.values.tolist()
     station_reorder = figure2.dendrogram_row.reordered_ind
     pl_oder = df.columns.values.tolist()
@@ -390,7 +423,7 @@ def Clust_bact(vers, df,name, bact,order_init,order_new, order):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
         plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()  # Push new figure on stack
+    #plt.show()  # Push new figure on stack
     bact_order = df.index.values.tolist()
     bact_reorder = figure2.dendrogram_row.reordered_ind
     return bact_order, bact_reorder, clusters_bact_df
@@ -482,6 +515,7 @@ def association_rules2():
 
     # Print the top 10 rules by lift
     print(rules.head(10))
+
 def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init, order_bact_new, clusters_bact_df, cluster_pl_df, name):
     # create a new dataframe with only the plasmid and bacterium columns
     plasmid_df = plasmid_df.iloc[:, :-1]
@@ -505,7 +539,10 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
     corr_matrix_subset = corr_matrix.drop(rows_to_remove, axis = 0).drop(cols_to_remove, axis = 1)
     sns.set(font_scale = 1.5)
     print(corr_matrix_subset)
-
+    out_file = f'{tables}/correlation_matrix.csv'
+    # print(out_file)
+    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
+        corr_matrix_subset.to_csv(out_file, index = True)
     # get row_colors
     bact_cluster = dict(
         zip(clusters_bact_df['Bacterial genus clusters'].unique(),
@@ -546,7 +583,7 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
     out_file = f'{tables}/max_correlation_plasmids.csv'
     # print(out_file)
     if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
-        df_dist.max().to_csv(out_file, index = False)
+        df_dist.max().to_csv(out_file, index = True)
     sns.set_style("white")
     dist = sns.displot(df_dist, x = df_dist.max(), bins = 20)
     svg_name = 'dist_max_plasmid2_' + name + '.svg'
@@ -589,17 +626,18 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
     plasmid_bacteria_cl_df = pd.concat([out_group_pl, out_group_bact], axis=1)
     # calculate the correlation coefficients between all pairs of plasmids and bacteria
     corr_cl_matrix = plasmid_bacteria_cl_df.corr()
-    print(corr_cl_matrix)
     bact_cl_to_remove = list(out_group_bact.columns.values)
-    print(bact_cl_to_remove)
     pl_cl_to_remove = list(out_group_pl.columns.values)
-    print(pl_cl_to_remove)
     cols_to_remove = [b for b in bact_cl_to_remove if b in corr_cl_matrix.columns]
     rows_to_remove = [p for p in pl_cl_to_remove if p in corr_cl_matrix.index]
     # subset the correlation matrix to exclude the rows and columns to remove
     corr_cl_matrix_subset = corr_cl_matrix.drop(rows_to_remove, axis = 0).drop(cols_to_remove, axis = 1)
     sns.set(font_scale = 1.5)
-    print(corr_cl_matrix_subset)
+    #print(corr_cl_matrix_subset)
+    out_file = f'{tables}/correlation_clusters_matrix.csv'
+    # print(out_file)
+    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
+        corr_cl_matrix_subset.to_csv(out_file, index = True)
 
     figure3 = sns.clustermap(data = corr_cl_matrix_subset,
                             metric = "euclidean",
@@ -620,8 +658,21 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         figure3.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
         figure3.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
 
+    # Use a Pool of 4 workers to apply the get_taxonomy_parallel function to the 'genus' column
+    with Pool(4) as p:
+        results = p.map(get_taxonomy_parallel, clusters_bact_df['Bacteria'])
+
+    # Add the results as new columns to the dataframe
+    clusters_bact_df['Family'], clusters_bact_df['Phylum'] = zip(*results)
+    
+    print(clusters_bact_df)
+    out_file = f'{tables}/Bact_tax_clusters_matrix.csv'
+    # print(out_file)
+    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
+        clusters_bact_df.to_csv(out_file, index = True)
+    print(cluster_pl_df)
 
 
 
@@ -632,8 +683,8 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
 #contingency(merged, df_genus_upd, 'genus')
 #Clust_map(1,merged,'PlPutUnc_HMannot_', 1150, 1200)
 #Clust_map(1,merged,'PlPutUnc_HMannot_', 11.5, 12)
-#order_st_init, order_st_new, order_pl_init, order_pl_new, order_stations ,order_plasmids= Clust_map(1,merged,'Plasm_for_bact_', 11.5, 12)
-#order_bact_init, order_bact_new, order_bacteria = Clust_bact(1,df_genus_upd,'Bact_HMannot_', 8, order_st_init,order_st_new,order_stations)
-#corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new,order_bacteria,order_plasmids, 'genus')
+order_st_init, order_st_new, order_pl_init, order_pl_new, order_stations ,order_plasmids= Clust_map(1,merged,'Plasm_for_bact_', 11.5, 12)
+order_bact_init, order_bact_new, order_bacteria = Clust_bact(1,df_genus_upd,'Bact_HMannot_', 8, order_st_init,order_st_new,order_stations)
+corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new,order_bacteria,order_plasmids, 'genus')
 #vis_contingency()
 #association_rules2()
