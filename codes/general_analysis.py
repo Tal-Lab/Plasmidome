@@ -41,6 +41,7 @@ proteins = r"../res/Filtered_ORFs.fasta"
 library = r"../res/LibrarySize.csv"
 stations = r"../res/stations.txt"
 nt_entries = r"../res/dataset/nt_blast.zip"
+candidates_seqs = f'{path}/plasmid_candidates.fasta'
 
 df_class = Plasmid_class()[2]
 plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
@@ -209,15 +210,17 @@ def ORF_byPlasmid_stats():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
-    out_min = out.loc[out['Length_norm'] <= 200]
+    print('Total number of plasmids: %s' % str(out['Plasmid'].nunique()))
+    out_min = out.loc[out['Length_norm'] < 150]
+    print('Number of plasmids < 150 kb: %s' % str(out_min['Plasmid'].nunique()))
     sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins", hue = 'Class', style = 'Class')
     plt.xlabel('Plasmid length, kb')
-    svg_name = "Len200_Proteins" + str(version) + '.svg'
+    svg_name = "Len150_plasmids" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Len200_Proteins" + str(version) + '.png'
+    png_name = "Len150_plasmids" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     plt.xlabel('Number of ORFs')
@@ -239,10 +242,12 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHisto" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
+    print('Total number of proteins: %s' % str(out['Number of Proteins'].sum()))
     df_min=out.loc[out["Number of Proteins"]<=100]
+    print('Number of Proteins < 100 per plasmid: %s' % str(df_min['Number of Proteins'].sum()))
     num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     plt.xlabel('Number of ORFs')
     """plt.axvline(x = df_min['Number of Proteins'].median(),
@@ -262,12 +267,12 @@ def ORF_byPlasmid_stats():
     png_name = "ProteinsHistoMin" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     return df_grouped, out
 
-#ORF_byPlasmid_stats()
+ORF_byPlasmid_stats()
 
 def Station():
     ' getting station parameters from station matrix '
@@ -587,10 +592,45 @@ def nt_counts():
           % df_nt_high['Plasmid'].nunique())
     print('Percentage of plasmid candidates, with significant match in nt-database: %d' % ((df_nt_high['Plasmid'].nunique() / plasmids_by_reads['NewName'].nunique()) * 100))
 
+def gc_content():
+    # open the FASTA file and iterate over each sequence
+    gc_recs = []
+    candidates = []
+    with open(candidates_seqs) as handle:
+        for record in SeqIO.parse(handle, "fasta"):
+            # calculate the GC content of the sequence
+            gc_count = sum(1 for base in record.seq if base in ['G', 'C', 'g', 'c'])
+            gc_content = gc_count / len(record.seq) * 100
+
+            # print the ID and GC content of the sequence
+            print(f"{record.id}\t{gc_content:.2f}")
+            gc_recs.append(round(gc_content,2))
+            candidates.append(record.id)
+    pl_gc = pd.DataFrame(list(zip(candidates, gc_recs)), columns =['Candidate', 'GC'])
+    pl_gc['Candidate'] = pl_gc['Candidate'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
+    df = df_class[['Plasmid', 'Class']].drop_duplicates().reset_index(drop = True)
+    out = pl_gc.merge(df, left_on = 'Candidate', right_on = 'Plasmid')
+    out.drop('Plasmid', axis = 1, inplace = True)
+    out_put = out.loc[out['Candidate'].isin(putative_plasmids)]
+    out_plasm = out.loc[out['Candidate'].isin(plasmids)]
+    print('The GC content values in all candidates ranges between %s and %s' % (str(out['GC'].min()), str(out['GC'].max())))
+    print('Average GC content in all candidates is %s' % str(out['GC'].mean()))
+    print('The GC content values in putative plasmids ranges between %s and %s' % (
+    str(out_put['GC'].min()), str(out_put['GC'].max())))
+    print('Average GC content in putative plasmids is %s' % str(out_put['GC'].mean()))
+    print('The GC content values in plasmids ranges between %s and %s' % (
+    str(out_plasm['GC'].min()), str(out_plasm['GC'].max())))
+    print('Average GC content in plasmids is %s' % str(out_plasm['GC'].mean()))
+    out_file = f'{tables}/GC_content.csv'
+    # print(out_file)
+    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
+        out.to_csv(out_file, index = True)
+
+#gc_content()
 #nt_counts()
 #PieClass()
 #ORF_byPlasmid_stats()
-Candidates_length()
+#Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
 #plasmids_byreads=DF_plasmids_byReads()[1]

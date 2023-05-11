@@ -9,7 +9,7 @@ Author: Lucy Androsiuk
 # are being filtered and rewritten into new fasta file with unique ORFs
 
 import random
-import re
+import re,os
 import pandas as pd
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -25,9 +25,9 @@ pd.set_option('display.max_colwidth', None)
 version = 1
 # uncomment relevant path to OS
 # Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
+#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
 
 # working directories
 tables = f"{path}/data_calculations"
@@ -156,6 +156,8 @@ def CheckOverlappingORFs():
         ['Plasmid_length', 'ORF', 'ORF_num', 'ORF_length', 'Strand', 'Sequence', 'Start', 'End', 'Partial', 'ORF_lengthD']]
     filtered_ORF = pd.DataFrame()
     for name, group in df_grouped:
+        print('%%%%%%%%%%%%%%%%%%%%%%')
+        print(group)
         group['Start'] = group['Start'].astype(int)
         group['End'] = group['End'].astype(int)
         group_nodupl = group.drop_duplicates(subset=['Start', 'End'], keep='last')
@@ -237,7 +239,7 @@ def CheckOverlappingORFs():
     median = grouped_df['Count'].median().round(2)
     print("The median number of ORFs in plasmid is %s" % (str(median)))
     return filtered_ORF
-
+CheckOverlappingORFs()
 def FilteredORF_toFasta():
     df = CheckOverlappingORFs()
     ids = df['ORF'].to_list()
