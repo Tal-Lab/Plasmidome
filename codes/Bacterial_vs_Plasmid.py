@@ -9,6 +9,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import scipy.cluster.hierarchy as sch
+from scipy import stats
 import fastcluster
 from sklearn import preprocessing
 from itertools import product
@@ -22,6 +23,9 @@ from joblib import Parallel, delayed
 import multiprocessing as mp
 from multiprocessing import Pool
 import matplotlib.gridspec as gridspec
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import statsmodels.api as sm
 
 
 Entrez.email = "androsiu@post.bgu.ac.il"
@@ -601,9 +605,11 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
     #print(plasmid_df)
     out_pl = cluster_pl_df.merge(plasmid_df, on = 'Plasmids')
     out_pl.sort_values('Plasmid candidates clusters', inplace = True)
+
     out_group_pl = out_pl.groupby('Plasmid candidates clusters').mean()  # calculating coverage average for each plasmid candidates cluster at each sampling point
 
     out_group_pl = out_group_pl.T
+    print(out_group_pl)
     # getting bacterial genus clusters
     clusters_bact_df = clusters_bact_df.reset_index()
     clusters_bact_df['Bacterial genus clusters'] = 'Cb' + clusters_bact_df['Bacterial genus clusters'].astype(str)
@@ -617,9 +623,10 @@ def corr_coef2(plasmid_df ,bact_df, order_pl_init, order_pl_new, order_bact_init
         'Bacterial genus clusters').mean()  # calculating presence average for each bacterial genus cluster at each sampling point
 
     out_group_bact = out_group_bact.T
-
+    print(out_group_bact)
     #concatenating bacterial clsuters and plasmid clsuters dfs
     plasmid_bacteria_cl_df = pd.concat([out_group_pl, out_group_bact], axis=1)
+    print(plasmid_bacteria_cl_df)
     # calculate the correlation coefficients between all pairs of plasmids and bacteria
     corr_cl_matrix = plasmid_bacteria_cl_df.corr()
     bact_cl_to_remove = list(out_group_bact.columns.values)
@@ -704,14 +711,14 @@ def grid_image():
     data2 = data2.reindex(columns = pl_order)
     data3, cl_bact, cl_pl = corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new, order_bacteria, order_plasmids, 'genus')
     # Create a 2x2 grid of subplots using gridspec
-    fig = plt.figure(figsize = (15, 11))
-    gs = gridspec.GridSpec(2, 2, figure = fig)
+    fig = plt.figure(figsize = (16, 12))
+    gs = gridspec.GridSpec(2, 4, figure = fig, width_ratios=[5.5,0.75,5.5,0.75])
+
+    sns.set(font_scale = 1)
     sns.set_style("white")
-    ax1 = fig.add_subplot(gs[0, 0])
+    ax1 = fig.add_subplot(gs[0, 0:1])
     distplot = sns.histplot(data = data3, x = data3.max(), bins = 20, ax = ax1)
     sns.set_style("white")
-
-    sns.set(font_scale = 0.5)
 
     # Create the second clustermap and place it in the upper left subplot
     cl_st_col=cluster_st.reindex(station_order)
@@ -721,16 +728,15 @@ def grid_image():
     print(cl_pl_col)
     print(cl_bact_col)
 
-    ax2 = fig.add_subplot(gs[1, 0])
+    ax2 = fig.add_subplot(gs[1, 0:2])
     heatmap1 = sns.heatmap(data1,
                            cmap = sns.color_palette("Blues", as_cmap = True),
                            linewidths = 0.0,
                            xticklabels = False,
                            yticklabels = False,
-                           cbar_kws = {"ticks": [0, 1]},
+                           cbar_kws = {'label': 'Coverage',"ticks": [0, 1]},
                            ax = ax2)
     heatmap1.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
-    #heatmap1.set_xticklabels(stations_cl_df['Sampling points clusters'], rotation = 0)  # optionally use the groups as the tick labels
     for i, color in enumerate(cl_st_col):
         heatmap1.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
                                    transform = heatmap1.get_xaxis_transform(), clip_on = False))
@@ -739,8 +745,10 @@ def grid_image():
     for i, color in enumerate(cl_bact_col):
         heatmap1.add_patch(plt.Rectangle(xy = (-0.05, i), width = 0.05, height = 1, color = color, lw = 0,
                                          transform = heatmap1.get_yaxis_transform(), clip_on = False))
+    heatmap1.set_xlabel('Sampling points', labelpad = 35)  # optionally use the groups as the tick labels
+    heatmap1.set_ylabel('Bacterial genus', labelpad = 35)  # optionally use the groups as the tick labels
     # Create the second clustermap and place it in the lower left subplot
-    ax3 = fig.add_subplot(gs[1, 1])
+    ax3 = fig.add_subplot(gs[1, 2:])
     heatmap2 = sns.heatmap(data3,
                            cmap = "coolwarm",
                            vmin = -1,
@@ -750,9 +758,9 @@ def grid_image():
                            yticklabels = False,
                            cbar_kws = {'label': 'Pearson correlation', "ticks": [-1, 0, 1]},
                            ax = ax3)
-    heatmap2.tick_params(axis = 'both', which = 'major', pad = 20,
-                         length = 0)  # extra padding to leave room for the row colors
-    #heatmap2.set_yticklabels(cluster_bact_df['Bacterial genus clusters'], rotation = 0)  # optionally use the groups as the tick labels
+    heatmap2.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
+    heatmap2.set_xlabel('Plasmid candidates', labelpad = 35)
+    heatmap2.set_ylabel('Bacterial genus', labelpad = 35) # optionally use the groups as the tick labels
     for i, color in enumerate(cl_bact_col):
         heatmap2.add_patch(plt.Rectangle(xy = ( -0.05, i), width = 0.05, height = 1, color = color, lw = 0,
                                          transform = heatmap2.get_yaxis_transform(), clip_on = False))
@@ -761,18 +769,18 @@ def grid_image():
         heatmap2.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
                                          transform = heatmap2.get_xaxis_transform(), clip_on = False))
     # Create the third clustermap and place it in the upper right subplot
-    ax4 =  fig.add_subplot(gs[0, 1])
+    ax4 =  fig.add_subplot(gs[0, 2:])
     heatmap3 = sns.heatmap(data2,
                            cmap = sns.color_palette("Blues", as_cmap = True),
                            linewidths = 0.0,
                            xticklabels = False,
                            yticklabels = False,
                            rasterized = True,
-                           cbar_kws = {"ticks": [0, 1]},
+                           cbar_kws = {'label': 'Coverage',"ticks": [0, 1]},
                            ax = ax4)
-    heatmap3.tick_params(axis = 'both', which = 'major', pad = 20,
-                         length = 0)  # extra padding to leave room for the row colors
-    #heatmap3.set_xticklabels(cluster_pl_df['Plasmid candidates clusters'], rotation = 0)  # optionally use the groups as the tick labels
+    heatmap3.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
+    heatmap3.set_xlabel('Plasmid candidates', labelpad = 35)# optionally use the groups as the tick labels
+    heatmap3.set_ylabel('Sampling points', labelpad = 35)
     for i, color in enumerate(cl_pl_col):
         heatmap3.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
                                          transform = heatmap3.get_xaxis_transform(), clip_on = False))
@@ -782,9 +790,9 @@ def grid_image():
                                          transform = heatmap3.get_yaxis_transform(), clip_on = False))
 
 
-    svg_name = 'clusters_grid2.svg'
+    svg_name = 'clusters_grid4.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'clusters_grid2.png'
+    png_name = 'clusters_grid4.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         fig.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
@@ -793,7 +801,262 @@ def grid_image():
     plt.tight_layout()
     plt.show()
 
+def Pearson_corr(df1, df2, df_to_update):
+    ''' The function uses stats.pearsonr to calculate Pearson correlation between two vectors'''
+    for index_o, row_o in df1.iterrows():
+        # iterating clusters and getting coverage of the index_o cluster at each row_o
+        for index_p, row_p in df2.iterrows():
+            # iterating physical parameters and getting parameter of the index_p environmental condition at each row_p sampling point
+            print("Pearson correlation, p-value for Plasmid %s and %s" % (index_o, index_p))
+            correlation, p_value= stats.pearsonr(row_o, row_p) # calculating Pearson correlation and p-value for cluster:env.condition in each sampling point
+            print(round(correlation,3),round(p_value,3))
+            df_to_update[index_p][index_o] = (round(correlation,3),round(p_value,3)) # updating df_pearson dataframe at with calculated correlation values
+    return df_to_update
 
+def PCA_calc():
+    # Load the datasets
+    table1 = Physical(1)[0] # physical properties at the stations
+    table1 = table1.reset_index().drop(['Sample', 'Temperature'], axis = 1)
+    table1 = table1[table1.columns[:-1]]
+    table1 = table1.set_index('St_Depth')
+
+
+    table2 = corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new,order_bacteria,order_plasmids, 'genus')[0]  # bacterial_plasmid_corr
+    X = pd.merge(table1, table2, left_index = True, right_index = True)
+    print(table2)
+
+    table3 = merged  # plasmid presence at the stations
+    table3 = table3.set_index('St_Depth')
+
+    cluster_pl_df = order_plasmids.reset_index()
+    cluster_pl_df['Plasmid candidates clusters'] = 'C' + cluster_pl_df['Plasmid candidates clusters'].astype(str)
+
+
+
+
+    df_pearson_pl = pd.DataFrame(columns = table1.T.index.to_list(),
+                                 index = table3.T.index.to_list())  # empty dataframe for pearson clusters:env.conditions
+    ### getting Pearson correlation for each cluster-env.condition
+    Pearson_corr(table3.T, table1.T, df_pearson_pl)
+    # df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
+    df_pearson_2 = df_pearson_pl.assign(**df_pearson_pl[df_pearson_pl.columns.to_list()].apply(lambda x: x.str[0]))
+    print(df_pearson_2)
+
+    table2 = table2.T
+    data = table2.join(df_pearson_2)
+    data_ix = data.reset_index().rename(columns = {'index': 'Plasmids'})
+    data_full = data_ix.merge(cluster_pl_df, on = 'Plasmids')
+    data_new = data_full.set_index(['Plasmid candidates clusters', 'Plasmids'])
+    print(data_full.columns)
+    features = data.columns.to_list()
+    x = data.loc[:, features].values
+    x = StandardScaler().fit_transform(x)  # normalizing the features
+
+    print(x)
+    print(x.shape)
+    print(np.mean(x),np.std(x))
+
+    normalised_plasmid = pd.DataFrame(x, columns = features, index = data.index)
+    normalised_plasmid.to_csv(f'{tables}/PCA_pre.txt')
+    print(normalised_plasmid)
+
+    pca_plasmids = PCA(n_components = 2)
+    principalComponents_plasmids = pca_plasmids.fit_transform(x)
+
+    principal_plasmids_Df = pd.DataFrame(data = principalComponents_plasmids, columns = ['principal component 1', 'principal component 2'], index = normalised_plasmid.index)
+    principal_plasmids_Df.to_csv(f'{tables}/PCA.txt')
+    print(principal_plasmids_Df.tail())
+
+    print('Explained variation per principal component: {}'.format(pca_plasmids.explained_variance_ratio_))
+
+    # Get the loadings (correlations) of original variables with Principal Component 1
+    loadings = pd.DataFrame(pca_plasmids.components_.T, columns = ['PC1', 'PC2'], index = data.columns)
+    loadings_pc1 = loadings['PC1'].abs().sort_values(ascending = False)
+    loadings_pc2 = loadings['PC2'].abs().sort_values(ascending = False)
+
+    # Identify the variables with the highest correlation to Principal Component 1
+    variables_pc1 = loadings_pc1.head(5)  # Adjust the number (e.g., top 5) based on your preference
+
+    print("Variables with to Principal Component 1:")
+    print(loadings_pc1)
+
+    print("Variables with the highest correlation to Principal Component 2:")
+    print(loadings_pc2)
+
+    plt.figure()
+    plt.figure(figsize = (10, 10))
+    plt.xticks(fontsize = 12)
+    plt.yticks(fontsize = 14)
+    plt.xlabel('Principal Component - 1', fontsize = 20)
+    plt.ylabel('Principal Component - 2', fontsize = 20)
+    plt.title("Principal Component Analysis of Plasmidome", fontsize = 20)
+
+    targets = cluster_pl_df['Plasmid candidates clusters'].unique().tolist()
+    targets.sort()
+    colors = sns.color_palette("colorblind", cluster_pl_df['Plasmid candidates clusters'].nunique())
+
+    for target, color in zip(targets, colors):
+        indicesToKeep = data_full.loc[data_full['Plasmid candidates clusters'] == target, 'Plasmids']
+        print(indicesToKeep)
+        plt.scatter(principal_plasmids_Df.loc[indicesToKeep, 'principal component 1'], principal_plasmids_Df.loc[indicesToKeep, 'principal component 2'], c = color, s = 50)
+
+    plt.legend(targets, prop = {'size': 15})
+    plt.show()
+
+
+    X = sm.add_constant(X)  # Add a constant column for the intercept
+    print(table3)
+    model = sm.OLS(table3, X).fit()
+    print(model.summary())
+
+    '''
+    # correlation dfs
+    
+    # Perform PCA
+    pca = PCA()
+    pca.fit(data)
+    pca_result = pca.fit_transform(data)
+
+    # Calculate the percentage of variation explained by each principal component
+    explained_variance_ratio = pca.explained_variance_ratio_
+
+    # Determine the contribution percentages of physical properties and bacterial population
+    n_components = pca.n_components_
+    contribution_percentage_physical = np.sum(explained_variance_ratio[:n_components // 3]) * 100
+    contribution_percentage_bacteria = np.sum(explained_variance_ratio[n_components // 3:2 * n_components // 3]) * 100
+
+    plt.rcParams.update({'font.size': 14})
+    # Plotting the explained variance ratios
+    plt.figure(figsize = (8, 6))
+    component_labels = [f"Component {i + 1}" for i in range(n_components)]
+    plt.bar(component_labels, explained_variance_ratio)
+    plt.xlabel('Principal Components')
+    plt.ylabel('Explained Variance Ratio')
+    plt.title('Explained Variance Ratio by Principal Components')
+    plt.show()
+
+    # Scree plot
+    plt.figure(figsize = (8, 6))
+    cumulative_variance_ratio = np.cumsum(explained_variance_ratio)
+    plt.plot(range(1, n_components + 1), cumulative_variance_ratio, marker = 'o', linestyle = '--')
+    plt.xlabel('Number of Components')
+    plt.ylabel('Cumulative Explained Variance Ratio')
+    plt.title('Scree Plot')
+    plt.show()
+
+    # Create a scatter plot of the PCA results
+    plt.figure(figsize = (8, 6))
+    plt.scatter(pca_result[:, 0], pca_result[:, 1])
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title('PCA Scatter Plot')
+    plt.show()
+
+    # Print the contribution percentages
+    print(f"Physical Properties Contribution: {contribution_percentage_physical}%")
+    print(f"Bacterial Population Contribution: {contribution_percentage_bacteria}%")
+    '''
+
+def grid_image2():
+    pl_order = Station_Order(order_pl_new, order_pl_init)
+    bact_order = Station_Order(order_bact_new, order_bact_init)
+    station_order = Station_Order(order_st_new, order_st_init)
+    data1 = corr_bact
+    data1 = data1.reindex(bact_order)
+    data1 = data1.reindex(columns = station_order)
+    data2 = corr_pl
+    data2 = data2.reindex(station_order)
+    data2 = data2.reindex(columns = pl_order)
+    data3, cl_bact, cl_pl = corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new, order_bacteria, order_plasmids, 'genus')
+    # Create a 2x2 grid of subplots using gridspec
+    fig = plt.figure(figsize = (16, 12))
+    gs = gridspec.GridSpec(2, 4, figure = fig, width_ratios=[5.5,0.75,5.5,0.75])
+
+    sns.set_theme(font_scale = 1, style= "white", font = 'Helvetica')
+    #sns.set_style()
+    ax1 = fig.add_subplot(gs[1, 0:1])
+    distplot = sns.histplot(data = data3, x = data3.max(), bins = 20, ax = ax1)
+    distplot.set_xlabel('Max. Pearson correlation')
+
+    # Create the second clustermap and place it in the upper left subplot
+    cl_st_col=cluster_st.reindex(station_order)
+    cl_pl_col=cluster_pl.reindex(pl_order)
+    cl_bact_col=cluster_bact.reindex(bact_order)
+    print(cl_st_col)
+    print(cl_pl_col)
+    print(cl_bact_col)
+
+    ax2 = fig.add_subplot(gs[0, 0:2])
+    heatmap1 = sns.heatmap(data1,
+                           cmap = sns.color_palette("Blues", as_cmap = True),
+                           linewidths = 0.0,
+                           xticklabels = False,
+                           yticklabels = False,
+                           cbar_kws = {'label': 'Coverage',"ticks": [0, 1]},
+                           ax = ax2)
+    heatmap1.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
+    for i, color in enumerate(cl_st_col):
+        heatmap1.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
+                                   transform = heatmap1.get_xaxis_transform(), clip_on = False))
+
+    #heatmap1.set_yticklabels(cluster_bact_df['Bacterial genus clusters'], rotation = 0)  # optionally use the groups as the tick labels
+    for i, color in enumerate(cl_bact_col):
+        heatmap1.add_patch(plt.Rectangle(xy = (-0.05, i), width = 0.05, height = 1, color = color, lw = 0,
+                                         transform = heatmap1.get_yaxis_transform(), clip_on = False))
+    heatmap1.set_xlabel('Sampling points', labelpad = 35)  # optionally use the groups as the tick labels
+    heatmap1.set_ylabel('Bacterial genus', labelpad = 35)  # optionally use the groups as the tick labels
+    # Create the second clustermap and place it in the lower left subplot
+    ax3 = fig.add_subplot(gs[0, 2:])
+    heatmap2 = sns.heatmap(data3,
+                           cmap = "coolwarm",
+                           vmin = -1,
+                           vmax = 1,
+                           center = 0,
+                           xticklabels = False,
+                           yticklabels = False,
+                           cbar_kws = {'label': 'Pearson correlation', "ticks": [-1, 0, 1]},
+                           ax = ax3)
+    heatmap2.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
+    heatmap2.set_xlabel('Plasmid candidates', labelpad = 35)
+    heatmap2.set_ylabel('Bacterial genus', labelpad = 35) # optionally use the groups as the tick labels
+    for i, color in enumerate(cl_bact_col):
+        heatmap2.add_patch(plt.Rectangle(xy = ( -0.05, i), width = 0.05, height = 1, color = color, lw = 0,
+                                         transform = heatmap2.get_yaxis_transform(), clip_on = False))
+    #heatmap2.set_xticklabels(cluster_pl_df['Plasmid candidates clusters'], rotation = 0)  # optionally use the groups as the tick labels
+    for i, color in enumerate(cl_pl_col):
+        heatmap2.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
+                                         transform = heatmap2.get_xaxis_transform(), clip_on = False))
+    # Create the third clustermap and place it in the upper right subplot
+    ax4 =  fig.add_subplot(gs[1, 2:])
+    heatmap3 = sns.heatmap(data2,
+                           cmap = sns.color_palette("Blues", as_cmap = True),
+                           linewidths = 0.0,
+                           xticklabels = False,
+                           yticklabels = False,
+                           rasterized = True,
+                           cbar_kws = {'label': 'Coverage',"ticks": [0, 1]},
+                           ax = ax4)
+    heatmap3.tick_params(axis = 'both', which = 'major', pad = 20, length = 0)  # extra padding to leave room for the row colors
+    heatmap3.set_xlabel('Plasmid candidates', labelpad = 35)# optionally use the groups as the tick labels
+    heatmap3.set_ylabel('Sampling points', labelpad = 35)
+    for i, color in enumerate(cl_pl_col):
+        heatmap3.add_patch(plt.Rectangle(xy = (i, -0.05), width = 1, height = 0.05, color = color, lw = 0,
+                                         transform = heatmap3.get_xaxis_transform(), clip_on = False))
+    #heatmap3.set_yticklabels(stations_cl_df['Sampling points clusters'], rotation = 0)  # optionally use the groups as the tick labels
+    for i, color in enumerate(cl_st_col):
+        heatmap3.add_patch(plt.Rectangle(xy = (-0.05, i), width = 0.05, height = 1, color = color, lw = 0,
+                                         transform = heatmap3.get_yaxis_transform(), clip_on = False))
+
+
+    svg_name = 'clusters_grid_reord.eps'
+    svg_file = f'{visuals}/{svg_name}'
+    png_name = 'clusters_grid_reord.png'
+    png_file = f'{visuals}/{png_name}'
+    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
+        fig.savefig(svg_file, format = 'eps', dpi = gcf().dpi, bbox_inches = 'tight')
+        fig.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.tight_layout()
+    plt.show()
 #corr_coef(merged, df_taxa, 'taxa')
 #corr_coef(merged, df_species, 'species')
 #contingency(merged, df_genus_upd, 'genus')
@@ -801,7 +1064,8 @@ def grid_image():
 #Clust_map(1,merged,'PlPutUnc_HMannot_', 11.5, 12)
 order_st_init, order_st_new, order_pl_init, order_pl_new, order_stations ,order_plasmids,corr_pl,cluster_st,cluster_pl= Clust_map(1,merged,'Plasm_for_bact_', 11.5, 12)
 order_bact_init, order_bact_new, order_bacteria, corr_bact, cluster_bact = Clust_bact(1,df_genus_upd,'Bact_HMannot_', 8, order_st_init,order_st_new,order_stations)
-corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new,order_bacteria,order_plasmids, 'genus')
+#corr_coef2(merged,df_genus_upd,order_pl_init,order_pl_new, order_bact_init, order_bact_new,order_bacteria,order_plasmids, 'genus')
 #vis_contingency()
 #association_rules2()
-#grid_image()
+#grid_image2()
+#PCA_calc()

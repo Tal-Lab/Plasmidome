@@ -7,7 +7,7 @@ Author: Lucy Androsiuk
 ### Description
 # add description
 
-version=5
+version=8
 
 import numpy as np
 import pandas as pd
@@ -19,10 +19,12 @@ from matplotlib.pyplot import *
 import seaborn as sns
 from scipy import stats
 from plasmid_detect import Plasmid_class, colnames
+import matplotlib.gridspec as gridspec
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_rows', None)
+
 
 # uncomment relevant path to OS
 # Windows
@@ -139,7 +141,7 @@ def ORF_stats():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     df_min=df.loc[df["Protein Length"]<500]
     g_min = sns.histplot(df_min['Protein Length'])
     plt.axvline(x = df_min['Protein Length'].median(),
@@ -158,7 +160,7 @@ def ORF_stats():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     df_grouped = df.groupby('Plasmids')['Proteins'].nunique().to_frame(name = 'Number of Proteins').reset_index()
     return df_grouped
 
@@ -209,9 +211,10 @@ def ORF_byPlasmid_stats():
     png_dir = f'{visuals}/{png_name}'
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     print('Total number of plasmids: %s' % str(out['Plasmid'].nunique()))
     out_min = out.loc[out['Length_norm'] < 150]
+    print(out.loc[out['Length_norm'] >= 150])
     print('Number of plasmids < 150 kb: %s' % str(out_min['Plasmid'].nunique()))
     sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins", hue = 'Class', style = 'Class')
     plt.xlabel('Plasmid length, kb')
@@ -219,9 +222,9 @@ def ORF_byPlasmid_stats():
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Len150_plasmids" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.show()
     sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     plt.xlabel('Number of ORFs')
     #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
@@ -244,11 +247,11 @@ def ORF_byPlasmid_stats():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     print('Total number of proteins: %s' % str(out['Number of Proteins'].sum()))
-    df_min=out.loc[out["Number of Proteins"]<=100]
-    print('Number of Proteins < 100 per plasmid: %s' % str(df_min['Number of Proteins'].sum()))
-    num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
+    df_min=out.loc[out["Number of Proteins"]<=200]
+    print('Number of Proteins < 200 per plasmid: %s' % str(df_min['Number of Proteins'].sum()))
+    sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
     plt.xlabel('Number of ORFs')
     """plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
@@ -262,17 +265,17 @@ def ORF_byPlasmid_stats():
     plt.text(df_min['Number of Proteins'].mean() * 1.1, max_ylim * 0.8,
              'Mean: {:.2f}'.format(df_min['Number of Proteins'].mean()))"""
 
-    svg_name = "ProteinsHistoMin" + str(version) + '.svg'
+    svg_name = "ProteinsHistoMin2" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "ProteinsHistoMin" + str(version) + '.png'
+    png_name = "ProteinsHistoMin2" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.show()
     return df_grouped, out
 
-ORF_byPlasmid_stats()
+#ORF_byPlasmid_stats()
 
 def Station():
     ' getting station parameters from station matrix '
@@ -305,7 +308,7 @@ def GetLibSize():
     size_stat = df.plot.scatter(x = "St_Depth", y = "Size")
     plt.xticks(rotation = 90)
     plt.yscale('log')
-    plt.show()
+    #plt.show()
     slope, intercept, r_value, p_value, std_err = stats.linregress(df["Sample" ], df["Size"])
     g = sns.regplot(x = "Sample", y = "Size", data = df, line_kws={'label':"y={0:.1f}x+{1:.1f}".format(slope,intercept)})
     g = (g.set(xlim = (256, 304)))
@@ -317,7 +320,7 @@ def GetLibSize():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     return df
 
 def ORF_byStation_stats():
@@ -368,7 +371,7 @@ def ORF_byStation_stats():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     num_hist = sns.histplot(prot_stat, x = "Number of Proteins", bins = 30)
     plt.axvline(x = prot_stat['Number of Proteins'].median(),
                 color = 'blue',
@@ -389,8 +392,8 @@ def ORF_byStation_stats():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
-    """df_min = df_grouped.loc[df_grouped["Number of Proteins"] < 100]
+    #plt.show()
+    df_min = prot_stat.loc[prot_stat["Number of Proteins"] < 200]
     num_hist = sns.histplot(df_min, x = "Number of Proteins", bins = 30)
     plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
@@ -408,9 +411,9 @@ def ORF_byStation_stats():
     png_name = "ProteinsHistoMin" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
-    # plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    # plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()"""
+    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.show()
 
 def Plasmid_Station():
     ' plasmid per station statistics '
@@ -449,7 +452,7 @@ def Plasmid_Station():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     plasmid_hist = sns.histplot(df_grouped, x = "Number of Plasmids")
     plt.axvline(x = df_grouped['Number of Plasmids'].median(),
                 color = 'blue',
@@ -469,7 +472,7 @@ def Plasmid_Station():
     # plt.autoscale()
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
 
 def Candidates_length():
     """ Statistics for candidates lengths """
@@ -480,9 +483,9 @@ def Candidates_length():
     df_max = df['Plasmid Length'].max()
     print("The longest candidate length is %d bp" % df_max)
     # calculating number of plasmid candidates with length <100 bp
-    df100 = df.loc[df['Length_norm'] <= 100]
-    print('Number of plasmids with length <=100 kb is: %d' % df100['Plasmid'].nunique())
-    print('Percentage of plasmids with length <=100 kb is: %d' % ((df100['Plasmid'].nunique()/df['Plasmid'].nunique())*100))
+    df100 = df.loc[df['Length_norm'] <= 150]
+    print('Number of plasmids with length <=150 kb is: %d' % df100['Plasmid'].nunique())
+    print('Percentage of plasmids with length <=150 kb is: %d' % ((df100['Plasmid'].nunique()/df['Plasmid'].nunique())*100))
     # calculating number of plasmid candidates with length around 140 bp
     df140 = df.loc[df['Length_norm'].between(120,200)]
     print('Number of plasmids around 140 kb is: %d' % df140['Plasmid'].nunique())
@@ -497,27 +500,50 @@ def Candidates_length():
     print('Number of plasmids with length < 4 kb is: %d' % df4kb['Plasmid'].nunique())
     print('Percentage of plasmids with length < 4 kb is: %d' % ((df4kb['Plasmid'].nunique() / pl_uncert) * 100))
     # plotting histogram for candidate's lengths, colored by class
+    df_plput = df100.loc[df100['Class']!='Uncertain']
+    sns.histplot(df_plput, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
+    #plt.show()
+
+
     sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths_Histo" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = "Plasmid_lengths_Histo" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
     # getting candidates <200bp into separate dataframe
-    df_min = df.loc[df['Length_norm']<=100]
+    custom_params = {"axes.spines.right": False, "axes.spines.top": False}
+    sns.set_theme(style = 'white', font = 'Helvetica', rc= custom_params)
+    gs = gridspec.GridSpec(1, 2)
+    fig = plt.figure(figsize = [7.2, 4], dpi = 900)
+
+    # first plot
+    ax1 = fig.add_subplot(gs[0])
+
+    df_prot_min = df.loc[df["Number of Proteins"] <= 200]
+    print('Number of Proteins < 200 per plasmid: %s' % str(df_prot_min['Number of Proteins'].sum()))
+    sns.histplot(df_prot_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack', ax = ax1)
+
+    ax2 = fig.add_subplot(gs[1])
+    df_min = df.loc[df['Length_norm']<=150]
     # plotting histogram for candidate's lengths (<200bp), colored by class
-    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40)
+    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40, ax = ax2)
+
     plt.xlabel('Plasmid length, kb')
-    svg_name = "Plasmid_lengths200_Histo" + str(version) + '.svg'
+
+    fig.tight_layout(pad = 2.0)
+
+    svg_name = "Figure4_" + str(version) + '.eps'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Plasmid_lengths200_Histo" + str(version) + '.png'
+    png_name = "Figure4_" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
-    plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
+    plt.savefig(svg_dir, format = 'eps', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+
+    #plt.show()
 
 def PieClass():
     df = df_class[['Plasmid', 'Class']].drop_duplicates().reset_index(drop=True)
@@ -533,7 +559,7 @@ def PieClass():
     png_dir = f'{visuals}/{png_name}'
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
 
 def nt_counts():
     """Function for nt-database statistics: number of all and significant matches,\
@@ -613,6 +639,7 @@ def gc_content():
     out.drop('Plasmid', axis = 1, inplace = True)
     out_put = out.loc[out['Candidate'].isin(putative_plasmids)]
     out_plasm = out.loc[out['Candidate'].isin(plasmids)]
+    print(out_plasm)
     print('The GC content values in all candidates ranges between %s and %s' % (str(out['GC'].min()), str(out['GC'].max())))
     print('Average GC content in all candidates is %s' % str(out['GC'].mean()))
     print('The GC content values in putative plasmids ranges between %s and %s' % (
@@ -630,6 +657,7 @@ def gc_content():
 #nt_counts()
 #PieClass()
 #ORF_byPlasmid_stats()
+
 #Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()

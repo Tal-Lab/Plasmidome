@@ -27,6 +27,7 @@ from plasmid_detect import Plasmid_class
 from sklearn.preprocessing import Normalizer
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #from CovBAM2 import out_file as datafile
 
@@ -44,6 +45,9 @@ Path(visuals).mkdir(parents=True, exist_ok=True)
 # working files
 datafile = r"../res/all_cov.csv"
 physical = r"../res/station_physical.xlsx"
+plt.rcParams["font.family"] = "Helvetica"
+
+
 
 def data_file():
     ' this function reads coverage file as a dataframe '
@@ -77,7 +81,7 @@ def Physical(vers):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
-    plt.show()
+    #plt.show()
     df['St_Depth'] = df['Station'].astype(int).astype(str)+ '_'+df['Depth'].astype(str)
     # print(df['Temp.'].sort_values(ascending = False))
     # temperature ranges should be specified not in the code!
@@ -112,6 +116,17 @@ def Cov_plasmids():
     #print(perc_one)
     #print(perc_more)
 #Cov_plasmids()
+def Pearson_cor(df1,df2,df_to_update):
+    ''' The function uses stats.pearsonr to calculate Pearson correlation between two vectors'''
+    for index_o, row_o in df1.iterrows():
+        # iterating clusters and getting coverage of the index_o cluster at each row_o
+        for index_p, row_p in df2.iterrows():
+            # iterating physical parameters and getting parameter of the index_p environmental condition at each row_p sampling point
+            print("Pearson correlation, p-value for Cluster %s and %s" % (index_o, index_p))
+            correlation, p_value= stats.pearsonr(row_o, row_p) # calculating Pearson correlation and p-value for cluster:env.condition in each sampling point
+            print(round(correlation,3),round(p_value,3))
+            df_to_update[index_p][index_o] = (round(correlation,3),round(p_value,3)) # updating df_pearson dataframe at with calculated correlation values
+    return df_to_update
 
 def data_plas(df_pl):
     df_cov = data_file()
@@ -199,13 +214,15 @@ def Clust_map2(vers, df, name, cl, pl):
     stat_space = dict(zip(space_df[' '].unique(), "white"))
     space_st = space_df[' '].map(stat_space)
     row_colors = pd.concat([cluster_st, salt, temperature, depth, space_st], axis = 1)
-    sns.set(font_scale = 3.2)
+    #sns.set_theme(style = 'white', font = 'Helvetica')
+    sns.set(font_scale = 0.3, style = 'white',  font = 'Helvetica')
+    #fig = plt.figure(figsize = [3,3], dpi = 1200)
     figure2 = sns.clustermap(data = coverage,
                              metric = "euclidean",
                              method = 'ward',
                              row_colors = row_colors,
                              col_colors=cluster_pl,
-                             figsize = (30, 30),
+                             figsize = (3.5, 3),
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              linewidths = 0.0,
                              xticklabels = False,
@@ -214,7 +231,8 @@ def Clust_map2(vers, df, name, cl, pl):
                              cbar_kws = {"ticks": [0, 100]})
     #figure2.ax_heatmap.tick_params(axis = 'both', which = 'major', pad = 50)
     figure2.fig.subplots_adjust(left = -.01, right = 0.8)
-    figure2.cax.set_title("Coverage (%)", pad=30.0, fontdict={'fontsize':36})
+    #figure2.cax.set_title("Coverage (%)", pad=30.0, fontdict={'fontsize':36})
+    figure2.cax.set_title("Coverage (%)", pad = 5.0)
     figure2.ax_cbar.set_position((0.92, .36, .03, .3))
     figure2.ax_col_dendrogram.remove()
     figure2.ax_row_dendrogram.remove()
@@ -234,7 +252,8 @@ def Clust_map2(vers, df, name, cl, pl):
     for label in parameters["Temperature"].sort_values().unique():
         temp_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_temp[label], label = label, linewidth=0)
         tem_legend.append(temp_patch)
-    l1 = plt.legend(tem_legend, parameters["Temperature"].sort_values().unique(), loc="upper left", title = 'Temperature', title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, 0.8), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
+    l1 = plt.legend(tem_legend, parameters["Temperature"].sort_values().unique(), loc="upper left", prop = {'family': 'Helvetica'}, title_fontsize= 'x-small', ncol=2, bbox_to_anchor=(-0.05, 0.8), bbox_transform=gcf().transFigure, fontsize='xx-small', frameon=False)
+    l1.set_title(title = 'Temperature',prop = {'family': 'Helvetica'})
     plt.gca().add_artist(l1)
     # depth legend
     # loop?
@@ -242,38 +261,30 @@ def Clust_map2(vers, df, name, cl, pl):
     for label in parameters['Depth'].sort_values().unique():
         dep_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_depth[label], label = label, linewidth=0)
         dep_legend.append(dep_patch)
-    l2 = plt.legend(dep_legend, parameters['Depth'].sort_values().unique(), loc= "center left",  title = 'Depth',title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, .5), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
+    l2 = plt.legend(dep_legend, parameters['Depth'].sort_values().unique(), loc= "center left",  prop = {'family': 'Helvetica'},title_fontsize= 'x-small', ncol=2, bbox_to_anchor=(-0.05, .5), bbox_transform=gcf().transFigure, fontsize='xx-small', frameon=False)
+    l2.set_title(title = 'Depth',prop = {'family': 'Helvetica'})
     salt_legend = []
     for label in parameters['Salinity'].sort_values().unique():
         salt_patch = figure2.ax_row_dendrogram.bar(0, 0, color = stat_salt[label], label = label, linewidth=0)
         salt_legend.append(salt_patch)
-    l3 = plt.legend(salt_legend,parameters['Salinity'].sort_values().unique(), loc="lower left", title = 'Salinity',title_fontsize= 'large', ncol=2, bbox_to_anchor=(-0.1, .25), bbox_transform=gcf().transFigure, fontsize='large', frameon=False)
+    l3 = plt.legend(salt_legend,parameters['Salinity'].sort_values().unique(), loc="lower left", prop = {'family': 'Helvetica'},title_fontsize= 'x-small', ncol=2, bbox_to_anchor=(-0.05, .25), bbox_transform=gcf().transFigure, fontsize='xx-small', frameon=False)
+    l3.set_title(title = 'Salinity',prop = {'family': 'Helvetica'})
     plt.gca().add_artist(l2)
     plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels())
     plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels())
-    svg_name=name +str(vers)+'.svg'
+    svg_name=name +str(vers)+'.eps'
     svg_file=f'{visuals}/{svg_name}'
     png_name=name +str(vers)+'.png'
     png_file=f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
-        plt.savefig(svg_file, format = 'svg',dpi=gcf().dpi, bbox_inches='tight')
+        plt.savefig(svg_file, format = 'eps',dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()  # Push new figure on stack
+
+    #plt.show()
+
     station_order = coverage.index.values.tolist()
     station_reorder = figure2.dendrogram_row.reordered_ind
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
-
-def Pearson_cor(df1,df2,df_to_update):
-    ''' The function uses stats.pearsonr to calculate Pearson correlation between two vectors'''
-    for index_o, row_o in df1.iterrows():
-        # iterating clusters and getting coverage of the index_o cluster at each row_o
-        for index_p, row_p in df2.iterrows():
-            # iterating physical parameters and getting parameter of the index_p environmental condition at each row_p sampling point
-            print("Pearson correlation, p-value for Cluster %s and %s" % (index_o, index_p))
-            correlation, p_value= stats.pearsonr(row_o, row_p) # calculating Pearson correlation and p-value for cluster:env.condition in each sampling point
-            print(round(correlation,3),round(p_value,3))
-            df_to_update[index_p][index_o] = (round(correlation,3),round(p_value,3)) # updating df_pearson dataframe at with calculated correlation values
-    return df_to_update
 
 def Correlation_calculation(class_df, cand_df, name):
     ''' The function calculates correlation between plasmidome clusters and environmental conditions '''
@@ -316,8 +327,7 @@ def Correlation_calculation(class_df, cand_df, name):
     final_order = init_df['Sampling points'].to_list()
     hm_data = hm_data.reindex(final_order, axis = 1)
     hm_data=hm_data.subtract(hm_data.min(axis = 1), axis = 0).divide(hm_data.max(axis = 1) - hm_data.min(axis = 1), axis = 0).fillna(0)
-    plt.figure(figsize = (15, 12))
-    sns.set(font_scale = 1.2)
+    plt.figure(figsize = (3.5, 3))
     hm = sns.heatmap(hm_data, cmap = 'coolwarm', annot = False, vmin=0, vmax=1, cbar_kws = {"ticks": [0, 1]})
     hm_fig = hm.get_figure()
     svg_name = 'heatmap_data_' + name + str(4) + '.svg'
@@ -327,7 +337,7 @@ def Correlation_calculation(class_df, cand_df, name):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         hm_fig.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
         hm_fig.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
-    plt.show()
+    #plt.show()
     ### getting Pearson correlation for each cluster-env.condition
     Pearson_cor(out_group_pl, df_phys, df_pearson_pl)
     #df.assign(**df[['col2', 'col3']].apply(lambda x: x.str[0]))
@@ -340,24 +350,26 @@ def Correlation_calculation(class_df, cand_df, name):
     df_pears = pd.concat([df_pearson_2_trans, df_phys_corr], axis=1) #correlation matrix C1-8,envs:C1-8,envs
     df_Pearson = df_pl_cluster_corr_P.append(df_pears)
     ### plotting correlation matrix
-    plt.figure(figsize = (15,12))
-    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, cbar_kws = {'label': 'Pearson correlation',"ticks": [-1, 1]})
+    fig=plt.figure(figsize = (3.5,3), dpi = 1200)
+    sns.set(font_scale = 0.3,style = 'white',  font = 'Helvetica')
+    ax = sns.heatmap(df_Pearson, cmap='coolwarm', vmin=-1, vmax=1, annot=True, annot_kws = {'fontsize': 'x-small'}, cbar_kws = {'label': 'Pearson correlation',"ticks": [-1, 1]})
     ax_fig = ax.get_figure()
-    svg_name = 'heatmap_corr_' + name + str(5) + '.svg'
+    fig.tight_layout()
+    svg_name = 'heatmap_corr_' + name + str(13) + '.eps'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'heatmap_corr_' + name + str(5) + '.png'
+    png_name = 'heatmap_corr_' + name + str(13) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
-        ax_fig.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        ax_fig.savefig(svg_file, format='eps', dpi=gcf().dpi, bbox_inches='tight')
         ax_fig.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
     path_file = f'{tables}/Pearson.xlsx'
+    '''
     with pd.ExcelWriter(path_file, engine="openpyxl", mode = 'a') as writer:
         df_Pearson.to_excel(writer, sheet_name = name)
+    '''
 
 
-
-
-#Correlation_calculation(Clust_map2(9,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
+#Correlation_calculation(Clust_map2(13,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
 #Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
 #print(Plasmid_class()[0]['Plasmid'].unique())
@@ -367,6 +379,6 @@ def Correlation_calculation(class_df, cand_df, name):
 #print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
 #Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
 #Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-#Clust_map2(11,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
+#Clust_map2(13,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
 
 

@@ -7,7 +7,7 @@ Author: Lucy
 ### Description
 # description!!!!
 
-version=14
+version=15
 
 import pandas as pd
 import numpy as np
@@ -33,7 +33,7 @@ station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,P
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-
+plt.rcParams["font.family"] = "Helvetica"
 # uncomment relevant path to OS
 # Windows
 #path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
@@ -474,14 +474,15 @@ def Clustermap(name, set_p):
     library = library.reindex(station_order)
     #print("printing library")
     #print(library)
-    sns.set(font_scale = 1.2)
+    sns.set_theme(font_scale = 0.3, style = 'white', font = 'Helvetica')
+    #sns.set(font_scale = 1.2)
     figure1 = sns.clustermap(data = df_norm,
                              metric = "euclidean",
                              method = 'ward',
                              row_cluster = False,
                              row_colors = cluster_st,
                              linewidths = 0.0,
-                             figsize = (15, 12),
+                             figsize = (3.5, 3),
                              cmap = sns.color_palette("Blues", as_cmap = True),
                              xticklabels = True,
                              yticklabels = True,
@@ -490,37 +491,41 @@ def Clustermap(name, set_p):
                              )
     figure1.ax_col_dendrogram.remove()
     figure1.ax_row_dendrogram.remove()
+    figure1.ax_heatmap.tick_params(right = False, bottom = False, pad = -0.5)
     # get heatmap position
     hm = figure1.ax_heatmap.get_position()
-    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 'small')
-    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 'small')
+    plt.setp(figure1.ax_heatmap.yaxis.get_majorticklabels(), fontsize = 'x-small')
+    plt.setp(figure1.ax_heatmap.xaxis.get_majorticklabels(), fontsize = 'x-small')
     figure1.ax_heatmap.set_position([hm.x0, hm.y0, hm.width, hm.height])
-    figure1.gs.update(right = 0.80)
+    figure1.gs.update(right = 0.90)
 
     # divide existing axes
     divider = make_axes_locatable(figure1.ax_heatmap)
 
     # create new axes for bar plot
-    ax = divider.append_axes("right", size = "20%", pad = 1.1)
+    ax = divider.append_axes("right", size = "25%", pad = 0.4)
 
     # set parameters for bar plot
     ax.set_facecolor('white')
     ax.set_yticklabels([])
-    ax.set_xlabel('Library size, Mbp')
     t = ['0', str(round(((library['Library Size'].max()) / (10 ** 6)), 2))]
     ax.set_xticklabels(t)
     ax.set_ylim(-0.5, len(library.index) - .5)
     ax.invert_yaxis()
     # plot bar plot in ax
     ax.barh(np.arange(len(library.index)), library['Library Size'].values)
-
-    svg_name = name + '_'+ set_p+ str(version) + '.svg'
+    ax.set_xlabel('Library size, Mbp')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    svg_name = name + '_'+ set_p+ str(version) + '.eps'
     svg_dir = f'{visuals}/{svg_name}'
     png_name = name + '_'+ set_p+ str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     # plt.autoscale()
     if not os.path.isfile(svg_dir) and not os.path.isfile(png_dir):
-        plt.savefig(svg_dir, format='svg', dpi=gcf().dpi, bbox_inches='tight')
+        plt.savefig(svg_dir, format='eps', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_dir, format='png', dpi=gcf().dpi, bbox_inches='tight')
     plt.show()
 
