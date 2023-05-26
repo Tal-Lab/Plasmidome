@@ -3,10 +3,9 @@
 Created on 07/08/2022 13:10
 
 Author: Lucy Androsiuk
+
+Description: In this code ORFs from concatenated (doubled) plasmid candidates are being filtered and rewritten into new fasta file with unique ORFs
 """
-### Description
-# In this code ORFs from concatenated (doubled) plasmid candidates
-# are being filtered and rewritten into new fasta file with unique ORFs
 
 import random
 import re,os
@@ -23,24 +22,9 @@ pd.set_option('max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
 version = 1
-# uncomment relevant path to OS
-# Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
-
-# working directories
-tables = f"{path}/data_calculations"
-visuals = f"{path}/visualisations"
-Path(tables).mkdir(parents=True, exist_ok=True)
-#proteins_un = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/proteins_single.faa"
-proteins_dub = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/proteins_double.faa"
-length_dub = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/lengths_double.txt"
-out_file2 = r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/Unique_ORFs_region4.fasta'
-filtered_orf_file = r'/Users/lucyandrosiuk/Documents/bengurion/Plasmidome/Filtered_ORFs4.fasta'
 
 # working files
-proteins_dub = r"../res/proteins_double.faa"
+proteins_dub = r"../Output/plasmids_double_proteins.faa"
 length_dub = r"../res/lengths_double.txt"
 
 #output file (will be used further as resource)
@@ -239,7 +223,7 @@ def CheckOverlappingORFs():
     median = grouped_df['Count'].median().round(2)
     print("The median number of ORFs in plasmid is %s" % (str(median)))
     return filtered_ORF
-CheckOverlappingORFs()
+
 def FilteredORF_toFasta():
     df = CheckOverlappingORFs()
     ids = df['ORF'].to_list()
@@ -261,4 +245,4 @@ def FilteredORF_toFasta():
     if not os.path.isfile(filtered_orf_file) or os.stat(filtered_orf_file).st_size == 0:
         SeqIO.write(records, filtered_orf_file, "fasta")
 
-#FilteredORF_toFasta()
+FilteredORF_toFasta()

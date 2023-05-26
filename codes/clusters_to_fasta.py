@@ -3,6 +3,9 @@
 Created on 24/04/2023 13:24
 
 Author: Lucy
+
+Description: From similar candidates clusters obtained from Pipeline_Filtering 
+generates a fasta file with filtered candidates.
 """
 
 import re
@@ -12,11 +15,10 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 
 ### working files and directories
-work_dir = r'path/to/dir' #write a full path to directory, where you want to store files
-
-all_candidates = r'path/to/fasta/file/with/candidates/before/your/filtering' #write a full path to the fasta file all plasmid candidates
-new_old_names = r'path/to/file/with/new/and/old names' #write a full path to the file with old/new names
-filtered_candidates = f'{work_dir}/filtered_plasmids.fasta'  #a full path to the file with filtered plasmids, which will be in the work_dir
+resource = r"../res"
+all_candidates = f'{resource}/CombinedOutput.fasta' #write a full path to the fasta file all plasmid candidates
+new_old_names = r'../new_names.csv' #write a full path to the file with old/new names
+filtered_candidates = f'{resource}/filtered_plasmids.fasta'  #a full path to the file with filtered plasmids, which will be in the work_dir
 
 def read_csv():
     # Read CSV file into pandas DataFrame and create dictionary of old to new names

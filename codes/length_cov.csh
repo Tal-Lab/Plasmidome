@@ -1,6 +1,6 @@
 #!/usr/bin/env csh
 
-seqkit fx2tab --length --name --header-line $1 > lengths_double.txt
+seqkit fx2tab --length --name --header-line $1 > ../res/lengths_double.txt
 
 while IFS="	" read -r plas lengths
 do
@@ -15,4 +15,4 @@ do
 	echo "$sam_command"
 	samtools index $2
 	${sam_command}
-done < lengths_double.txt
+done < ../res/lengths_double.txt
