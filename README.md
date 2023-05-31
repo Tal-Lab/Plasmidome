@@ -1,7 +1,5 @@
 # Plasmidome detection and analysis
 
-One paragraph description of your project goes here.
-
 ## Table of Contents
 
 - [Project Description](#project-description)
@@ -21,8 +19,8 @@ To extend the repertoire of environmental marine plasmids, we established a pipe
 - bwa, samtools, bowtie2, seqkit, bcftools
 - <a href="https://github.com/Shamir-Lab/Recycler">Recycler</a>
 - <a href="https://github.com/hyattpd/Prodigal">Prodigal</a>
-- eggnog
-- interproscan
+- <a href="http://eggnog-mapper.embl.de/">eggNOG-mapper</a>
+- <a href="https://github.com/ebi-pf-team/interproscan">interproscan</a>
 - <a href="https://github.com/santirdnd/COPLA">COPLA</a> 
 - plasmid dataset in FASTA format (in this study the plasmid database <a href="https://ccb-microbe.cs.uni-saarland.de/plsdb">PLSDB</a>)
 - File with sampling stations description and data, called stations.txt: 
@@ -54,9 +52,12 @@ Run python script **clusters_to_fasta.py** to generate **filtered_plasmids.fasta
 
 3. To perform step VI of the pipeline, run **BowtieRunner.csh**. You will have file **plasmids_double.fasta** in Output folder.
 
-4. Run **blast_plsdb.csh** to compare detected candidates with plasmids in PLSDB.
-5. To get predicted ORFs first run **prodigal_runner.csh**, which will generate **plasmids_double_proteins.faa** in Output folder. Next run <b>orf_filtering.py</b> to obtain ORFs only single plasmid length. The filtered ORFs will be written into **Filtered_ORFs.fasta**.
-6. 
+
+4. Run **blast_plsdb.csh** to compare detected candidates with plasmids in PLSDB. This script will generate file **plsdb.csv** in Output folder. Run **db_statistics.py** to detect known plasmids - the result will be prented out in the console.
+5. 
+6. To get predicted ORFs first run **prodigal_runner.csh**, which will generate **plasmids_double_proteins.faa** in Output folder. Next run <b>orf_filtering.py</b> to obtain ORFs only single plasmid length. The filtered ORFs will be written into **Filtered_ORFs.fasta**.
+7. 
+
 ## Feedback
 
 If you have any feedback, please reach out to us at lucyandrosyuk@gmail.com or leave a comment in Discussions.
