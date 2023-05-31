@@ -50,10 +50,10 @@ It should generate among all files **all_vs_all.csv** and **CombinedOutput.fasta
 2. To perfrom steps IV – V run python script **Pipeline_Filtering.py**. It should generate file **Plasmids_byClusters.csv** in data_calculations folder. Manually go over it. Choose 1 representative of each cluster, where possible. Make a **new_names.csv** file in your working directory with two columns: "old_name" and "new_name". Where old_name is a representative of the cluster, and new_name is a new distinct name for the cluster. In cases, where there’s only one plasmid in the cluster, you may leave the old name. 
 Run python script **clusters_to_fasta.py** to generate **filtered_plasmids.fasta** in resource (/res) folder. 
 
-3. To perform step VI of the pipeline, run **BowtieRunner.csh**. You will have file **plasmids_double.fasta** in Output folder.
+3. To perform step VI of the pipeline, run **BowtieRunner.csh**. You will have files **plasmids_double.fasta** and **all_cov.csv** in Output folder.
 
+4. Run **blast_plsdb.csh** to compare detected candidates with plasmids in PLSDB. This script will generate file **plsdb.csv** in Output folder. Run **db_statistics.py** to detect known plasmids - the result will be printed out in the console.
 
-4. Run **blast_plsdb.csh** to compare detected candidates with plasmids in PLSDB. This script will generate file **plsdb.csv** in Output folder. Run **db_statistics.py** to detect known plasmids - the result will be prented out in the console.
 5. 
 6. To get predicted ORFs first run **prodigal_runner.csh**, which will generate **plasmids_double_proteins.faa** in Output folder. Next run <b>orf_filtering.py</b> to obtain ORFs only single plasmid length. The filtered ORFs will be written into **Filtered_ORFs.fasta**.
 7. 

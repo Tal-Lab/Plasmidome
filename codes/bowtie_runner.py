@@ -174,6 +174,38 @@ def Samtools_Run():
         all_logger.warning("Something has gone wrong here")
         error_tracker()
 
+def MakeDF(uniqueNum):
+    name = uniqueNum+"_cov.csv"
+    print(name)
+    cov_file = f'{mapping_analysis}/{name}'
+    df = pd.read_csv(cov_file, sep='\t')
+    print(df)
+    df.sort_values(by=['#rname'])
+    df_cov = df[["#rname", "coverage"]]
+    new_name = uniqueNum + "_coverage"
+    df_cov = df_cov.rename(columns={'#rname': 'rname',
+        'coverage': new_name})
+    print(df_cov)
+    outfile = f'{parent_dir}Output/{"all_cov.csv"}'
+    output = open(outfile, 'w')
+    if uniqueNum == "258" and os.stat(outfile).st_size == 0:
+        df_cov.to_csv(output, index=False)
+        output.close()
+    return df_cov
+
+def Merger(num):
+    if num == "258" and not os.path.isfile(f'{output_dir}/{"all_cov.csv"}'):
+        MakeDF(num)
+    else:
+        df_prim = pd.read_csv(f'{output_dir}/{"all_cov.csv"}')
+        df_to_join = MakeDF(num)
+        df_joined = pd.merge(df_prim, df_to_join, on='rname')
+        outfile = f'{output_dir}/{"all_cov.csv"}'
+        os.remove(outfile)
+        output = open(outfile, 'w')
+        df_joined.to_csv(output, index=False)
+        output.close()
+
 with open(sample_matrix) as adressFile:
     matrix = np.loadtxt(adressFile, dtype = "str")
     uniqueNum = None
@@ -186,12 +218,14 @@ with open(sample_matrix) as adressFile:
         reverse = i[3]
         output_dir = CreateFolderDirectory('Output')
         Zip_bio('single')
-        all_logger.info("***************WE START ALIGNMENT OF FASTQ READS TO COMBINED OUTPUT #%s****************" % uniqueNum)
+        all_logger.info("*************** WE START ALIGNMENT OF FASTQ READS TO COMBINED OUTPUT #%s ****************" % uniqueNum)
         Bowtie2()
-        all_logger.info("***************ALIGNMENT for sample #%s finished****************" % uniqueNum)
+        all_logger.info("*************** ALIGNMENT for sample #%s finished ****************" % uniqueNum)
         all_logger.info("***************WE START EXTRACTING ALIGNMENT COVERAGE AND DEPTH FOR SAMPLE #%s****************" % uniqueNum)
         Samtools_Run()
-        all_logger.info("***************EXTRACTING INFO for sample #%s finished****************" % uniqueNum)
+        all_logger.info("*************** EXTRACTING INFO for sample #%s finished ****************" % uniqueNum)
+        Merger(uniqueNum)
+        all_logger.info("*************** Writing INFO for sample #%s into general all.cov file finished ****************" % uniqueNum)
         Zip_bio('double')
 
 all_logger.info("--- %s seconds ---" % (time.time() - start_time))
