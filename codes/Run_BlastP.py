@@ -6,18 +6,18 @@ Code author:
 Lucy Androsiuk
 """
 
-import time,logging,re,os,sys,wget,gzip,tarfile,zipfile,shutil, glob
+import time,logging,re,os,sys,wget,gzip,tarfile,zipfile,shutil, glob, dotenv_setup
 import numpy as np
 import pandas as pd
 from Bio.Blast.Applications import NcbiblastpCommandline, NcbimakeblastdbCommandline
-
+import dotenv_setup
 
 # Directories
 work_dir = r"../"
 db_dir = r"../DBs"
 resource = r"../res"
 logs = r"../logs"
-out_dir =f'f{work_dir}/Output'
+out_dir =f'{work_dir}/Output'
 db_links = f"{resource}/dbLinks.txt"
 blast_dir = os.getenv("BLAST")
 prot_file = f"{resource}/Filtered_ORFs.fasta"

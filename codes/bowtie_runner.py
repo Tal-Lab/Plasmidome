@@ -1,4 +1,5 @@
 import time, re, os, sys, subprocess, wget, logging, shutil
+import dotenv_setup
 import numpy as np
 import pandas as pd
 from Bio.Blast.Applications import NcbiblastnCommandline
@@ -8,8 +9,7 @@ from Bio import SearchIO
 from Bio import SeqIO
 from zipfile import ZipFile
 from Bio import bgzf
-import tarfile
-import gzip
+import tarfile, gzip
 from shutil import copyfile
 
 start_time = time.time()

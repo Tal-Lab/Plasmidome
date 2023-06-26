@@ -21,9 +21,8 @@ from collections import defaultdict
 import matplotlib.patches as mpatches
 from scipy import stats
 from pathlib import Path
-import os
+import os, dotenv_setup
 from general_analysis import plasmids_by_reads, tables, Station, GetLibSize, CoverageDF, version
-from plasmid_detect import Plasmid_class
 from sklearn.preprocessing import Normalizer
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
@@ -31,11 +30,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #from CovBAM2 import out_file as datafile
 
-# uncomment relevant path to OS
-# Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"../Output"
 
 # working directories
 visuals = f"{path}/visualisations"
@@ -46,8 +41,6 @@ Path(visuals).mkdir(parents=True, exist_ok=True)
 datafile = r"../res/all_cov.csv"
 physical = r"../res/station_physical.xlsx"
 plt.rcParams["font.family"] = "Helvetica"
-
-
 
 def data_file():
     ' this function reads coverage file as a dataframe '
@@ -69,9 +62,12 @@ def Physical(vers):
     df_for_corr = df_for_corr.apply(pd.to_numeric)
     df_for_corr = df_for_corr[['Latitude', 'Salinity', 'Chlorophyll', 'Turbidity', 'Temp.', 'Oxygen', 'Depth', 'Nitrate', 'Phosphate', 'Silicate']]
     print(df_for_corr.columns)
+
+    ### uncomment following rows to mask
     #mask = np.triu(np.ones_like(df_for_corr.corr(), dtype=bool))
     #f, ax = plt.subplots(figsize=(9, 6))
     #sns.heatmap(df_for_corr.corr(), mask=mask,annot_kws={"size": 10}, fmt='.2f', vmin=-1, vmax=1, annot=True,cmap='coolwarm')
+
     sns.heatmap(df_for_corr.corr(), annot_kws={"size": 10}, fmt='.2f', vmin=-1, vmax=1, annot=True, cmap='coolwarm')
     #plt.show()
     svg_name = 'heatmap_phys_' + str(vers) + '.svg'
@@ -84,17 +80,18 @@ def Physical(vers):
     #plt.show()
     df['St_Depth'] = df['Station'].astype(int).astype(str)+ '_'+df['Depth'].astype(str)
     # print(df['Temp.'].sort_values(ascending = False))
-    # temperature ranges should be specified not in the code!
-    conditions = [
-        (df['Temp.'] <= 23),
-        (df['Temp.'] > 23) & (df['Temp.'] <= 25),
-        (df['Temp.'] > 25) & (df['Temp.'] <= 29),
-        (df['Temp.'] > 29)
-    ]
-    temps = ['21-23', '23-25', '25-29', '29-32']
+
+    # temperature ranges
+    conditions_str = os.getenv('TEMP_CONDITIONS')
+    conditions = eval(conditions_str)
+    temps_str = os.getenv('TEMP_RANGES')
+    temps = eval(temps_str)
     df['Temperature'] = np.select(conditions, temps)
-    # columns should be specified not in the code!
-    df_phys = df[['St_Depth','Latitude','Depth','Temp.','Temperature', 'Salinity', 'Oxygen', 'Chlorophyll', 'Turbidity', 'Nitrate', 'Phosphate', 'Silicate']]
+
+    cols_phys_str=os.getenv('COLS_PHYS')
+    cols_phys = eval(cols_phys_str)
+
+    df_phys = df[cols_phys]
     #print(df_phys)
     return df_phys, df_for_corr
 #Physical(1)

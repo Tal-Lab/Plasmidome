@@ -7,24 +7,14 @@ Author: Lucy
 Description: Plasmidome Detection pipeline segments I-III
 """
 
-import time
-import re
+import time, re, os, dotenv_setup, sys, subprocess, wget, dotenv_setup, zipfile, tarfile, gzip, logging, shutil
 import numpy as np
-import os
-import sys
-import subprocess
-import wget
 from Bio.Blast.Applications import NcbiblastnCommandline
 from Bio.Blast.Applications import NcbiblastxCommandline
 from Bio.Blast.Applications import NcbimakeblastdbCommandline
 from Bio import SearchIO
 from Bio import SeqIO
 import pandas as pd
-import zipfile
-import tarfile
-import gzip
-import logging
-import shutil
 from shutil import copyfile
 from csv import writer
 from subprocess import Popen,PIPE
