@@ -5,8 +5,8 @@
 - [Project Description](#project-description)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- [Feedback](#contributing)
+- [Acknowledgements](#license)
 
 ## Project Description
 
@@ -21,6 +21,8 @@ To extend the repertoire of environmental marine plasmids, we established a pipe
 - <a href="https://github.com/hyattpd/Prodigal">Prodigal</a>
 - <a href="https://github.com/ebi-pf-team/interproscan">interproscan</a>
 - <a href="https://github.com/santirdnd/COPLA">COPLA</a> 
+- <a href="https://github.com/ablab/plasmidVerify">plasmidVerify</a> 
+- <a href="https://github.com/ablab/viralVerify">viralVerify</a> 
 - plasmid dataset in FASTA format (in this study the plasmid database <a href="https://ccb-microbe.cs.uni-saarland.de/plsdb">PLSDB</a>)
 - File with sampling stations description and data, called stations.txt: 
 sample_id, Station number, station location, temperature, depth, any other physical parameters 
@@ -56,7 +58,18 @@ Run python script **clusters_to_fasta.py** to generate **filtered_plasmids.fasta
 
 5. To get predicted ORFs first run **prodigal_runner.csh**, which will generate **plasmids_double_proteins.faa** in Output folder. Next run <b>orf_filtering.py</b> to obtain ORFs only single plasmid length. The filtered ORFs will be written into **Filtered_ORFs.fasta** in resource (/res) folder.
 6. Find function predictions for the ORFs:
-   a) Run <a href="http://eggnog-mapper.embl.de/">eggNOG-mapper</a>, by providing  **Filtered_ORFs.fasta** as input. One of the generated files is called **FilteredORF.emapper.annotations.tsv**. Remove first 4 rows and save it as **eggnog_FilteredORFs.csv** in resource (/res) folder.  
+
+   a) Run <a href="http://eggnog-mapper.embl.de/">eggNOG-mapper</a>, by providing  **Filtered_ORFs.fasta** as input. One of the generated files is called **FilteredORF.emapper.annotations.tsv**. Remove first 4 rows and save it as **eggnog_FilteredORFs.csv** in resource (/res) folder. Follow by running **eggNOG_analyzer.py**. 
+   
+   b) Run **Run_BlastP.py**. It will generate csv files with blast results from <a href="https://pubmed.ncbi.nlm.nih.gov/19933762/">ACLAME</a>, <a href="https://card.mcmaster.ca/">CARD</a>, <a href="http://bacmet.biomedicine.gu.se/">BacMet</a>, <a href="http://www.mgc.ac.cn/VFs/main.htm">Virulence</a>, <a href="https://www.hsls.pitt.edu/obrc/index.php?page=URL20110321220611">Toxin-Antitoxin</a> databases. 
+      
+   c) Run **IPS_Runner.csh**.
+
+   d)Run **_plasmidVerify_** and **_viralVerify_** using **filtered_plasmids.fasta** as input file. 
+
+   e) Run **Protein_Definer.py**.
+
+7. Run **class_statistics.py** to obtain general statistics parameters by class.
 
 ## Feedback
 

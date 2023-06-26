@@ -5,7 +5,6 @@ Created on 27/10/2021 9:33
 Author: Lucy
 """
 ### Description
-# description!!!!
 
 version=15
 
@@ -14,6 +13,7 @@ import numpy as np
 import re
 import os
 import sys
+import dotenv_setup
 from Bio import SeqIO
 from pathlib import Path
 import timeit
@@ -23,22 +23,17 @@ from matplotlib import pyplot as plt
 from matplotlib.pyplot import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.patches as mpatches
-from Protein_files_handler import dataset
-from station_phys_clustering import Clust_map2, Plasmid_class, Physical, plasmids_by_reads, Station, GetLibSize
-from plasmid_detect import Function_ORF
+from station_phys_clustering import Clust_map2, Physical, plasmids_by_reads, Station, GetLibSize, version
+from plasmid_detect import  Plasmid_class, Function_ORF
 
-station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
-station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(version,'All_HMannot_', 1150, 1500)
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 plt.rcParams["font.family"] = "Helvetica"
-# uncomment relevant path to OS
-# Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+
+path = r"../Output"
+dataset = r'../res/dataset'
 
 # working directories
 output_dir = f"{path}/data_calculations"
@@ -66,7 +61,7 @@ reads_coverage = r"../res/all_cov.csv"
 
 plasmids_byreads=f'{output_dir}/Plasmids_ByReads.csv'
 
-colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
+colnames = os.getenv('COLS_BLAST')
 
 ####### Getting predicted protein's lengths
 
@@ -558,8 +553,8 @@ def ORF_table():
     if not os.path.isfile(orfs_name) or os.stat(orfs_name).st_size == 0:
         all_functions.to_csv(orfs_name, index = False)
 
-#ORF_table()
-#Function_Frequency("BACMET")
-#Function_Frequency("CARD")
-#Clustermap('BACMET', 'All')
-#Clustermap('CARD', 'All')
+ORF_table()
+Function_Frequency("BACMET")
+Function_Frequency("CARD")
+Clustermap('BACMET', 'All')
+Clustermap('CARD', 'All')

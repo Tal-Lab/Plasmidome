@@ -96,23 +96,6 @@ def Physical(vers):
     return df_phys, df_for_corr
 #Physical(1)
 
-### getting statistics on plasmids by reads
-# does it belong here?
-def Cov_plasmids():
-    df = DF_plasmids_byReads()[0]
-    df_count_stat = df.groupby(['NewName']).size().reset_index(name = 'counts')
-    df_one_stat = df_count_stat.loc[df_count_stat['counts']==1]
-    df_more_stat = df_count_stat.loc[df_count_stat['counts']>1]
-    number_more_stat = df_more_stat['NewName'].nunique()
-    number_one_stat = df_one_stat['NewName'].nunique()
-    #print(number_more_stat)
-    #print(df_one_stat['NewName'].unique())
-    number_all = df['NewName'].nunique()
-    perc_one = (number_one_stat/number_all)*100
-    perc_more = (number_more_stat/number_all)*100
-    #print(perc_one)
-    #print(perc_more)
-#Cov_plasmids()
 def Pearson_cor(df1,df2,df_to_update):
     ''' The function uses stats.pearsonr to calculate Pearson correlation between two vectors'''
     for index_o, row_o in df1.iterrows():
@@ -134,8 +117,8 @@ def data_plas(df_pl):
     #print(df_cov.shape)
     return df_cov
 
-def Clust_map2(vers, df, name, cl, pl):
-    coverage = data_plas(df)
+def Clust_map2(vers, name, cl, pl):
+    coverage = data_file()
     #print(coverage.index)
     parameters = Physical(1)[0]
     parameters = parameters.set_index(parameters['St_Depth'])
@@ -283,9 +266,9 @@ def Clust_map2(vers, df, name, cl, pl):
     station_reorder = figure2.dendrogram_row.reordered_ind
     return station_order, station_reorder,cluster_st_df, cluster_pl_df
 
-def Correlation_calculation(class_df, cand_df, name):
+def Correlation_calculation(cluster_df, name):
     ''' The function calculates correlation between plasmidome clusters and environmental conditions '''
-    station_order, station_reorder, cluster_st_df, cluster_pl_df = class_df
+    station_order, station_reorder, cluster_st_df, cluster_pl_df = cluster_df
     # getting plasmid candidates clusters
     cluster_pl_df = cluster_pl_df.reset_index()
     cluster_pl_df['Plasmid candidates clusters'] = 'C' + cluster_pl_df['Plasmid candidates clusters'].astype(str)
@@ -366,16 +349,10 @@ def Correlation_calculation(class_df, cand_df, name):
     '''
 
 
-#Correlation_calculation(Clust_map2(13,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200),Plasmid_class()[2], 'All')
-#Correlation_calculation(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900),Plasmid_class()[1], 'PlPut')
-#Correlation_calculation(Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400),Plasmid_class()[0], 'Pl')
-#print(Plasmid_class()[0]['Plasmid'].unique())
-#order_pl=Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)[2]
-#order_all=Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)[2]
+#Correlation_calculation(Clust_map2(version,'All_HMannot_', 1150, 1200),'All')
 
-#print(Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)[2])
-#Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
-#Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-#Clust_map2(13,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1200)
+#order_all=Clust_map2(version,Plasmid_class()[2],'All_HMannot_', 1150, 1500)[2]
+
+#Clust_map2(version,Plasmid_class()[2],'All_HMannot_', 1150, 1200)
 
 

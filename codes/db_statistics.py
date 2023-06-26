@@ -8,15 +8,15 @@ Description: analyzing PLSDB alignment result to identify wether the candidate i
 """
 import pandas as pd
 from Bio import SeqIO
-import re
+import re, os
+import dotenv_setup
 
 # directories
 output_dir = r"../Output"
 plsdb_plasmids=f"{output_dir}/plsdb_new.csv"
 plasmid_candidates=f"../res/filtered_plasmids.fasta"
 
-colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
-
+colnames = os.getenv('COLS_BLAST')
 ap_tresh = 50
 pi_tresh = 70
 

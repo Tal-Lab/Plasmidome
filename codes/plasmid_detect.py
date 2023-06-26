@@ -9,6 +9,7 @@ Author: Lucy Androsiuk
 
 import pandas as pd
 import re, os, sys, math
+import dotenv_setup
 import numpy as np
 from functools import reduce
 import multiprocessing as mp
@@ -18,13 +19,13 @@ import multiprocessing as mp
 pd.set_option('display.max_columns', None)
 pd.options.mode.chained_assignment = None
 
-# uncomment relevant path to OS
-# Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"../Output"
 
 # working directories
+visuals = f"{path}/visualisations"
+tables = f"{path}/data_calculations"
+Path(visuals).mkdir(parents=True, exist_ok=True)
+Path(tables).mkdir(parents=True, exist_ok=True)
 
 # working files
 aclame_blast = r"../res/dataset/ACLAMEproteins.csv"
@@ -34,7 +35,7 @@ egg_nog = r"../res/eggnog_FilteredORFs.csv"
 pVerify = r"../res/plasmidVerify_result_table.csv"
 vVerify = r"../res/viralVerify_result_table.csv"
 
-colnames = ['qseqid', 'sseqid', 'stitle', 'evalue', 'length', 'pident', 'mismatch', 'score', 'qcovs', 'qstart', 'qend', 'sstart', 'send', 'qseq', 'sseq']
+colnames = os.getenv('COLS_BLAST')
 
 def Annot_handler():
     df_annot = pd.read_excel(aclame_annot, header = 1)
@@ -50,7 +51,6 @@ def funct (x):
         return re.search(r'\|([^;^|]*)\|', x).group(0)[1:-1]
     else:
         return x
-
 
 def Aclame_map():
     df_orf = pd.read_csv(aclame_blast, sep = '\t', index_col = None, header = None)
@@ -258,7 +258,7 @@ def Plasmid_class():
     ### dataframe with all candidates classifications and their number
     re_plasmid_put_unc = result[(result['Class'] == 'Plasmid') | (result['Class'] == 'Putative_plasmid') | (result['Class'] == 'Uncertain')]
     print("#### Number of plasmids candidates: %d" % re_plasmid_put_unc['Plasmid'].nunique())
-    #result.to_csv(f'{path}/plasmid_classified5.csv', index=None)
+    result.to_csv(f'{path}/plasmid_classified.csv', index=None)
     return res_plasmid, res_plasmid_put, re_plasmid_put_unc
 
 #Plasmid_class()

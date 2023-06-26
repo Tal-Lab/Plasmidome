@@ -11,14 +11,13 @@ version=8
 
 import numpy as np
 import pandas as pd
-import os, re
+import os, re, dotenv_setup
 from pathlib import Path
 from Bio import SeqIO
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import seaborn as sns
 from scipy import stats
-from plasmid_detect import Plasmid_class, colnames
 import matplotlib.gridspec as gridspec
 
 pd.set_option('display.max_columns', None)
@@ -26,16 +25,13 @@ pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_rows', None)
 
 
-# uncomment relevant path to OS
-# Windows
-#path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"../Output"
 
 # working directories
 tables = f"{path}/data_calculations"
 visuals = f"{path}/visualisations"
 Path(tables).mkdir(parents=True, exist_ok=True)
+Path(visuals).mkdir(parents=True, exist_ok=True)
 
 # working files
 reads_coverage = r"../res/all_cov.csv"
@@ -43,67 +39,76 @@ proteins = r"../res/Filtered_ORFs.fasta"
 library = r"../res/LibrarySize.csv"
 stations = r"../res/stations.txt"
 nt_entries = r"../res/dataset/nt_blast.zip"
-candidates_seqs = f'{path}/plasmid_candidates.fasta'
 
-df_class = Plasmid_class()[2]
-plasmids = Plasmid_class()[0]['Plasmid'].unique().tolist()
-putative_plasmids = Plasmid_class()[1]['Plasmid'].unique().tolist()
-all_candidates = Plasmid_class()[2]['Plasmid'].unique().tolist()
+colnames = os.getenv('COLS_BLAST')
 
-def CoverageDF(work_set):
+def CoverageDF():
     ' this function reads coverage file as a dataframe '
     data = pd.read_csv(reads_coverage, sep = ',', index_col = None, header = 0)
     #data = data.reset_index()
     data['rname'] = data['rname'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     data = data.set_index('rname')
     #print([i for i in data.index])
-    #print(work_set)
-    desired_indices = [i for i in data.index if i in work_set]
-    desired_df = data.loc[desired_indices]
-    rows = list(desired_df.index)
-    arr = desired_df.loc[rows].values
-    return (arr, desired_df)
-#CoverageDF(plasmids)
+    rows = list(data.index)
+    arr = data.loc[rows].values
+    return (arr, data)
 
-def PlasmidsbyReads(work_set):
+def PlasmidsbyReads():
     ' this function generates plasmid presence matrix where 0 is plasmid absence (plasmids coverage < 99)    \
     and 1 is plasmid presence in the sampling station (plasmids coverage >= 99) '
-    arr, df = CoverageDF(work_set)
+    arr, df = CoverageDF()
     df_norm = df
     df_norm[:] = np.where(df_norm < 99, 0, 1)
     #print(df_norm)
     #df_norm = df_norm.append(df_norm.agg(['sum']))
     return df_norm
 
-def DF_plasmids_byReads(work_set, file_name):
+def DF_plasmids_byReads():
     ' this function generates dataframe with plasmids present in stations and writes it to file '
-    df = PlasmidsbyReads(work_set)
+    df = PlasmidsbyReads()
     df = df.stack().to_frame()
     df = df.reset_index(level=[0,1])
     df.columns = ['NewName', 'station_name', 'value']
     df=df[df['value'] > 0]
     #print(df[['NewName', 'station_name']])
-    out_file = f'{tables}/{file_name}'
+    out_file = f'{tables}/Plasmids_ByReads.csv'
     #print(out_file)
     if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
         df[['NewName', 'station_name']].to_csv(out_file, index = False)
     return df[['NewName', 'station_name']], out_file
 
-plasmids_by_reads=DF_plasmids_byReads(plasmids, 'Plasmids_ByReads.csv')
+plasmids_by_reads=DF_plasmids_byReads()
 
-def Coverage_stat(work_set):
+### getting statistics on plasmids by reads
+def Cov_plasmids():
+    df = DF_plasmids_byReads()
+    df_count_stat = df.groupby(['NewName']).size().reset_index(name = 'counts')
+    df_one_stat = df_count_stat.loc[df_count_stat['counts']==1]
+    df_more_stat = df_count_stat.loc[df_count_stat['counts']>1]
+    number_more_stat = df_more_stat['NewName'].nunique()
+    number_one_stat = df_one_stat['NewName'].nunique()
+    #print(number_more_stat)
+    #print(df_one_stat['NewName'].unique())
+    number_all = df['NewName'].nunique()
+    perc_one = (number_one_stat/number_all)*100
+    perc_more = (number_more_stat/number_all)*100
+    #print(perc_one)
+    #print(perc_more)
+#Cov_plasmids()
+
+def Coverage_stat():
     ' plasmid presence statistics '
-    arr, df = CoverageDF(work_set)
+    arr, df = CoverageDF()
     df_norm = df
     df_norm[:] = np.where(df_norm < 99, 0, 1)
     df.loc[:, 'elements'] = df.sum(axis = 1)
     df.sort_values(by = 'elements', ascending = False, inplace = True)
     df2 = df[df['elements'] == 1]
-    #print("****************** These are plasmids observed at 1 station only *********************")
-    #print(df.index.unique())
-    #print(df2.index.nunique())
+    print("****************** These are plasmids observed at 1 station only *********************")
+    print(df.index.unique())
+    print(df2.index.nunique())
 
-#statistics=Coverage_stat()
+statistics=Coverage_stat()
 
 def ORF_stats():
     ' ORF statistics '
@@ -191,17 +196,11 @@ def ORF_byPlasmid_stats():
     df_grouped['Plasmid Length']= df_grouped['Plasmids'].apply(Clean_length)
     df_grouped['Plasmids'] = df_grouped['Plasmids'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
     #print(df_grouped)
-    out = (df_grouped.merge(df_class, left_on = 'Plasmids', right_on = 'Plasmid')
-           .reindex(columns = ['Plasmid', 'Plasmid Length', 'Number of Proteins', 'Class']))
-    out.drop_duplicates(subset = None, keep = 'first', inplace = True)
-    out.sort_values('Class',inplace = True)
-    out.loc[out['Class'] == 'Putative_plasmid', 'Class'] = 'Putative plasmid'
-    out.reset_index(inplace = True, drop = True)
-    #print(out)
-    out['Length_norm'] = out['Plasmid Length'].apply(lambda x: round(x / 10 ** 3))
-    pearson_ORF = stats.pearsonr(out["Number of Proteins"].to_numpy(), out["Plasmid Length"].to_numpy())
+
+    df_grouped['Length_norm'] = df_grouped['Plasmid Length'].apply(lambda x: round(x / 10 ** 3))
+    pearson_ORF = stats.pearsonr(df_grouped["Number of Proteins"].to_numpy(), df_grouped["Plasmid Length"].to_numpy())
     #print((pearson_ORF))
-    sns.scatterplot(data=out, x="Length_norm", y="Number of Proteins", hue='Class', style='Class')
+    sns.scatterplot(data=out, x="Length_norm", y="Number of Proteins")
     plt.xlabel('Plasmid length, kb')
     #plt.xticks(rotation = 90)
     #plt.xscale('log')
@@ -213,10 +212,10 @@ def ORF_byPlasmid_stats():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.show()
     print('Total number of plasmids: %s' % str(out['Plasmid'].nunique()))
-    out_min = out.loc[out['Length_norm'] < 150]
-    print(out.loc[out['Length_norm'] >= 150])
+    out_min = df_grouped.loc[df_grouped['Length_norm'] < 150]
+    print(df_grouped.loc[df_grouped['Length_norm'] >= 150])
     print('Number of plasmids < 150 kb: %s' % str(out_min['Plasmid'].nunique()))
-    sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins", hue = 'Class', style = 'Class')
+    sns.scatterplot(data = out_min, x = "Length_norm", y = "Number of Proteins")
     plt.xlabel('Plasmid length, kb')
     svg_name = "Len150_plasmids" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
@@ -225,7 +224,7 @@ def ORF_byPlasmid_stats():
     #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.show()
-    sns.histplot(out, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
+    sns.histplot(df_grouped, x = "Number of Proteins", bins = 40)
     plt.xlabel('Number of ORFs')
     #sns.histplot(df_grouped_7pl, x = "Number of Proteins", bins = 30, multiple='layer')
     """plt.axvline(x = out['Number of Proteins'].median(),
@@ -249,9 +248,9 @@ def ORF_byPlasmid_stats():
     #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.show()
     print('Total number of proteins: %s' % str(out['Number of Proteins'].sum()))
-    df_min=out.loc[out["Number of Proteins"]<=200]
+    df_min=df_grouped.loc[df_grouped["Number of Proteins"]<=200]
     print('Number of Proteins < 200 per plasmid: %s' % str(df_min['Number of Proteins'].sum()))
-    sns.histplot(df_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack')
+    sns.histplot(df_min, x = "Number of Proteins", bins = 40)
     plt.xlabel('Number of ORFs')
     """plt.axvline(x = df_min['Number of Proteins'].median(),
                 color = 'blue',
@@ -273,9 +272,7 @@ def ORF_byPlasmid_stats():
     plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.show()
-    return df_grouped, out
-
-#ORF_byPlasmid_stats()
+    return df_grouped
 
 def Station():
     ' getting station parameters from station matrix '
@@ -286,14 +283,6 @@ def Station():
     df.drop(index = 0, inplace = True)
     df['station_name'] = df['Sample'] + "_coverage"
     return df
-
-# this is not the place
-def annotate (x,y):
-    ' calculation of Pearson correlation '
-    r, p = stats.pearsonr(x, y)
-    ax = plt.gca()
-    ax.text(.05, .8, 'r={:.2f}, p={:.2g}'.format(r, p),
-            transform = ax.transAxes)
 
 def GetLibSize():
     ' retreiving library sizes from lib-file '
@@ -417,7 +406,7 @@ def ORF_byStation_stats():
 
 def Plasmid_Station():
     ' plasmid per station statistics '
-    df = ORF_byPlasmid_stats()[0]
+    df = ORF_byPlasmid_stats()
     df_stat=DF_plasmids_byReads()[0]
     df = pd.merge(df, df_stat, left_on = 'Plasmids', right_on = 'NewName')
     df = df.drop(['NewName',"Number of Proteins"], axis = 1)
@@ -476,7 +465,7 @@ def Plasmid_Station():
 
 def Candidates_length():
     """ Statistics for candidates lengths """
-    df = ORF_byPlasmid_stats()[1]
+    df = ORF_byPlasmid_stats()
     #df['Length_norm'] = df['Plasmid_Length'].apply(lambda x: round(x/10**3))
     print(df.columns)
     # getting the longest plasmid candidate and its length
@@ -489,23 +478,8 @@ def Candidates_length():
     # calculating number of plasmid candidates with length around 140 bp
     df140 = df.loc[df['Length_norm'].between(120,200)]
     print('Number of plasmids around 140 kb is: %d' % df140['Plasmid'].nunique())
-    # getting plasmid candidates classified as uncertain
-    df_uncert = df[df['Class']=='Uncertain']
-    pl_uncert = df_uncert['Plasmid'].nunique()
-    max_unc = df_uncert['Plasmid Length'].max()
-    min_unc = df_uncert['Plasmid Length'].min()
-    print("Candidates classified as uncertain are in range from %d to %d bp" % (min_unc, max_unc))
-    # getting number of uncertain candidates shorter then 4 kb
-    df4kb = df_uncert[df_uncert['Length_norm'] < 4]
-    print('Number of plasmids with length < 4 kb is: %d' % df4kb['Plasmid'].nunique())
-    print('Percentage of plasmids with length < 4 kb is: %d' % ((df4kb['Plasmid'].nunique() / pl_uncert) * 100))
-    # plotting histogram for candidate's lengths, colored by class
-    df_plput = df100.loc[df100['Class']!='Uncertain']
-    sns.histplot(df_plput, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
-    #plt.show()
 
-
-    sns.histplot(df, x='Length_norm', hue = 'Class', multiple = 'stack', bins = 40)
+    sns.histplot(df, x='Length_norm', bins = 40)
     plt.xlabel('Plasmid length, kb')
     svg_name = "Plasmid_lengths_Histo" + str(version) + '.svg'
     svg_dir = f'{visuals}/{svg_name}'
@@ -525,40 +499,24 @@ def Candidates_length():
 
     df_prot_min = df.loc[df["Number of Proteins"] <= 200]
     print('Number of Proteins < 200 per plasmid: %s' % str(df_prot_min['Number of Proteins'].sum()))
-    sns.histplot(df_prot_min, x = "Number of Proteins", bins = 40, hue = 'Class', multiple = 'stack', ax = ax1)
+    sns.histplot(df_prot_min, x = "Number of Proteins", bins = 40, ax = ax1)
 
     ax2 = fig.add_subplot(gs[1])
     df_min = df.loc[df['Length_norm']<=150]
     # plotting histogram for candidate's lengths (<200bp), colored by class
-    sns.histplot(df_min, x = 'Length_norm', hue = 'Class', multiple = 'stack', bins =40, ax = ax2)
+    sns.histplot(df_min, x = 'Length_norm', bins =40, ax = ax2)
 
     plt.xlabel('Plasmid length, kb')
 
     fig.tight_layout(pad = 2.0)
 
-    svg_name = "Figure4_" + str(version) + '.eps'
+    svg_name = "ORFs_per_plasmidBP" + str(version) + '.eps'
     svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Figure4_" + str(version) + '.png'
+    png_name = "ORFs_per_plasmidBP" + str(version) + '.png'
     png_dir = f'{visuals}/{png_name}'
     plt.savefig(svg_dir, format = 'eps', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
 
-    #plt.show()
-
-def PieClass():
-    df = df_class[['Plasmid', 'Class']].drop_duplicates().reset_index(drop=True)
-    df.loc[df['Class']=='Putative_plasmid', 'Class'] = 'Putative plasmid'
-    df = df.groupby('Class').count()
-    data = df['Plasmid'].to_list()
-    label = df.index.to_list()
-    colors = sns.color_palette('pastel')[0:3]
-    plt.pie(data, labels = label, colors = colors, autopct='%.0f%%')
-    svg_name = "Class_piechart" + str(version) + '.svg'
-    svg_dir = f'{visuals}/{svg_name}'
-    png_name = "Class_piechart" + str(version) + '.png'
-    png_dir = f'{visuals}/{png_name}'
-    #plt.savefig(svg_dir, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-    #plt.savefig(png_dir, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     #plt.show()
 
 def nt_counts():
@@ -569,7 +527,7 @@ def nt_counts():
     df_nt = pd.read_csv(nt_entries, compression='zip', sep = '\t', index_col = None, header = None)
     df_nt.columns = colnames
     #reading dataframe for plasmids stations by reads
-    plasmids_by_reads = DF_plasmids_byReads(all_candidates, 'Plasmids_ByReads.csv')[0]
+    plasmids_by_reads = DF_plasmids_byReads()[0]
     plasmids_by_reads = plasmids_by_reads[plasmids_by_reads.NewName != '94_LNODE_1']
     #extracting plasmid length from the query id
     df_nt['Pl_length'] = df_nt['qseqid'].apply(lambda x: re.search(r'\d+$', x).group(0))
@@ -618,48 +576,8 @@ def nt_counts():
           % df_nt_high['Plasmid'].nunique())
     print('Percentage of plasmid candidates, with significant match in nt-database: %d' % ((df_nt_high['Plasmid'].nunique() / plasmids_by_reads['NewName'].nunique()) * 100))
 
-def gc_content():
-    # open the FASTA file and iterate over each sequence
-    gc_recs = []
-    candidates = []
-    with open(candidates_seqs) as handle:
-        for record in SeqIO.parse(handle, "fasta"):
-            # calculate the GC content of the sequence
-            gc_count = sum(1 for base in record.seq if base in ['G', 'C', 'g', 'c'])
-            gc_content = gc_count / len(record.seq) * 100
-
-            # print the ID and GC content of the sequence
-            print(f"{record.id}\t{gc_content:.2f}")
-            gc_recs.append(round(gc_content,2))
-            candidates.append(record.id)
-    pl_gc = pd.DataFrame(list(zip(candidates, gc_recs)), columns =['Candidate', 'GC'])
-    pl_gc['Candidate'] = pl_gc['Candidate'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
-    df = df_class[['Plasmid', 'Class']].drop_duplicates().reset_index(drop = True)
-    out = pl_gc.merge(df, left_on = 'Candidate', right_on = 'Plasmid')
-    out.drop('Plasmid', axis = 1, inplace = True)
-    out_put = out.loc[out['Candidate'].isin(putative_plasmids)]
-    out_plasm = out.loc[out['Candidate'].isin(plasmids)]
-    print(out_plasm)
-    print('The GC content values in all candidates ranges between %s and %s' % (str(out['GC'].min()), str(out['GC'].max())))
-    print('Average GC content in all candidates is %s' % str(out['GC'].mean()))
-    print('The GC content values in putative plasmids ranges between %s and %s' % (
-    str(out_put['GC'].min()), str(out_put['GC'].max())))
-    print('Average GC content in putative plasmids is %s' % str(out_put['GC'].mean()))
-    print('The GC content values in plasmids ranges between %s and %s' % (
-    str(out_plasm['GC'].min()), str(out_plasm['GC'].max())))
-    print('Average GC content in plasmids is %s' % str(out_plasm['GC'].mean()))
-    out_file = f'{tables}/GC_content.csv'
-    # print(out_file)
-    if not os.path.isfile(out_file) or os.stat(out_file).st_size == 0:
-        out.to_csv(out_file, index = True)
-
-#gc_content()
 #nt_counts()
-#PieClass()
 #ORF_byPlasmid_stats()
-
 #Candidates_length()
 #ORF_byStation_stats()
 #Plasmid_Station()
-#plasmids_byreads=DF_plasmids_byReads()[1]
-#print(plasmids_byreads)

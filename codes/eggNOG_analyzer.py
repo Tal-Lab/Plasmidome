@@ -16,16 +16,14 @@ import scipy.cluster.hierarchy as sch
 from scipy.special import comb
 from collections import defaultdict
 import matplotlib.patches as mpatches
-from station_phys_clustering import Clust_map2, Plasmid_class
+from station_phys_clustering import Clust_map2, plasmids_by_reads, version
+from plasmid_detect import Plasmid_class
 from scipy.stats import hypergeom
 ### Description
 # add description
 
 # uncomment relevant path to OS
-# Windows
-path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
-# macOS
-#path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"../Output"
 
 # working directories
 out_dir = f"{path}/data_calculations"
@@ -33,18 +31,15 @@ visuals = f"{path}/visualisations"
 tables = f"{path}/data_calculations"
 
 # working files
-combined_output = r"../res/unique_plasmids.fasta"
+combined_output = r"../res/filtered_plasmids.fasta"
 proteins = r"../res/Filtered_ORFs.fasta"
 cog_categories = r"../res/Annotations/cog_cats.csv"
 eggnog = r"../res/eggnog_FilteredORFs.csv"
 stations = r"../res/stations.txt"
 reads_coverage = r"../res/all_cov.csv"
-plasmids_byreads = f"{out_dir}/AllPlasmids_perStat.csv"
 physical = r"../res/station_physical.xlsx"
 
-station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(4,Plasmid_class()[2],'PlPutUnc_HMannot_', 1150, 1500)
-station_orderPlPut, station_reorderPlPut, cluster_st_dfPlPut, cluster_pl_dfPlPut = Clust_map2(4,Plasmid_class()[1],'PlPut_HMannot_', 800, 900)
-station_order7, station_reorder7,cluster_st_df7, cluster_pl_df7 = Clust_map2(4,Plasmid_class()[0],'Pl_HMannot_', 250, 400)
+station_orderCl, station_reorderCl, cluster_st_df, cluster_pl_df = Clust_map2(version,'All_HMannot_', 1150, 1500)
 
 def csv_reader(file):
     df = pd.read_csv(file, sep = ',', header = 0, index_col = None)
@@ -72,7 +67,7 @@ def SplitColumn():
     return dd
 
 def DefineStation():
-    df = pd.read_csv(plasmids_byreads, index_col=None, header = 0)
+    df = pd.read_csv(plasmids_by_reads, index_col=None, header = 0)
     df.dropna(inplace = True)
     return df
 
@@ -154,8 +149,7 @@ def BarChart(freq, unknown):
     #prepare figure
     sns.set_theme()  # to make style changable from defaults use this line of code befor using set_style
     plt.figure(figsize = (8, 8))
-    sns.set(font_scale = 0.95
-            )
+    sns.set(font_scale = 0.95)
     with sns.axes_style("ticks"):
         fig = sns.histplot(df,
                            y=station,
@@ -185,62 +179,6 @@ def BarChart(freq, unknown):
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format='svg', dpi=gcf().dpi, bbox_inches='tight')
         plt.savefig(png_file, format='png', dpi=gcf().dpi, bbox_inches='tight')
-    plt.show()
-
-def BarChart_lim(df_class, cluster, file_name, unknown):
-    'plotting stacked barchart for COGs frequencies in plasmids/plasmids+putative plasmids'
-    df = MapToFunc()
-    df['Plasmid'] = df['Query'].apply(lambda x: re.search(r'\w+_l', x).group(0)[:-2])
-    plasmid_list = df_class['Plasmid'].unique()
-    #preparing to reorder plasmids by cluster
-    cluster.reset_index(inplace=True)
-    cluster.sort_values(by='Plasmid candidates clusters', inplace=True)
-    order_pl = cluster['Plasmids'].to_list()
-
-    df_trunc = df.loc[df['Plasmid'].apply(lambda x: x in plasmid_list)]
-    df_trunc = df_trunc[['Query', 'Plasmid','COG cat', 'Functional categories']].fillna('missing')
-    if unknown != 'with':
-        indexNames = df_trunc[(df_trunc['COG cat'] == 'S') | (df_trunc['COG cat'] == '-')].index
-        df_trunc.drop(indexNames, inplace=True)
-    df_trunc['Functional categories'] = df_trunc[['COG cat', 'Functional categories']].apply(tuple, axis=1)
-    df_trunc['Functional categories'] = df_trunc['Functional categories'].apply(lambda x: ' - '.join(x))
-    df_grouped = df_trunc.groupby('Plasmid')['Functional categories'].value_counts(normalize=True).to_frame(name='Function count')
-    df_grouped = df_grouped.reset_index()
-    #reordering plasmids by cluster order
-    true_sort1 = [s for s in order_pl if s in df_grouped.Plasmid.unique()]
-    df_grouped = df_grouped.set_index('Plasmid').loc[true_sort1].reset_index()
-    print(df_grouped['Plasmid'].unique())
-    ncolors = df_grouped['Functional categories'].nunique()
-    colors = sns.color_palette(cc.glasbey, n_colors=ncolors)
-    labels = df_grouped['Functional categories'].unique()
-    #figure
-    with sns.axes_style("ticks"):
-        fig = sns.histplot(df_grouped,
-                           x='Plasmid',
-                           weights='Function count',
-                           hue='Functional categories',
-                           hue_order = labels[::-1],
-                           multiple='stack',
-                           #palette= {'bright',ncolors},
-                           palette = colors,
-                           # Add white borders to the bars.
-                           edgecolor='white',
-                           # Shrink the bars a bit so they don't touch.
-                           shrink=0.8
-                           )
-        fig.set(xlabel='Plasmid', ylabel='Function frequency')
-        fig.margins(x = 0.1)
-        # Put the legend out of the figure
-        fig.legend(labels, title='Functional categories (COGs)', bbox_to_anchor = (1.1, 1), ncol = 1, title_fontsize = 16, loc = 2, borderaxespad = 0.)
-        fig.tick_params(axis='x', rotation=90, labelsize=8)
-    #saving figure
-    svg_name = file_name + unknown + str(1) + '.svg'
-    svg_file = f'{visuals}/{svg_name}'
-    png_name = file_name + unknown + str(1) + '.png'
-    png_file = f'{visuals}/{png_name}'
-    if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
-        plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
-        plt.savefig(png_file, format = 'png', dpi = gcf().dpi, bbox_inches = 'tight')
     plt.show()
 
 def ProteinsFastaAn():
@@ -411,9 +349,9 @@ def PieChart(df, file_name, unknown):
     plt.legend(labels, title = 'Functional categories (COGs)', bbox_to_anchor = (1.01, 1), ncol = 1,title_fontsize = 'medium',fontsize = 'medium', frameon = False, loc = 2, borderaxespad = 0.)
     # fig.tick_params(axis = 'x', rotation = 90, labelsize = 8)
     # save graph in PNG and vector format
-    svg_name = 'Piechart_COG_' + unknown + str(3) + '.svg'
+    svg_name = file_name + "_" + unknown + str(3) + '.svg'
     svg_file = f'{visuals}/{svg_name}'
-    png_name = 'Piechart_COG_' + unknown + str(3) + '.png'
+    png_name =  file_name + "_"  + unknown + str(3) + '.png'
     png_file = f'{visuals}/{png_name}'
     if not os.path.isfile(svg_file) and not os.path.isfile(png_file):
         plt.savefig(svg_file, format = 'svg', dpi = gcf().dpi, bbox_inches = 'tight')
@@ -443,9 +381,5 @@ pd.set_option('display.max_rows', None)
 #eggNOGStats()
 #BarChart(True, 'with')
 #BarChart(True, 'without')
-#BarChart_lim(Plasmid_class()[1], cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'with')
-#BarChart_lim(Plasmid_class()[1],cluster_pl_dfPlPut, 'barplot_COG_PlPut', 'without')
-#BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'with')
-#BarChart_lim(Plasmid_class()[0], cluster_pl_df7, 'barplot_COG_7pl', 'without')
 #PieChart(MapToFunc(),'PieChart_COG','with')
 #PieChart(MapToFunc(),'PieChart_COG','without')

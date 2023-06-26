@@ -14,10 +14,10 @@ from pathlib import Path
 # Windows
 #path = r"C:\Users\Lucy\iCloudDrive\Documents/bengurion/Plasmidome"
 # macOS
-path = r"/Users/lucyandrosiuk/Documents/bengurion/Plasmidome"
+path = r"../Output"
 
 # working directories
-full_path = f'{path}/blastp3'
+full_path = f'{path}/blastp'
 dataset = r'../res/dataset'
 Path(dataset).mkdir(parents=True, exist_ok=True)
 
